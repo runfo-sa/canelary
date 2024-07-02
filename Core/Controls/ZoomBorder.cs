@@ -45,10 +45,10 @@ namespace Core.Controls
             _child = element;
             if (_child != null)
             {
-                TransformGroup group = new TransformGroup();
-                ScaleTransform st = new ScaleTransform();
+                TransformGroup group = new();
+                ScaleTransform st = new();
                 group.Children.Add(st);
-                TranslateTransform tt = new TranslateTransform();
+                TranslateTransform tt = new();
                 group.Children.Add(tt);
                 _child.RenderTransform = group;
                 _child.RenderTransformOrigin = new Point(0.0, 0.0);

@@ -4,6 +4,8 @@ namespace Core.View
 {
     public partial class Settings : UserControl, IDialogAware
     {
+        public static string Title => "Ajustes";
+
         public Settings()
         {
             InitializeComponent();

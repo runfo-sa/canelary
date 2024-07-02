@@ -2,9 +2,12 @@
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Windows.Media;
 
-namespace Comparator.Model
+namespace Comparator.Helpers
 {
-    public class DiffLineBackgroundRenderer(List<DiffPiece> lines) : IBackgroundRenderer
+    /// <summary>
+    /// Resalta las lineas indicadas con un color diferente en base al tipo de cambio ocurrido.
+    /// </summary>
+    public class Highlighter(List<DiffPiece> lines) : IBackgroundRenderer
     {
         public KnownLayer Layer => KnownLayer.Background;
         private static Color deletedColor = Color.FromArgb(50, 232, 155, 180);

@@ -4,5 +4,7 @@
     {
         CompositeCommand GeneratePreview { get; }
         CompositeCommand SendErrors { get; }
+        CompositeCommand GenerateLinter { get; }
+        CompositeCommand SendData { get; }
     }
 }

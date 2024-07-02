@@ -1,6 +1,5 @@
 ﻿using Core.Models;
 using Core.Services;
-using Core.Services.SettingsModel;
 using Editor.Services;
 using System.IO;
 using System.Windows.Data;
@@ -11,8 +10,8 @@ namespace Editor.ViewModels
 {
     public class PreviewViewModel : BindableBase
     {
-        public static ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
-        public static ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
+        public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
+        public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
         private BitmapSource _previewImage = null!;
         public BitmapSource PreviewImage
@@ -37,7 +36,7 @@ namespace Editor.ViewModels
 
         public DelegateCommand RotateLeftCommand { get; private set; }
 
-        public static DelegateCommand DownSizeCommand => new(() =>
+        public DelegateCommand DownSizeCommand => new(() =>
         {
             SizeList.MoveCurrentToNext();
             if (SizeList.IsCurrentAfterLast)
@@ -47,7 +46,7 @@ namespace Editor.ViewModels
             SizeList.Refresh();
         });
 
-        public static DelegateCommand UpSizeCommand => new(() =>
+        public DelegateCommand UpSizeCommand => new(() =>
         {
             SizeList.MoveCurrentToPrevious();
             if (SizeList.IsCurrentBeforeFirst)
@@ -63,6 +62,7 @@ namespace Editor.ViewModels
         {
             Mediator = mediator;
             Mediator.GeneratePreview.RegisterCommand(new DelegateCommand<string>(GeneratePreview));
+            Mediator.SendData.RegisterCommand(new DelegateCommand(SendData));
 
             RotateRightCommand = new(() =>
             {
@@ -81,13 +81,8 @@ namespace Editor.ViewModels
 
         public async void GeneratePreview(string content)
         {
-            IPreviewService preview = SettingsService.Instance.PreviewEngine switch
-            {
-                PreviewEngine.Labelary => new LabelaryService(content),
-                _ => throw new NotImplementedException()
-            };
-
-            preview = preview
+            var preview = PreviewServiceProvider
+                .ProvideService(content)
                 .FillTestVariables()
                 .LoadFonts();
 
@@ -99,6 +94,11 @@ namespace Editor.ViewModels
             }
 
             Mediator.SendErrors.Execute(preview.Error);
+        }
+
+        private void SendData()
+        {
+            Mediator.GenerateLinter.Execute($"{((LabelDpi)DpiList.CurrentItem).Value};{((LabelSize)SizeList.CurrentItem).Value}");
         }
     }
 }

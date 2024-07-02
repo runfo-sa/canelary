@@ -1,66 +1,57 @@
-﻿using AdonisUI.Controls;
+﻿using Comparator.Models;
+using Core.FileTree;
 using Core.Git;
-using Core.Logic;
-using Core.Model;
-using Core.ViewLogic;
+using Core.Models;
+using Core.Services;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Comparator.View
+namespace Comparator.Views
 {
-    public partial class SelectLabelsDialog : AdonisWindow
+    public partial class SelectLabelsDialog : UserControl, IDialogAware
     {
+        public string Title => "Seleccionar Etiquetas";
+
         public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
-        public ListCollectionView SizeList { get; set; } = new(SizeConstants.GetList(File.ReadAllText("SizeList.xml")));
+        public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
         public ListCollectionView LeftGitVer { get; set; }
         public ListCollectionView RightGitVer { get; set; }
 
-        public LabelFile LeftLabel
-        {
-            get => (LabelFile)leftLabel.SelectedItem;
-        }
+        public LabelFile LeftLabel => (LabelFile)leftLabel.SelectedItem;
+        public LabelFile RightLabel => (LabelFile)rightLabel.SelectedItem;
 
-        public LabelFile RightLabel
-        {
-            get => (LabelFile)rightLabel.SelectedItem;
-        }
+        public DialogCloseListener RequestClose { get; }
+        public DelegateCommand CloseDialogCommand { get; private set; }
 
         private readonly IEnumerable<LabelFile> _files;
-        private readonly Settings _settings;
+        private readonly SettingsService _settings;
 
-        public SelectLabelsDialog(Settings settings)
+        public SelectLabelsDialog()
         {
             InitializeComponent();
-            _settings = settings;
+            DataContext = this;
 
+            _settings = SettingsService.Instance;
             _files = Directory
-                .GetFiles(settings.EtiquetasDir, $"*.{settings.EtiquetasExtension}")
+                .GetFiles(_settings.EtiquetasDir, $"*.{_settings.EtiquetasExtension}")
                 .Select(f => new LabelFile(f));
 
             leftLabel.ItemsSource = _files;
             rightLabel.ItemsSource = _files;
 
-            dpiList.ItemsSource = DpiList;
-            sizeList.ItemsSource = SizeList;
-
             var tags = Git.RunGitCommand(
                 "for-each-ref",
                 "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
-                settings.EtiquetasDir)
+                _settings.EtiquetasDir)
             .Split("\\n", StringSplitOptions.RemoveEmptyEntries).Select(GitTag.Parse)
             .Prepend(GitTag.Local);
 
             LeftGitVer = new(tags.ToList());
-            leftGitVer.ItemsSource = LeftGitVer;
-
             RightGitVer = new(tags.ToList());
-            rightGitVer.ItemsSource = RightGitVer;
-        }
 
-        private void AcceptDialog(Object sender, System.Windows.RoutedEventArgs e)
-        {
-            DialogResult = true;
+            CloseDialogCommand = new(ClosingDialog);
         }
 
         private void LeftFetchFiles(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -69,7 +60,6 @@ namespace Comparator.View
             acceptButton.IsEnabled = false;
 
             leftLabel.ItemsSource = FetchFiles((GitTag)LeftGitVer.CurrentItem);
-
             if (leftLabel.ItemsSource is not null)
             {
                 leftLabel.IsEnabled = true;
@@ -84,12 +74,11 @@ namespace Comparator.View
             acceptButton.IsEnabled = false;
 
             rightLabel.ItemsSource = FetchFiles((GitTag)RightGitVer.CurrentItem);
-
             if (rightLabel.ItemsSource is not null)
             {
                 rightLabel.IsEnabled = true;
                 acceptButton.IsEnabled = true;
-                rightLabel.SelectedIndex = 0;
+                rightLabel.SelectedIndex = 1;
             }
         }
 
@@ -99,7 +88,6 @@ namespace Comparator.View
             {
                 return _files;
             }
-
             return LoadGitFile(current);
         }
 
@@ -120,5 +108,25 @@ namespace Comparator.View
                 .GetFiles(path, $"*.{_settings.EtiquetasExtension}")
                 .Select(f => new LabelFile(f));
         }
+
+        private void ClosingDialog()
+        {
+            var sr = new SelectionResult(LeftLabel, RightLabel, (LabelDpi)DpiList.CurrentItem, (LabelSize)SizeList.CurrentItem);
+            var result = new DialogResult
+            {
+                Parameters = new DialogParameters { { "SelectionResult", sr } },
+                Result = ButtonResult.OK
+            };
+            RequestClose.Invoke(result);
+        }
+
+        public Boolean CanCloseDialog()
+        {
+            return acceptButton.IsEnabled;
+        }
+
+        public void OnDialogClosed() { }
+
+        public void OnDialogOpened(IDialogParameters parameters) { }
     }
 }

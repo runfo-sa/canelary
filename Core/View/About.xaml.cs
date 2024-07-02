@@ -5,6 +5,7 @@ namespace Core.View
 {
     public partial class About : UserControl, IDialogAware
     {
+        public string Title => "Acerca de Visual Ternera";
         public DelegateCommand CloseDialogCommand => new(() => RequestClose.Invoke());
         public DialogCloseListener RequestClose { get; }
 

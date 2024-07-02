@@ -1,6 +1,5 @@
 ﻿using Core.FileTree;
 using Core.Helpers;
-using Core.Models;
 using Core.Services;
 using Editor.Models;
 using Editor.Services;
@@ -102,6 +101,7 @@ namespace Editor.ViewModels
             CommandService.PrintCommand.RegisterCommand(_printCommand);
 
             Mediator.SendErrors.RegisterCommand(new DelegateCommand<string>(ShowErrors));
+            Mediator.GenerateLinter.RegisterCommand(new DelegateCommand<string>(async e => await UpdateLinter(e)));
 
             CloseErrorWindowCommand = new DelegateCommand(() =>
             {
@@ -109,11 +109,12 @@ namespace Editor.ViewModels
                 ErrorsMessage = string.Empty;
             });
 
-            _refreshLinter = new DelegateCommand(async () =>
+            _refreshLinter = new DelegateCommand(() =>
             {
                 if (EnableLinting)
                 {
-                    await UpdateLinter();
+                    Mediator.SendData.Execute(null);
+                    //await UpdateLinter();
                 }
                 else
                 {
@@ -125,7 +126,7 @@ namespace Editor.ViewModels
             });
         }
 
-        private async void AddTab(string header, string content, string? path = null)
+        private void AddTab(string header, string content, string? path = null)
         {
             var item = new TabItem(header, content, path);
             item.WasModified += UpdateItemSaveState;
@@ -134,7 +135,8 @@ namespace Editor.ViewModels
 
             if (EnableLinting)
             {
-                await UpdateLinter();
+                Mediator.SendData.Execute(null);
+                //await UpdateLinter();
             }
         }
 
@@ -269,7 +271,8 @@ namespace Editor.ViewModels
         private void Print()
         {
             var item = TabsList[CurrentTabIndex];
-            var content = new LabelaryService(item.Content.Text)
+            var content = PreviewServiceProvider
+                .ProvideService(item.Content.Text)
                 .FillTestVariables()
                 .Content;
 
@@ -280,17 +283,15 @@ namespace Editor.ViewModels
             }
         }
 
-        private async Task UpdateLinter()
+        private async Task UpdateLinter(string data)
         {
             var tab = TabsList[CurrentTabIndex];
             var content = TabsList[CurrentTabIndex].Content.Text;
 
-            var dpi = (LabelDpi)PreviewViewModel.DpiList.CurrentItem;
-            var size = (LabelSize)PreviewViewModel.SizeList.CurrentItem;
-
+            var values = data.Split(';');
             var lintings = await PreviewServiceProvider
                 .ProvideService(content)
-                .Linting(content, dpi.Value, size.Value);
+                .Linting(content, values[0], values[1]);
 
             if (lintings is not null)
             {
