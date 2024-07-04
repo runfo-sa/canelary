@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Cohere.Views.Tree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:core="clr-namespace:Core.FileTree;assembly=Core"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <TreeView x:Name="treeView"
+              FontSize="14"
+              ItemsSource="{Binding Tree}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                <i:InvokeCommandAction Command="{Binding ClickSelectedCommand}" />
+            </i:EventTrigger>
+            <i:EventTrigger EventName="PreviewKeyDown">
+                <i:InvokeCommandAction Command="{Binding PressSelectedCommand}"
+                                       PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+            <i:EventTrigger EventName="SelectedItemChanged">
+                <i:InvokeCommandAction Command="{Binding ChangedItemCommand}"
+                                       CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type core:VirtualDirectory}"
+                                      ItemsSource="{Binding RecursiveFiles}">
+                <TextBlock FontWeight="DemiBold"
+                           Text="{Binding Name}" />
+            </HierarchicalDataTemplate>
+
+            <DataTemplate DataType="{x:Type core:LabelFile}">
+                <TextBlock HorizontalAlignment="Stretch"
+                           Text="{Binding Name}" />
+            </DataTemplate>
+        </TreeView.Resources>
+    </TreeView>
+</UserControl>

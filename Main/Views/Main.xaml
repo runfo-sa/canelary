@@ -35,32 +35,33 @@
 
                 <Border Grid.Row="1"
                         Margin="15">
-                    <ItemsControl ItemsSource="{Binding ModulesButtons}"
-                                  VerticalAlignment="Stretch">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="3" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type model:ModuleAction}">
-                                <Button Command="{Binding Command}"
-                                        CommandParameter="{Binding Name}"
-                                        HorizontalContentAlignment="Stretch"
-                                        Margin="15">
-                                    <DockPanel>
-                                        <materialIcons:MaterialIcon Kind="{Binding Icon}"
-                                                                    Width="Auto" />
-                                        <TextBlock FontSize="32"
-                                                   FontWeight="DemiBold"
-                                                   HorizontalAlignment="Center"
-                                                   Text="{Binding DisplayName}"
-                                                   VerticalAlignment="Center" />
-                                    </DockPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ModulesButtons}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type model:ModuleAction}">
+                                    <Button Command="{Binding Command}"
+                                            CommandParameter="{Binding Name}"
+                                            HorizontalContentAlignment="Stretch"
+                                            Margin="15">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="25*" />
+                                                <ColumnDefinition Width="75*" />
+                                            </Grid.ColumnDefinitions>
+                                            <materialIcons:MaterialIcon Kind="{Binding Icon}"
+                                                                        Width="Auto" />
+                                            <TextBlock Grid.Column="1"
+                                                       FontSize="32"
+                                                       FontWeight="DemiBold"
+                                                       HorizontalAlignment="Center"
+                                                       Text="{Binding DisplayName}"
+                                                       VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </Border>
             </Grid>
         </GroupBox>

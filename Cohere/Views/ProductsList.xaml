@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Cohere.Views.ProductsList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:converters="clr-namespace:Cohere.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:ProductErrorToBackgroundBrushConverter x:Key="ProductErrorBackgroundColorConverter" />
+    </UserControl.Resources>
+
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"
+                   FontSize="16"
+                   FontWeight="DemiBold"
+                   Margin="0,10"
+                   Text="{Binding CurrentLabel.Name}" />
+
+        <DockPanel DockPanel.Dock="Bottom"
+                   Background="{DynamicResource {x:Static adonisUi:Brushes.AccentBrush}}"
+                   LastChildFill="False"
+                   Margin="0,10"
+                   VerticalAlignment="Bottom">
+            <Label Content="{Binding RuleName}"
+                   ContentStringFormat="Regla Aplicada: {0}"
+                   FontSize="14"
+                   HorizontalAlignment="Stretch"
+                   Margin="5,0"
+                   VerticalContentAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding ChangeRuleCommand}"
+                    Content="{materialIcons:MaterialIconExt Kind=Notebook, Size=24}" />
+        </DockPanel>
+
+        <DataGrid x:Name="dataGrid"
+                  AutoGenerateColumns="False"
+                  FontSize="14"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding ProductsList}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding CommandService.LoadProductCommand}"
+                                           CommandParameter="{Binding ElementName=dataGrid, Path=SelectedItem}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <DataGrid.RowStyle>
+                <Style BasedOn="{StaticResource {x:Type DataGridRow}}"
+                       TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background"
+                            Value="{Binding Error, Converter={StaticResource ProductErrorBackgroundColorConverter}}" />
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Codigo}"
+                                    Header="Codigo" />
+                <DataGridTextColumn Binding="{Binding Nombre}"
+                                    Header="Nombre" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

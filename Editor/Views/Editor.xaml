@@ -13,9 +13,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ContentControl prism:RegionManager.RegionName="MenuRegion" />
+        <ContentControl prism:RegionManager.RegionName="Editor#MenuRegion" />
         <ContentControl Grid.Row="1"
-                        prism:RegionManager.RegionName="ToolbarRegion" />
+                        prism:RegionManager.RegionName="Editor#ToolbarRegion" />
 
         <Grid Grid.Row="2"
               Margin="10">
@@ -27,17 +27,17 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
 
-            <ContentControl prism:RegionManager.RegionName="TreeRegion" />
+            <ContentControl prism:RegionManager.RegionName="Editor#TreeRegion" />
             <GridSplitter Grid.Column="1"
                           Background="{x:Null}"
                           HorizontalAlignment="Stretch" />
             <ContentControl Grid.Column="2"
-                            prism:RegionManager.RegionName="TextEditorRegion" />
+                            prism:RegionManager.RegionName="Editor#TextEditorRegion" />
             <GridSplitter Grid.Column="3"
                           Background="{x:Null}"
                           HorizontalAlignment="Stretch" />
             <ContentControl Grid.Column="4"
-                            prism:RegionManager.RegionName="PreviewRegion" />
+                            prism:RegionManager.RegionName="Editor#PreviewRegion" />
         </Grid>
     </Grid>
 </UserControl>

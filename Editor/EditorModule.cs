@@ -1,6 +1,5 @@
 ﻿using AdonisUI.Controls;
 using Core.Services;
-using Core.View;
 using Editor.Views;
 
 namespace Editor
@@ -19,20 +18,19 @@ namespace Editor
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterInstance(new ModuleLoaderService("Editor", CreateWindow));
-            containerRegistry.RegisterDialog<About>();
 
-            _regionManager.RegisterViewWithRegion("MenuRegion", typeof(Menu));
-            _regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(Toolbar));
-            _regionManager.RegisterViewWithRegion("TreeRegion", typeof(Tree));
-            _regionManager.RegisterViewWithRegion("TextEditorRegion", typeof(TextEditor));
-            _regionManager.RegisterViewWithRegion("PreviewRegion", typeof(Preview));
+            _regionManager.RegisterViewWithRegion("Editor#MenuRegion", typeof(Menu));
+            _regionManager.RegisterViewWithRegion("Editor#ToolbarRegion", typeof(Toolbar));
+            _regionManager.RegisterViewWithRegion("Editor#TreeRegion", typeof(Tree));
+            _regionManager.RegisterViewWithRegion("Editor#TextEditorRegion", typeof(TextEditor));
+            _regionManager.RegisterViewWithRegion("Editor#PreviewRegion", typeof(Preview));
         }
 
         private void CreateWindow(string name)
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - {name}",
+                Title = $"Visual Ternera - Editor",
                 Content = _container?.Resolve<Views.Editor>()
             }.Show();
         }

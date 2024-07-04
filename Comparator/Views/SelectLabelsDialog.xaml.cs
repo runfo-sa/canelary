@@ -51,7 +51,7 @@ namespace Comparator.Views
             LeftGitVer = new(tags.ToList());
             RightGitVer = new(tags.ToList());
 
-            CloseDialogCommand = new(ClosingDialog);
+            CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
         }
 
         private void LeftFetchFiles(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -66,6 +66,8 @@ namespace Comparator.Views
                 acceptButton.IsEnabled = true;
                 leftLabel.SelectedIndex = 0;
             }
+
+            CloseDialogCommand.RaiseCanExecuteChanged();
         }
 
         private void RightFetchFiles(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -80,6 +82,8 @@ namespace Comparator.Views
                 acceptButton.IsEnabled = true;
                 rightLabel.SelectedIndex = 1;
             }
+
+            CloseDialogCommand.RaiseCanExecuteChanged();
         }
 
         private IEnumerable<LabelFile>? FetchFiles(GitTag current)
@@ -122,7 +126,7 @@ namespace Comparator.Views
 
         public Boolean CanCloseDialog()
         {
-            return acceptButton.IsEnabled;
+            return true;
         }
 
         public void OnDialogClosed() { }

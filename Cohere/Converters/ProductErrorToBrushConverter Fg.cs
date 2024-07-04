@@ -4,10 +4,10 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Cohere.Model
+namespace Cohere.Converters
 {
-    [ValueConversion(typeof(DateTime), typeof(Brush))]
-    public class ProductErrorToBrushConverterFg : IValueConverter
+    [ValueConversion(typeof(ProductoError), typeof(Brush))]
+    public class ProductErrorToForegroundBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

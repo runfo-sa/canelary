@@ -26,7 +26,7 @@ namespace Core.Services
 
         public IPreviewService FillProduct(string codigo)
         {
-            using var dbContext = new IdeDbContext(SettingsService.Instance.SqlConnection);
+            using var dbContext = new IdeDbContext();
             var codigoParam = new SqlParameter("@Codigo", codigo);
             List<string> vars = [
                 "DefinicionesCuartos",
@@ -77,7 +77,7 @@ namespace Core.Services
 
         public IPreviewService FillTestVariables()
         {
-            using var dbContext = new IdeDbContext(SettingsService.Instance.SqlConnection);
+            using var dbContext = new IdeDbContext();
             Dictionary<string, string> keyValues = dbContext.EtiquetasDatosPrueba
                 .ToDictionary(x => x.Key, v => v.Value);
 

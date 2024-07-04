@@ -24,55 +24,53 @@
                     Modifiers="Ctrl" />
     </UserControl.InputBindings>
 
-    <Grid>
-        <Menu>
-            <MenuItem Header="_Archivos">
-                <MenuItem Command="{Binding CommandService.NewCommand}"
-                          Header="_Nuevo"
-                          InputGestureText="Ctrl+N" />
-                <MenuItem Command="{Binding CommandService.OpenCommand}"
-                          Header="_Abrir"
-                          InputGestureText="Ctrl+O" />
-                <Separator />
-                <MenuItem Command="{Binding CommandService.SaveCommand}"
-                          Header="_Guardar"
-                          InputGestureText="Ctrl+S" />
-                <MenuItem Command="{Binding CommandService.SaveAsCommand}"
-                          Header="_Guardar como..." />
-                <MenuItem Command="{Binding CommandService.SaveAllCommand}"
-                          Header="_Guardar todos"
-                          InputGestureText="Ctrl+Shift+S" />
-                <Separator />
-                <MenuItem Command="{Binding CommandService.CloseCommand}"
-                          Header="_Cerrar archivo"
-                          InputGestureText="Ctrl+W" />
-                <MenuItem Command="{Binding CommandService.CloseAllCommand}"
-                          Header="_Cerrar todos" />
-                <Separator />
-                <MenuItem Command="{Binding OpenSettingsCommand}"
-                          Header="_Ajustes..." />
-                <MenuItem Click="CloseWindow"
-                          Header="_Salir" />
-            </MenuItem>
-            <MenuItem Header="_Herramientas">
-                <MenuItem Command="{Binding CommandService.SwitchPosCommand}"
-                          IsCheckable="True"
-                          Header="_Vista previa al guardar" />
-                <MenuItem Command="{Binding CommandService.SwitchLinterCommand}"
-                          IsCheckable="True"
-                          IsChecked="True"
-                          Header="_Habilitar Linter" />
-            </MenuItem>
-            <MenuItem Header="_Git">
-                <MenuItem Header="_Actualizar repositorio local" />
-                <MenuItem Header="_Publicar cambios" />
-            </MenuItem>
-            <MenuItem Header="_?">
-                <MenuItem Command="{Binding HelpCommand}"
-                          Header="_Ayuda" />
-                <MenuItem Command="{Binding AboutCommand}"
-                          Header="_Acerca de" />
-            </MenuItem>
-        </Menu>
-    </Grid>
+    <Menu>
+        <MenuItem Header="_Archivos">
+            <MenuItem Command="{Binding CommandService.NewCommand}"
+                      Header="_Nuevo"
+                      InputGestureText="Ctrl+N" />
+            <MenuItem Command="{Binding CommandService.OpenCommand}"
+                      Header="_Abrir"
+                      InputGestureText="Ctrl+O" />
+            <Separator />
+            <MenuItem Command="{Binding CommandService.SaveCommand}"
+                      Header="_Guardar"
+                      InputGestureText="Ctrl+S" />
+            <MenuItem Command="{Binding CommandService.SaveAsCommand}"
+                      Header="_Guardar como..." />
+            <MenuItem Command="{Binding CommandService.SaveAllCommand}"
+                      Header="_Guardar todos"
+                      InputGestureText="Ctrl+Shift+S" />
+            <Separator />
+            <MenuItem Command="{Binding CommandService.CloseCommand}"
+                      Header="_Cerrar archivo"
+                      InputGestureText="Ctrl+W" />
+            <MenuItem Command="{Binding CommandService.CloseAllCommand}"
+                      Header="_Cerrar todos" />
+            <Separator />
+            <MenuItem Command="{Binding OpenSettingsCommand}"
+                      Header="_Ajustes..." />
+            <MenuItem Click="CloseWindow"
+                      Header="_Salir" />
+        </MenuItem>
+        <MenuItem Header="_Herramientas">
+            <MenuItem Command="{Binding CommandService.SwitchPosCommand}"
+                      IsCheckable="True"
+                      Header="_Vista previa al guardar" />
+            <MenuItem Command="{Binding CommandService.SwitchLinterCommand}"
+                      IsCheckable="True"
+                      IsChecked="True"
+                      Header="_Habilitar Linter" />
+        </MenuItem>
+        <MenuItem Header="_Git">
+            <MenuItem Header="_Actualizar repositorio local" />
+            <MenuItem Header="_Publicar cambios" />
+        </MenuItem>
+        <MenuItem Header="_?">
+            <MenuItem Command="{Binding HelpCommand}"
+                      Header="_Ayuda" />
+            <MenuItem Command="{Binding AboutCommand}"
+                      Header="_Acerca de" />
+        </MenuItem>
+    </Menu>
 </UserControl>

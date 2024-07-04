@@ -1,41 +1,48 @@
-﻿using AdonisUI.Controls;
+﻿using Cohere.Models;
 using Core.Database.Model;
-using Core.Logic;
-using Core.MVVM;
+using Core.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Controls;
 
-namespace Cohere.View
+namespace Cohere.Views
 {
-    public partial class CreateRuleDialog : AdonisWindow
+    public partial class CreateRuleDialog : UserControl, IDialogAware
     {
+        public string Title => "Crear Regla";
+
         public ObservableCollection<ReglaAtributo> Atributos { get; set; } = [];
         public List<string> Etiquetas { get; set; }
         public List<string> AtributosOpciones { get; set; }
 
         private string _reglaNombre = string.Empty;
-
         public string ReglaNombre
         {
             get => _reglaNombre;
-            set => _reglaNombre = value;
+            set
+            {
+                _reglaNombre = value;
+                CloseDialogCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public string Etiqueta { get; set; } = null!;
 
-        public RelayCommand AceptDialog => new(_ =>
-        {
-            DialogResult = true;
-        }, _ => !reglaNombre.Text.IsNullOrEmpty());
+        public DialogCloseListener RequestClose { get; }
+        public DelegateCommand CloseDialogCommand { get; private set; }
 
-        public CreateRuleDialog(Settings settings)
+        public CreateRuleDialog()
         {
             InitializeComponent();
             DataContext = this;
 
-            Etiquetas = [.. Directory.GetFiles(settings.EtiquetasDir, "*.e01").Select(p => Path.GetFileNameWithoutExtension(p).ToLower())];
+            Etiquetas = [.. Directory
+                .GetFiles(SettingsService.Instance.EtiquetasDir, $"*.{SettingsService.Instance.EtiquetasExtension}")
+                .Select(p => Path.GetFileNameWithoutExtension(p))
+            ];
 
+            // TODO!: Pass this to a config file
             AtributosOpciones = [
                 "Codigo Senasa",
                 "Temperatura",
@@ -63,11 +70,33 @@ namespace Cohere.View
                 "Definiciones Cuartos - Chino Hex",
                 "Definiciones Cuartos - Chino"
             ];
+
+            CloseDialogCommand = new(ClosingDialog, () => !ReglaNombre.IsNullOrEmpty());
         }
 
-        private void Button_Click(Object sender, System.Windows.RoutedEventArgs e)
+        private void AddAttribute(Object sender, System.Windows.RoutedEventArgs e)
         {
             Atributos.Add(new ReglaAtributo());
         }
+
+        private void ClosingDialog()
+        {
+            var cr = new CreateRuleResult(Etiqueta, ReglaNombre, Atributos);
+            var result = new DialogResult
+            {
+                Parameters = { { "Result", cr } },
+                Result = ButtonResult.OK
+            };
+            RequestClose.Invoke(result);
+        }
+
+        public Boolean CanCloseDialog()
+        {
+            return true;
+        }
+
+        public void OnDialogClosed() { }
+
+        public void OnDialogOpened(IDialogParameters parameters) { }
     }
 }

@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Cohere.Views.Menu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <Grid>
+        <Menu>
+            <MenuItem Header="Reglas">
+                <MenuItem Command="{Binding CreateRuleCommand}"
+                          Header="Crear Regla" />
+                <MenuItem Command="{Binding AlterRuleCommand}"
+                          Header="Modificar Regla" />
+            </MenuItem>
+            <MenuItem Header="_?">
+                <MenuItem Command="{Binding HelpCommand}"
+                          Header="_Ayuda" />
+                <MenuItem Command="{Binding AboutCommand}"
+                          Header="_Acerca de" />
+            </MenuItem>
+        </Menu>
+    </Grid>
+</UserControl>

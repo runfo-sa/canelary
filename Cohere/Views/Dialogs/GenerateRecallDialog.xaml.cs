@@ -1,23 +1,22 @@
-﻿using AdonisUI.Controls;
-using Core.Logic;
-using Core.MVVM;
+﻿using Cohere.Models;
+using Core.Services;
 using Microsoft.Office.Interop.Word;
 using System.IO;
-using static Cohere.View.GenerateSample;
+using System.Windows.Controls;
 using Range = Microsoft.Office.Interop.Word.Range;
 
-namespace Cohere.View
+namespace Cohere.Views
 {
-    public partial class GenerateRecallDialog : AdonisWindow
+    public partial class GenerateRecallDialog : UserControl, IDialogAware
     {
-        private readonly Settings _settings;
-        private readonly IEnumerable<ProductoMuestra> _products;
+        public string Title => "Generar RE-CAL-22";
 
-        public RelayCommand AceptDialog => new(_ =>
+        private IEnumerable<ProductoMuestra> _products = null!;
+
+        public DelegateCommand CloseDialogCommand => new(() =>
         {
             var wordApp = new Application();
-
-            var doc = wordApp.Documents.Open(_settings.RecallTemplate);
+            var doc = wordApp.Documents.Open(SettingsService.Instance.RecallTemplate);
 
             SetBookmark(doc, "destino", destino.Text);
             SetBookmark(doc, "autor", autor.Text);
@@ -45,16 +44,15 @@ namespace Cohere.View
             doc.SaveAs(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"RE-CAL-22_{timestamp}.docx"));
             doc.Close();
             wordApp.Quit();
-
-            DialogResult = true;
+            RequestClose.Invoke();
         });
 
-        public GenerateRecallDialog(Settings settings, IEnumerable<ProductoMuestra> products)
+        public DialogCloseListener RequestClose { get; }
+
+        public GenerateRecallDialog()
         {
             InitializeComponent();
             DataContext = this;
-            _settings = settings;
-            _products = products;
         }
 
         private static void SetBookmark(Document doc, string bookmark, string value)
@@ -62,6 +60,21 @@ namespace Cohere.View
             Bookmark bkm = doc.Bookmarks[bookmark];
             Range range = bkm.Range;
             range.Text = value;
+        }
+
+        public Boolean CanCloseDialog()
+        {
+            return true;
+        }
+
+        public void OnDialogClosed() { }
+
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            if (parameters.TryGetValue("Products", out IEnumerable<ProductoMuestra>? products) && products is not null)
+            {
+                _products = products;
+            }
         }
     }
 }

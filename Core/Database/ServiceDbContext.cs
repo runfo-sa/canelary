@@ -7,7 +7,7 @@ namespace Core.Database
     /// <summary>
     /// Instancia de conexión con la base de datos del servicio
     /// </summary>
-    public class ServiceDbContext() : DbContext()
+    public class ServiceDbContext : DbContext
     {
         /// <summary>
         /// Tabla que almacena el estado de todos los clientes

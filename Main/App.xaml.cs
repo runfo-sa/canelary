@@ -56,6 +56,7 @@ namespace Main
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<Settings>();
+            containerRegistry.RegisterDialog<About>();
         }
 
         protected override void ConfigureViewModelLocator()

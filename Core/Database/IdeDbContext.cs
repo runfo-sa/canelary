@@ -1,9 +1,10 @@
 ﻿using Core.Database.Model;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database
 {
-    public class IdeDbContext(string sqlConnection) : DbContext()
+    public class IdeDbContext : DbContext
     {
         /// <summary>
         /// Tabla con las reglas que se aplican en el proceso de cohesion
@@ -28,7 +29,7 @@ namespace Core.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(sqlConnection);
+            optionsBuilder.UseSqlServer(SettingsService.Instance.SqlConnection);
         }
     }
 }

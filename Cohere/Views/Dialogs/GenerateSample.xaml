@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="Cohere.Views.GenerateSample"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             Height="512"
+             Width="712">
+    <GroupBox>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <DataGrid AutoGenerateColumns="False"
+                      ColumnWidth="*"
+                      FontSize="14"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding ProductsList}"
+                      Margin="5">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Codigo}"
+                                        Header="Codigo" />
+                    <DataGridTextColumn Binding="{Binding Nombre}"
+                                        Header="Nombre"
+                                        Width="3*" />
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Muestra, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="Muestra"
+                                          IsChecked="{Binding DataContext.SelectAll,
+                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <DockPanel Grid.Row="1"
+                       LastChildFill="False"
+                       Margin="5,0">
+                <CheckBox DockPanel.Dock="Left"
+                          Content="Generar RE-CAL-22"
+                          IsChecked="{Binding EnableRecall}" />
+                <Button DockPanel.Dock="Right"
+                        Content="Cancelar"
+                        FontSize="16"
+                        IsCancel="True"
+                        Margin="5" />
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding CloseDialogCommand}"
+                        Content="Aceptar"
+                        FontSize="16"
+                        Margin="5" />
+                <StackPanel DockPanel.Dock="Left"
+                            Margin="25,0"
+                            Orientation="Horizontal">
+                    <TextBlock Margin="5,0"
+                               Text="Impresora: "
+                               VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Printers}"
+                              SelectedIndex="0" />
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+    </GroupBox>
+</UserControl>

@@ -9,6 +9,8 @@
              d:DesignWidth="800">
     <Grid>
         <TextBlock Text="{Binding Title}"
-                   FontSize="38" />
+                   FontSize="64"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
     </Grid>
 </UserControl>
