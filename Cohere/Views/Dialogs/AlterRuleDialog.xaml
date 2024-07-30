@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Cohere.Views.CreateRuleDialog"
+﻿<UserControl x:Class="Cohere.Views.AlterRuleDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
@@ -21,43 +21,32 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <DockPanel>
                     <Label DockPanel.Dock="Left"
-                           Content="Nombre:"
-                           FontSize="16"
-                           VerticalAlignment="Center" />
-                    <TextBox DockPanel.Dock="Right"
-                             FontSize="16"
-                             Margin="10,0"
-                             Text="{Binding RuleName}" />
-                </DockPanel>
-
-                <DockPanel Grid.Row="1"
-                           Margin="0,5">
-                    <Label DockPanel.Dock="Left"
-                           Content="Etiqueta:"
+                           Content="Regla:"
                            FontSize="16"
                            VerticalAlignment="Center" />
                     <ComboBox DockPanel.Dock="Right"
                               FontSize="16"
-                              ItemsSource="{Binding Etiquetas}"
+                              DisplayMemberPath="Name"
+                              ItemsSource="{Binding Rules}"
                               Margin="10,0"
+                              SelectionChanged="RuleChanged"
                               SelectedIndex="0"
-                              SelectedItem="{Binding Etiqueta}" />
+                              SelectedItem="{Binding Rule}" />
                 </DockPanel>
 
-                <DockPanel Grid.Row="2"
+                <DockPanel Grid.Row="1"
                            Margin="0,10">
                     <Button Click="AddAttribute"
                             Content="Agregar Atributo"
                             FontSize="18" />
                 </DockPanel>
 
-                <DataGrid Grid.Row="3"
+                <DataGrid Grid.Row="2"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           FontSize="16"
@@ -101,7 +90,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Grid.Row="4"
+                <StackPanel Grid.Row="3"
                             Margin="0,20">
                     <Label Content="Descripción:"
                            FontSize="16"
@@ -116,7 +105,7 @@
                              VerticalScrollBarVisibility="Visible" />
                 </StackPanel>
 
-                <DockPanel Grid.Row="5"
+                <DockPanel Grid.Row="4"
                            LastChildFill="False"
                            VerticalAlignment="Bottom">
                     <Button DockPanel.Dock="Right"

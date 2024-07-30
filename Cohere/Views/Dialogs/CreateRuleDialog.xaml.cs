@@ -1,8 +1,9 @@
-﻿using Cohere.Models;
-using Core.Database.Model;
+﻿using Core.Database;
+using Core.Database.IdeDbModels;
 using Core.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Controls;
 
@@ -10,21 +11,28 @@ namespace Cohere.Views
 {
     public partial class CreateRuleDialog : UserControl, IDialogAware
     {
-        public string Title => "Crear Regla";
+        public static string Title => "Crear Regla";
 
-        public ObservableCollection<ReglaAtributo> Atributos { get; set; } = [];
+        public ObservableCollection<RuleAttributes> Attributes { get; set; } = [];
         public List<string> Etiquetas { get; set; }
-        public List<string> AtributosOpciones { get; set; }
+        public List<string> AttributesList { get; set; }
 
-        private string _reglaNombre = string.Empty;
-        public string ReglaNombre
+        private string _ruleName = string.Empty;
+        public string RuleName
         {
-            get => _reglaNombre;
+            get => _ruleName;
             set
             {
-                _reglaNombre = value;
+                _ruleName = value;
                 CloseDialogCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        private string? _description;
+        public string? Description
+        {
+            get => _description;
+            set { _description = value; }
         }
 
         public string Etiqueta { get; set; } = null!;
@@ -42,58 +50,68 @@ namespace Cohere.Views
                 .Select(p => Path.GetFileNameWithoutExtension(p))
             ];
 
-            // TODO!: Pass this to a config file
-            AtributosOpciones = [
-                "Codigo Senasa",
-                "Temperatura",
-                "Traducciones - Aleman",
-                "Traducciones - Ingles",
-                "Traducciones - Italiano",
-                "Traducciones - Frances",
-                "Traducciones - Español",
-                "Traducciones - Portugues",
-                "Traducciones - Ruso Metro",
-                "Traducciones - Ruso",
-                "Traducciones - Libre",
-                "Traducciones - Chino Hex",
-                "Traducciones - Chino",
-                "EAN",
-                "Definiciones Cuartos - Aleman",
-                "Definiciones Cuartos - Ingles",
-                "Definiciones Cuartos - Italiano",
-                "Definiciones Cuartos - Frances",
-                "Definiciones Cuartos - Español",
-                "Definiciones Cuartos - Portugues",
-                "Definiciones Cuartos - Ruso Metro",
-                "Definiciones Cuartos - Ruso",
-                "Definiciones Cuartos - Libre",
-                "Definiciones Cuartos - Chino Hex",
-                "Definiciones Cuartos - Chino"
-            ];
+            AttributesList = BackendServiceProvider.Backend.GetAttributes();
 
-            CloseDialogCommand = new(ClosingDialog, () => !ReglaNombre.IsNullOrEmpty());
+            CloseDialogCommand = new(ClosingDialog, () => !RuleName.IsNullOrEmpty());
         }
 
         private void AddAttribute(Object sender, System.Windows.RoutedEventArgs e)
         {
-            Atributos.Add(new ReglaAtributo());
+            Attributes.Add(new RuleAttributes());
         }
 
         private void ClosingDialog()
         {
-            var cr = new CreateRuleResult(Etiqueta, ReglaNombre, Atributos);
-            var result = new DialogResult
+            if (CreateRule(Etiqueta, RuleName, Attributes, Description))
             {
-                Parameters = { { "Result", cr } },
-                Result = ButtonResult.OK
-            };
-            RequestClose.Invoke(result);
+                RequestClose.Invoke();
+            }
         }
 
-        public Boolean CanCloseDialog()
+        private bool CreateRule(string label, string ruleName, IEnumerable<RuleAttributes> attributes, string? description)
         {
+            using (var context = new IdeDbContext())
+            {
+                if (context.Rule.FirstOrDefault(r => r.Name == ruleName) != null)
+                {
+                    Trace.WriteLine("Regla ya existente");
+                    return false;
+                }
+
+                var rule = context.Rule.Add(new Rule()
+                {
+                    Name = ruleName,
+                    Description = description
+                }).Entity;
+                context.SaveChanges();
+
+                var ruleLabel = context.RuleLabel.FirstOrDefault(r => r.LabelName == label);
+                if (ruleLabel != null)
+                {
+                    ruleLabel.RuleId = rule.Id;
+                }
+                else
+                {
+                    ruleLabel = context.RuleLabel.Add(new RuleLabel()
+                    {
+                        LabelName = label,
+                        RuleId = rule.Id
+                    }).Entity;
+                }
+                context.SaveChanges();
+
+                foreach (var attr in Attributes)
+                {
+                    attr.RuleId = rule.Id;
+                    context.RuleAttributes.Add(attr);
+                }
+                context.SaveChanges();
+            }
+
             return true;
         }
+
+        public Boolean CanCloseDialog() => true;
 
         public void OnDialogClosed() { }
 

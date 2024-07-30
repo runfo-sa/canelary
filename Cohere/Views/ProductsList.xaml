@@ -39,7 +39,9 @@
 
         <DataGrid x:Name="dataGrid"
                   AutoGenerateColumns="False"
+                  ColumnWidth="*"
                   FontSize="14"
+                  HorizontalScrollBarVisibility="Disabled"
                   IsReadOnly="True"
                   ItemsSource="{Binding ProductsList}">
             <i:Interaction.Triggers>
@@ -58,10 +60,12 @@
             </DataGrid.RowStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Codigo}"
-                                    Header="Codigo" />
-                <DataGridTextColumn Binding="{Binding Nombre}"
-                                    Header="Nombre" />
+                <DataGridTextColumn Binding="{Binding Code}"
+                                    Header="Codigo"
+                                    Width="1*" />
+                <DataGridTextColumn Binding="{Binding Name}"
+                                    Header="Nombre"
+                                    Width="4*" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

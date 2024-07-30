@@ -2,10 +2,10 @@
 using Core.Database.ServiceDbModels;
 using Core.Events;
 using Core.Git;
+using Core.Models;
 using Core.Services;
 using Core.Services.SettingsModel;
 using Main.Models;
-using Material.Icons;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Threading;
@@ -66,15 +66,16 @@ namespace Main.ViewModels
             ClientsList = [.. new ServiceDbContext().EstadoCliente];
 
             _moduleManager.Run();
-            ModulesButtons = [.. _moduleManager.Modules.Select(m =>
-            {
-                if (m.ModuleName.Contains('#') && Enum.TryParse(m.ModuleName[(m.ModuleName.IndexOf('#') + 1)..], out MaterialIconKind icon))
+            ModulesButtons = [
+                .. _moduleManager.Modules
+                .Select(m =>
                 {
-                    return new ModuleAction(m.ModuleName, m.ModuleName[..m.ModuleName.IndexOf('#')], new DelegateCommand<string>(LoadModule), icon);
-                }
-
-                return new ModuleAction(m.ModuleName, m.ModuleName, new DelegateCommand<string>(LoadModule));
-            })];
+                    var metadata = ModuleMetadata.Parse(m.ModuleName);
+                    return new ModuleAction(metadata, new DelegateCommand<string>(LoadModule));
+                })
+                .Where(m => m.Metadata.AsButton)
+                .OrderBy(m => m.Metadata.Position)
+            ];
         }
 
         private void UpdateTime(object? sender, EventArgs args)

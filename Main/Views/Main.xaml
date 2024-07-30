@@ -40,7 +40,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type model:ModuleAction}">
                                     <Button Command="{Binding Command}"
-                                            CommandParameter="{Binding Name}"
+                                            CommandParameter="{Binding Metadata.RawName}"
                                             HorizontalContentAlignment="Stretch"
                                             Margin="15">
                                         <Grid>
@@ -48,13 +48,13 @@
                                                 <ColumnDefinition Width="25*" />
                                                 <ColumnDefinition Width="75*" />
                                             </Grid.ColumnDefinitions>
-                                            <materialIcons:MaterialIcon Kind="{Binding Icon}"
+                                            <materialIcons:MaterialIcon Kind="{Binding Metadata.Icon}"
                                                                         Width="Auto" />
                                             <TextBlock Grid.Column="1"
                                                        FontSize="32"
                                                        FontWeight="DemiBold"
                                                        HorizontalAlignment="Center"
-                                                       Text="{Binding DisplayName}"
+                                                       Text="{Binding Metadata.Name}"
                                                        VerticalAlignment="Center" />
                                         </Grid>
                                     </Button>

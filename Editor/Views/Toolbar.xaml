@@ -6,13 +6,16 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             Focusable="True"
              mc:Ignorable="d">
     <UserControl.InputBindings>
         <KeyBinding Command="{Binding CommandService.PreviewCommand}"
                     Key="F5" />
         <KeyBinding Command="{Binding CommandService.PrintCommand}"
+                    CommandParameter="{Binding ElementName=printerList, Path=SelectedItem}"
                     Key="F6" />
     </UserControl.InputBindings>
+
     <GroupBox>
         <DockPanel LastChildFill="False">
             <ToolBarTray DockPanel.Dock="Left"
@@ -59,7 +62,7 @@
                         </DockPanel>
                     </Button>
                     <Button Command="{Binding CommandService.PrintCommand}"
-                            CommandParameter="{Binding SelectedItem, ElementName=printerList}"
+                            CommandParameter="{Binding ElementName=printerList, Path=SelectedItem}"
                             Margin="5,0">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Right"

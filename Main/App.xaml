@@ -1,5 +1,6 @@
 ﻿<prism:PrismApplication x:Class="Main.App"
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
@@ -8,6 +9,8 @@
                 <ResourceDictionary Source="pack://application:,,,/AdonisUI;component/ColorSchemes/Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/AdonisUI.ClassicTheme;component/Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="{x:Static adonisUi:Colors.AccentColor}">#974444</Color>
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

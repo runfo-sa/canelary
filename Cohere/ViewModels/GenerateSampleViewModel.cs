@@ -1,11 +1,8 @@
 ﻿using Cohere.Models;
 using Core.Database;
-using Core.Database.Model;
 using Core.FileTree;
 using Core.Helpers;
 using Core.Services;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
@@ -15,7 +12,7 @@ namespace Cohere.ViewModels
 {
     public class GenerateSampleViewModel : BindableBase, IDialogAware
     {
-        public string Title => "Generar Muestra";
+        public static string Title => "Generar Muestra";
 
         private readonly IDialogService _dialogService;
         private LabelFile _labelFile = null!;
@@ -56,7 +53,7 @@ namespace Cohere.ViewModels
         {
             foreach (var item in ProductsList)
             {
-                item.Muestra = SelectAll;
+                item.Printable = SelectAll;
             }
         }
 
@@ -64,13 +61,12 @@ namespace Cohere.ViewModels
         {
             foreach (var prod in products)
             {
-                if (prod.Muestra)
+                if (prod.Printable)
                 {
                     var label = PreviewServiceProvider
                         .ProvideService(File.ReadAllText(_labelFile.Path))
-                        .FillProduct(prod.Codigo)
-                        .FillTestVariables();
-                    PrinterHelper.SendStringToPrinter(Printers.CurrentItem.ToString()!, label.Content, $"{_labelFile.Name} - {prod.Nombre}");
+                        .LoadVariables();
+                    PrinterHelper.SendStringToPrinter(Printers.CurrentItem.ToString()!, label.Content, $"{_labelFile.Name} - {prod.Name}");
                 }
             }
         }
@@ -88,7 +84,7 @@ namespace Cohere.ViewModels
         {
             if (EnableRecall)
             {
-                GenerateRecall(ProductsList.Where(p => p.Muestra));
+                GenerateRecall(ProductsList.Where(p => p.Printable));
             }
             PrintLabels(ProductsList);
             RequestClose.Invoke();
@@ -110,11 +106,9 @@ namespace Cohere.ViewModels
                 using (var context = new IdeDbContext())
                 {
                     var labelName = Path.GetFileNameWithoutExtension(_labelFile.Name);
-                    var param = new SqlParameter("@Etiqueta", labelName);
-                    var list = context.Database
-                        .SqlQueryRaw<ListarProductos>("ide.ListarProductos @Etiqueta", param)
-                        .AsEnumerable()
-                        .Select(p => new ProductoMuestra(p.Codigo, p.Nombre, p.Senasa, false));
+                    var list = BackendServiceProvider.Backend
+                        .GetProducts(labelName)
+                        .Select(p => new ProductoMuestra(p));
 
                     foreach (var item in list)
                     {

@@ -1,10 +1,5 @@
-﻿using Core.Database;
-using Core.Database.Model;
-using Core.Models;
+﻿using Core.Models;
 using Core.Services.LabelaryModel;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
@@ -24,62 +19,9 @@ namespace Core.Services
         private readonly StringBuilder _error = new();
         public string Error => _error.ToString();
 
-        public IPreviewService FillProduct(string codigo)
+        public IPreviewService LoadVariables()
         {
-            using var dbContext = new IdeDbContext();
-            var codigoParam = new SqlParameter("@Codigo", codigo);
-            List<string> vars = [
-                "DefinicionesCuartos",
-                "MercaderiasTraducciones",
-                "Temperaturas",
-                "EAN",
-                "FechaVencimiento",
-                "CodSenasa"
-            ];
-
-            int startIdx;
-            int endIdx = _content.LastIndexOf("@]");
-
-            while (endIdx > 0)
-            {
-                startIdx = _content.LastIndexOf("[@", endIdx);
-                if (startIdx > 0)
-                {
-                    var key = _content[(startIdx + 2)..endIdx].ToLower();
-                    if (vars.Contains(key, StringComparer.OrdinalIgnoreCase))
-                    {
-                        // TODO!: Improve
-                        var argParam = new SqlParameter("@Arg", string.Concat(key.Where(char.IsDigit)));
-                        if (argParam.Value.ToString().IsNullOrEmpty())
-                        {
-                            argParam.Value = key[(key.LastIndexOf(";FF", StringComparison.CurrentCultureIgnoreCase) + 3)..].Replace('m', 'M');
-                        }
-                        var varParam = new SqlParameter("@Var", key);
-
-                        var result = dbContext.Database
-                            .SqlQueryRaw<ValorProductos>("ide.CompletarProducto @Codigo, @Arg, @Var", codigoParam, argParam, varParam)
-                            .ToList();
-
-                        if (result.Count > 0)
-                        {
-                            _content = _content.Replace($"[@{key}@]", result[0].Valor, StringComparison.CurrentCultureIgnoreCase);
-                        }
-                    }
-                    else
-                    {
-                        _error.AppendLine($"Variable [@{key}@] no esta cargada para el producto {codigo}");
-                    }
-                }
-                endIdx = _content.LastIndexOf("@]", startIdx);
-            }
-            return this;
-        }
-
-        public IPreviewService FillTestVariables()
-        {
-            using var dbContext = new IdeDbContext();
-            Dictionary<string, string> keyValues = dbContext.EtiquetasDatosPrueba
-                .ToDictionary(x => x.Key, v => v.Value);
+            Dictionary<string, string> keyValues = BackendServiceProvider.Backend.GetValues();
 
             int startIdx;
             int endIdx = _content.LastIndexOf("@]");
@@ -97,7 +39,7 @@ namespace Core.Services
                     else
                     {
                         _content = _content.Replace($"[@{key}@]", "", StringComparison.CurrentCultureIgnoreCase);
-                        _error.AppendLine($"Variable [@{key}@] no esta cargada en el sistema");
+                        _error.AppendLine($"Variable [@{key}@] no esta cargada para el producto");
                     }
                 }
                 endIdx = _content.LastIndexOf("@]", startIdx);

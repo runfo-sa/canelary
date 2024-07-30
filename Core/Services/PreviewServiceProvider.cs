@@ -13,7 +13,7 @@ namespace Core.Services
         {
             return SettingsService.Instance.PreviewEngine switch
             {
-                SettingsModel.PreviewEngine.Labelary => new LabelaryService(content),
+                PreviewEngine.Labelary => new LabelaryService(content),
                 _ => throw new NotImplementedException(),
             };
         }

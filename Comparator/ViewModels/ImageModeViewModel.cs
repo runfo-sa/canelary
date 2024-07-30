@@ -126,7 +126,7 @@ namespace Comparator.ViewModels
             var sizeValue = _size.Value;
             var preview = PreviewServiceProvider
                 .ProvideService(content)
-                .FillTestVariables()
+                .LoadVariables()
                 .LoadFonts();
 
             using var task = Task.Run(() => preview.Build(dpiValue, sizeValue));

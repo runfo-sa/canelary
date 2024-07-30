@@ -1,8 +1,8 @@
 ﻿namespace Cohere.Models
 {
-    public class ChangeRuleResult(bool remove, string rule)
+    public class ChangeRuleResult(bool remove, int? rule)
     {
         public bool Remove => remove;
-        public string Rule => rule;
+        public int? Rule => rule;
     }
 }

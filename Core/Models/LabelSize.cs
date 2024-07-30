@@ -18,6 +18,6 @@ namespace Core.Models
 
     public class SizeList
     {
-        public LabelSize[] Items;
+        public LabelSize[] Items = null!;
     }
 }

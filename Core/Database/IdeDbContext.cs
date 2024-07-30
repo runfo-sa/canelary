@@ -1,4 +1,4 @@
-﻿using Core.Database.Model;
+﻿using Core.Database.IdeDbModels;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,21 +9,25 @@ namespace Core.Database
         /// <summary>
         /// Tabla con las reglas que se aplican en el proceso de cohesion
         /// </summary>
-        public DbSet<Regla> Reglas { get; set; }
+        public DbSet<Rule> Rule { get; set; }
 
         /// <summary>
         /// Variables que debe mirar cada regla en el proceso de cohesion
         /// </summary>
-        public DbSet<ReglaAtributo> ReglasAtributos { get; set; }
+        public DbSet<RuleAttributes> RuleAttributes { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public DbSet<RuleLabel> RuleLabel { get; set; }
 
         /// <summary>
         /// Datos para completar las variables en la preview de etiquetas
         /// </summary>
-        public DbSet<TestVar> EtiquetasDatosPrueba { get; set; }
+        public DbSet<DummyDataModel> DummyData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TestVar>().ToTable(b => b.IsMemoryOptimized());
             modelBuilder.HasDefaultSchema("ide");
         }
 

@@ -22,15 +22,15 @@
                       ItemsSource="{Binding ProductsList}"
                       Margin="5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Codigo}"
+                    <DataGridTextColumn Binding="{Binding Id}"
                                         Header="Codigo" />
-                    <DataGridTextColumn Binding="{Binding Nombre}"
+                    <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Nombre"
                                         Width="3*" />
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding Muestra, UpdateSourceTrigger=PropertyChanged}"
+                                <CheckBox IsChecked="{Binding Printable, UpdateSourceTrigger=PropertyChanged}"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                             </DataTemplate>

@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Core.Database.Model
+namespace TwinsBackend.Database.Model
 {
     [PrimaryKey(nameof(Id))]
-    public class Regla
+    public class Variable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 1)]
         public int Id { get; set; }
 
-        public string Nombre { get; set; } = string.Empty;
-        public string Etiqueta { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+
+        public string Query { get; set; } = string.Empty;
     }
 }

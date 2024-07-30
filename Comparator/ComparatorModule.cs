@@ -4,7 +4,7 @@ using Core.Services;
 
 namespace Comparator
 {
-    [Module(ModuleName = "Comparador#Compare", OnDemand = true)]
+    [Module(ModuleName = "Comparador#True#Compare#2", OnDemand = true)]
     public class ComparatorModule : IModule
     {
         private IContainerProvider? _container;

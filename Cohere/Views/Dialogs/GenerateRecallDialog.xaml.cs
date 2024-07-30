@@ -9,7 +9,7 @@ namespace Cohere.Views
 {
     public partial class GenerateRecallDialog : UserControl, IDialogAware
     {
-        public string Title => "Generar RE-CAL-22";
+        public static string Title => "Generar RE-CAL-22";
 
         private IEnumerable<ProductoMuestra> _products = null!;
 
@@ -34,9 +34,9 @@ namespace Cohere.Views
                 Row row = doc.Tables[2].Rows.Add();
                 row.Cells[1].Range.Text = prod.Senasa;
                 row.Cells[1].Range.Font.Bold = 0;
-                row.Cells[2].Range.Text = prod.Nombre;
+                row.Cells[2].Range.Text = prod.Name;
                 row.Cells[2].Range.Font.Bold = 0;
-                row.Cells[3].Range.Text = prod.Codigo;
+                row.Cells[3].Range.Text = prod.Code;
                 row.Cells[3].Range.Font.Bold = 0;
             }
 

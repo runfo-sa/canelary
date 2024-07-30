@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Cohere.Views.ProductReport"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:converters="clr-namespace:Cohere.Converters"
-             xmlns:coreDb="clr-namespace:Core.Database.Model;assembly=Core"
+             xmlns:core="clr-namespace:Core.Models;assembly=Core"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
@@ -12,32 +12,48 @@
         <converters:ProductErrorToForegroundBrushConverter x:Key="PrdouctErrorForegroundColorConverter" />
     </UserControl.Resources>
 
-    <ItemsControl ItemsSource="{Binding SelectedValues}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate DataType="{x:Type coreDb:Valor}">
-                <Label FontSize="16"
-                       FontWeight="Regular"
-                       Margin="10,10">
-                    <Label.Style>
-                        <Style BasedOn="{StaticResource {x:Type Label}}"
-                               TargetType="{x:Type Label}">
-                            <Setter Property="Foreground"
-                                    Value="{Binding Error, Converter={StaticResource PrdouctErrorForegroundColorConverter}}" />
-                        </Style>
-                    </Label.Style>
+    <DockPanel>
+        <Label DockPanel.Dock="Top"
+               Content="Valores"
+               FontSize="18"
+               FontWeight="DemiBold"
+               Margin="10" />
+        <Border DockPanel.Dock="Top"
+                BorderBrush="AliceBlue"
+                BorderThickness="1" />
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SelectedValues}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type core:ProductReport}">
+                        <Label FontSize="16"
+                               FontWeight="Regular"
+                               Margin="10,10,10,0">
+                            <Label.Style>
+                                <Style BasedOn="{StaticResource {x:Type Label}}"
+                                       TargetType="{x:Type Label}">
+                                    <Setter Property="Foreground"
+                                            Value="{Binding Error, Converter={StaticResource PrdouctErrorForegroundColorConverter}}" />
+                                </Style>
+                            </Label.Style>
 
-                    <Label.Content>
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}">
-                                    <Binding Path="Atributo" />
-                                    <Binding Path="Valores" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Label.Content>
-                </Label>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+                            <Label.Content>
+                                <TextBlock TextWrapping="Wrap">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}: {1}">
+                                            <Binding Path="Attribute" />
+                                            <Binding Path="Value" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Comments}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </Label.Content>
+                        </Label>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

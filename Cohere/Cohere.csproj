@@ -25,6 +25,18 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\Dialogs\AlterRuleDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Dialogs\AlterRuleDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetName)*$(TargetExt)&quot; &quot;$(SolutionDir)Main\bin\Debug\net8.0-windows\Modules\&quot; /Y /S" />
   </Target>

@@ -1,16 +1,22 @@
-﻿namespace Cohere.Models
-{
-    public class ProductoMuestra(string codigo, string nombre, string senasa, bool muestra) : BindableBase
-    {
-        public string Codigo => codigo;
-        public string Nombre => nombre;
-        public string Senasa => senasa;
+﻿using Core.Services.BackendModel;
 
-        private bool _muestra = muestra;
-        public bool Muestra
+namespace Cohere.Models
+{
+    public class ProductoMuestra : Product
+    {
+        private bool _printable;
+        public bool Printable
         {
-            get => _muestra;
-            set => SetProperty(ref _muestra, value);
+            get => _printable;
+            set => SetProperty(ref _printable, value);
+        }
+
+        public ProductoMuestra(Product product, bool printable = false)
+        {
+            Code = product.Code;
+            Name = product.Name;
+            Senasa = product.Senasa;
+            Printable = printable;
         }
     }
 }

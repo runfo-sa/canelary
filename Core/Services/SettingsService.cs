@@ -33,6 +33,9 @@ namespace Core.Services
         [YamlMember(Description = " - Modulo utilizado para generar la preview de etiquetas")]
         public PreviewEngine PreviewEngine { get; set; } = PreviewEngine.Labelary;
 
+        [YamlMember(Description = " - Backend utilizado")]
+        public string Backend { get; set; } = "Twins";
+
         private static readonly Lazy<SettingsService> Lazy =
             new(() =>
             {

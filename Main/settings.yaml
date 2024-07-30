@@ -30,3 +30,6 @@ VirtualDirectories:
 
 # - Modulo utilizado para generar la preview de etiquetas
 PreviewEngine: Labelary
+
+# - Backend utilizado
+Backend: "Twins"

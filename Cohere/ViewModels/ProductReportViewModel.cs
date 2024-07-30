@@ -1,12 +1,13 @@
 ﻿using Cohere.Services;
-using Core.Database.Model;
+using Core.Models;
+using Core.Services.BackendModel;
 using System.Collections.ObjectModel;
 
 namespace Cohere.ViewModels
 {
     public class ProductReportViewModel : BindableBase
     {
-        public ObservableCollection<Valor> SelectedValues { get; set; } = [];
+        public ObservableCollection<ProductReport> SelectedValues { get; set; } = [];
 
         public ProductReportViewModel(ICommandService commandService)
         {
@@ -15,12 +16,12 @@ namespace Cohere.ViewModels
 
         private void ProcessProduct(object? item)
         {
-            if (item is not null && item is ListarProductos prod)
+            if (item is not null && item is Product prod)
             {
                 SelectedValues.Clear();
-                foreach (var valor in prod.Valores)
+                foreach (var value in prod.Attributes)
                 {
-                    SelectedValues.Add(valor);
+                    SelectedValues.Add(value);
                 }
             }
         }

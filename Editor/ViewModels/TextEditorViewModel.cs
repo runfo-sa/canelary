@@ -73,7 +73,7 @@ namespace Editor.ViewModels
 
         private readonly DelegateCommand _saveCommand;
         private readonly DelegateCommand _previewCommand;
-        private readonly DelegateCommand _printCommand;
+        private readonly DelegateCommand<string?> _printCommand;
         private readonly DelegateCommand _refreshLinter;
 
         public TextEditorViewModel(ICommandService commandService, IEditorPreviewMediator mediator)
@@ -97,7 +97,7 @@ namespace Editor.ViewModels
             _saveCommand = new DelegateCommand(SaveFile, () => TabsList.Count > 0 && TabsList[CurrentTabIndex].HasUnsavedChanges);
             CommandService.SaveCommand.RegisterCommand(_saveCommand);
 
-            _printCommand = new DelegateCommand(Print, () => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
+            _printCommand = new DelegateCommand<string?>(Print, _ => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
             CommandService.PrintCommand.RegisterCommand(_printCommand);
 
             Mediator.SendErrors.RegisterCommand(new DelegateCommand<string>(ShowErrors));
@@ -114,7 +114,6 @@ namespace Editor.ViewModels
                 if (EnableLinting)
                 {
                     Mediator.SendData.Execute(null);
-                    //await UpdateLinter();
                 }
                 else
                 {
@@ -136,7 +135,6 @@ namespace Editor.ViewModels
             if (EnableLinting)
             {
                 Mediator.SendData.Execute(null);
-                //await UpdateLinter();
             }
         }
 
@@ -268,15 +266,14 @@ namespace Editor.ViewModels
             }
         }
 
-        private void Print()
+        private void Print(string? printer)
         {
             var item = TabsList[CurrentTabIndex];
             var content = PreviewServiceProvider
                 .ProvideService(item.Content.Text)
-                .FillTestVariables()
+                .LoadVariables()
                 .Content;
 
-            var printer = ToolbarViewModel.Printers.CurrentItem.ToString();
             if (printer is not null)
             {
                 PrinterHelper.SendStringToPrinter(printer, content, item.Header);

@@ -1,4 +1,4 @@
-﻿using Core.Database.Model;
+﻿using Core.Models;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -6,17 +6,17 @@ using System.Windows.Media;
 
 namespace Cohere.Converters
 {
-    [ValueConversion(typeof(ProductoError), typeof(Brush))]
+    [ValueConversion(typeof(ProductError), typeof(Brush))]
     public class ProductErrorToForegroundBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var error = (ProductoError)value;
+            var error = (ProductError)value;
             return error switch
             {
-                ProductoError.Ninguno => Application.Current.FindResource(AdonisUI.Brushes.ForegroundBrush),
-                ProductoError.Incompleto => "#ff3232",
-                ProductoError.Incoherente => "#ff7532",
+                ProductError.None => Application.Current.FindResource(AdonisUI.Brushes.ForegroundBrush),
+                ProductError.Incomplete => "#ff3232",
+                ProductError.Incoherent => "#ff7532",
                 _ => throw new NotImplementedException()
             };
         }

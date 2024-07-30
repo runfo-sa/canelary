@@ -1,12 +1,15 @@
 ﻿using Cohere.Models;
 using Cohere.Services;
 using Core.Database;
-using Core.Database.Model;
+using Core.Database.IdeDbModels;
 using Core.FileTree;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using Core.Models;
+using Core.Services;
+using Core.Services.BackendModel;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Cohere.ViewModels
 {
@@ -14,7 +17,7 @@ namespace Cohere.ViewModels
     {
         private readonly IDialogService _dialogService;
 
-        public ObservableCollection<ListarProductos> ProductsList { get; set; } = [];
+        public ObservableCollection<Product> ProductsList { get; set; } = [];
 
         private LabelFile? _currentLabel;
         public LabelFile? CurrentLabel
@@ -43,7 +46,6 @@ namespace Cohere.ViewModels
             _dialogService = dialogService;
             CommandService = commandService;
             CommandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(OpenItem));
-            CommandService.CreateRuleCommand.RegisterCommand(new DelegateCommand<CreateRuleResult>(CreateRule));
 
             ChangeRuleCommand = new(() => ChangeRule(CurrentLabel!), () => CurrentLabel != null);
         }
@@ -52,87 +54,65 @@ namespace Cohere.ViewModels
         {
             if (item is not null && item is LabelFile file)
             {
+                ProductsList.Clear();
                 CurrentLabel = file;
                 using (var context = new IdeDbContext())
                 {
                     var labelName = Path.GetFileNameWithoutExtension(CurrentLabel.Name);
-                    var param = new SqlParameter("@Etiqueta", labelName);
-                    var result = context.Database
-                        .SqlQueryRaw<ListarProductos>("ide.ListarProductos @Etiqueta", param)
-                        .ToList();
-
-                    ProductsList.Clear();
+                    var result = BackendServiceProvider.Backend.GetProducts(labelName);
                     foreach (var product in result)
                     {
                         ProductsList.Add(product);
                     }
 
-                    var rule = context.Reglas.FirstOrDefault(r => r.Etiqueta == labelName);
-                    if (rule != null)
+                    var ruleLabel = context.RuleLabel.FirstOrDefault(r => r.LabelName == labelName);
+                    if (ruleLabel != null)
                     {
-                        RuleName = rule.Nombre;
-                        IEnumerable<ReglaAtributo> attributes = [.. context.ReglasAtributos];
-                        foreach (var attrib in attributes)
+                        var rule = context.Rule.First(r => r.Id == ruleLabel.RuleId);
+                        RuleName = rule.Name;
+
+                        var attributes = context.RuleAttributes
+                            .Where(r => r.RuleId == rule.Id)
+                            .ToList();
+
+                        foreach (var attribute in attributes)
                         {
-                            var labelParam = new SqlParameter("@Etiqueta", labelName);
-                            var attribParam = new SqlParameter("@Var", attrib.AtributoNombre);
-                            var rc = context.Database
-                                .SqlQueryRaw<ReglaKeyValue>("ide.BuscarReglaAtributo @Etiqueta, @Var", labelParam, attribParam)
-                                .ToList();
-                            foreach (var keyValue in rc)
+                            if (!attribute.FixedValue.IsNullOrEmpty())
                             {
-                                var prod = ProductsList.First(p => p.Codigo == keyValue.Codigo);
+                                var regex = new Regex(attribute.FixedValue!, RegexOptions.Compiled);
+                                attribute.Regex = regex;
+                            }
+                        }
 
-                                if (attrib.EsAtributoEstatico && keyValue.Valor is not null && keyValue.Valor != attrib.ValorEstatico)
-                                {
-                                    prod.Error = ProductoError.Incoherente;
-                                }
-                                else if (keyValue.Valor is null)
-                                {
-                                    prod.Error = ProductoError.Incompleto;
-                                }
+                        var values = BackendServiceProvider.Backend.GetValues([.. ProductsList], attributes);
+                        foreach (var val in values)
+                        {
+                            var prod = val.Key;
+                            var dict = val.Value;
 
-                                prod.Valores.Add(new Valor(attrib.AtributoNombre, keyValue.Valor, prod.Error));
+                            foreach (var reg in dict!)
+                            {
+                                var attribute = attributes.Find(a => a.Name == reg.Key);
+                                if (attribute?.Regex != null && reg.Value != null && !attribute.Regex.IsMatch(reg.Value))
+                                {
+                                    prod.Error = ProductError.Incoherent;
+                                }
+                                else if (reg.Value.IsNullOrEmpty())
+                                {
+                                    prod.Error = ProductError.Incomplete;
+                                }
+                                prod.Attributes.Add(new ProductReport(reg.Key, reg.Value, prod.Error, attribute?.Comments));
                             }
                         }
                     }
                     else
                     {
-                        RuleName = "No Existente";
+                        RuleName = "No hay regla aplicada";
                     }
                 }
 
-                var errorCount = ProductsList.Where(p => p.Error != ProductoError.Ninguno).Count();
+                var errorCount = ProductsList.Where(p => p.Error != ProductError.None).Count();
                 CommandService.RefreshErrorCount.Execute(new ErrorCounter(errorCount, ProductsList.Count));
-            }
-        }
-
-        private void CreateRule(CreateRuleResult result)
-        {
-            using (var context = new IdeDbContext())
-            {
-                var rule = context.Reglas.FirstOrDefault(r => r.Etiqueta == result.Label);
-                if (rule is not null)
-                {
-                    rule.Nombre = result.Rule;
-                }
-                else
-                {
-                    rule = context.Reglas.Add(new Regla()
-                    {
-                        Nombre = result.Rule,
-                        Etiqueta = result.Label
-                    }).Entity;
-                }
-                context.SaveChanges();
-                RuleName = result.Rule;
-
-                foreach (var attr in result.Attributes)
-                {
-                    attr.Reglas_Id = rule.Id;
-                    context.ReglasAtributos.Add(attr);
-                }
-                context.SaveChanges();
             }
         }
 
@@ -149,29 +129,30 @@ namespace Cohere.ViewModels
                 using (var context = new IdeDbContext())
                 {
                     var labelName = Path.GetFileNameWithoutExtension(file.Name);
-                    var rule = context.Reglas.FirstOrDefault(r => r.Etiqueta == labelName);
 
                     if (rc.Remove)
                     {
-                        if (rule is not null)
+                        var removeRule = context.RuleLabel.FirstOrDefault(r => r.LabelName == labelName);
+                        if (removeRule != null)
                         {
-                            context.Reglas.Remove(rule);
+                            context.RuleLabel.Remove(removeRule);
                             context.SaveChanges();
                             CommandService.OpenItemCommand.Execute(CurrentLabel);
                         }
                         return;
                     }
 
-                    if (rule is not null)
+                    var ruleLabel = context.RuleLabel.FirstOrDefault(r => r.RuleId == rc.Rule);
+                    if (ruleLabel is not null)
                     {
-                        rule.Nombre = rc.Rule;
+                        ruleLabel.RuleId = (int)rc.Rule!;
                     }
                     else
                     {
-                        context.Reglas.Add(new Regla()
+                        context.RuleLabel.Add(new RuleLabel()
                         {
-                            Nombre = rc.Rule,
-                            Etiqueta = labelName
+                            LabelName = labelName,
+                            RuleId = (int)rc.Rule!
                         });
                     }
 

@@ -4,7 +4,7 @@ using Editor.Views;
 
 namespace Editor
 {
-    [Module(ModuleName = "Editor#FileEdit", OnDemand = true)]
+    [Module(ModuleName = "Editor#True#FileEdit#1", OnDemand = true)]
     public class EditorModule(IRegionManager regionManager) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;

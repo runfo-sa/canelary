@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comparator", "Comparator\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cohere", "Cohere\Cohere.csproj", "{3BB073B6-9E35-475E-9BE0-5DC9552A00F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestModule", "TestModule\TestModule.csproj", "{CEACFCBB-0B04-4D42-BF43-8E32086C0D7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwinsBackend", "Twins\TwinsBackend.csproj", "{CEACFCBB-0B04-4D42-BF43-8E32086C0D7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

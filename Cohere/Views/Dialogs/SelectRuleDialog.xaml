@@ -6,7 +6,7 @@
              xmlns:materialIcon="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              mc:Ignorable="d">
     <GroupBox>
-        <Grid Margin="5">
+        <Grid Margin="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -26,7 +26,7 @@
                                                    Width="24" />
                         <TextBlock FontSize="14"
                                    HorizontalAlignment="Center"
-                                   Text="No Regla"
+                                   Text="Remover Regla Aplicada"
                                    VerticalAlignment="Center" />
                     </DockPanel>
                 </Button>
@@ -36,18 +36,18 @@
                           ColumnWidth="256"
                           FontSize="14"
                           IsReadOnly="True"
-                          ItemsSource="{Binding Reglas}"
+                          ItemsSource="{Binding Rules}"
                           SelectedItem="{Binding SelectedRule}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Nombre}"
-                                            Header="Nombre" />
+                        <DataGridTextColumn Binding="{Binding Name}"
+                                            Header="Reglas" />
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
 
             <DockPanel Grid.Row="2"
                        LastChildFill="False"
-                       Margin="0,10,0,0">
+                       Margin="0,20,0,-10">
                 <Button DockPanel.Dock="Right"
                         Content="Cancelar"
                         FontSize="16"

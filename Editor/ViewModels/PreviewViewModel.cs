@@ -83,7 +83,7 @@ namespace Editor.ViewModels
         {
             var preview = PreviewServiceProvider
                 .ProvideService(content)
-                .FillTestVariables()
+                .LoadVariables()
                 .LoadFonts();
 
             var bytes = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);

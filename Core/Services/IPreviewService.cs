@@ -25,15 +25,8 @@
         /// <summary>
         /// Completa las variables de una etiqueta con los datos de un producto especificado.
         /// </summary>
-        /// <param name="codigo">Codigo del producto</param>
         /// <returns>A si mismo, para concatenar metodos</returns>
-        public IPreviewService FillProduct(string codigo);
-
-        /// <summary>
-        /// Completa las variables de una etiqueta con datos de prueba.
-        /// </summary>
-        /// <returns>A si mismo, para concatenar metodos</returns>
-        public IPreviewService FillTestVariables();
+        public IPreviewService LoadVariables();
 
         /// <summary>
         /// Carga las fuentes de texto para poder renderizar distintos alfabetos.

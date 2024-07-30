@@ -4,7 +4,7 @@ using Core.Services;
 
 namespace Cohere
 {
-    [Module(ModuleName = "Cohesionador#NotebookCheck", OnDemand = true)]
+    [Module(ModuleName = "Validacion#True#NotebookCheck#3", OnDemand = true)]
     public class CohereModule(IRegionManager regionManager) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;
@@ -17,8 +17,9 @@ namespace Cohere
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterInstance(new ModuleLoaderService("Cohesionador", CreateWindow));
+            containerRegistry.RegisterInstance(new ModuleLoaderService("Validacion", CreateWindow));
             containerRegistry.RegisterDialog<CreateRuleDialog>();
+            containerRegistry.RegisterDialog<AlterRuleDialog>();
             containerRegistry.RegisterDialog<SelectRuleDialog>();
             containerRegistry.RegisterDialog<GenerateSample>();
             containerRegistry.RegisterDialog<GenerateRecallDialog>();
@@ -33,7 +34,7 @@ namespace Cohere
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - Cohesionador",
+                Title = $"Visual Ternera - Validacion",
                 Content = _container?.Resolve<Views.Cohere>()
             }.Show();
         }

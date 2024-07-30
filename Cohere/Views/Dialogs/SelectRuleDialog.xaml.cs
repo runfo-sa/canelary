@@ -1,6 +1,6 @@
 ﻿using Cohere.Models;
 using Core.Database;
-using Core.Database.Model;
+using Core.Database.IdeDbModels;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
@@ -8,10 +8,10 @@ namespace Cohere.Views
 {
     public partial class SelectRuleDialog : UserControl, IDialogAware
     {
-        public string Title => "Seleccionar Regla";
+        public static string Title => "Seleccionar Regla";
 
-        public ObservableCollection<Regla> Reglas { get; set; }
-        public Regla? SelectedRule { get; set; }
+        public ObservableCollection<Rule> Rules { get; set; }
+        public Rule? SelectedRule { get; set; }
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
         public DelegateCommand RemoveRuleCommand { get; private set; }
@@ -22,7 +22,7 @@ namespace Cohere.Views
             DataContext = this;
             using (var context = new IdeDbContext())
             {
-                Reglas = [.. context.Reglas];
+                Rules = [.. context.Rule];
             }
 
             CloseDialogCommand = new(() => ClosingDialog());
@@ -31,7 +31,7 @@ namespace Cohere.Views
 
         private void ClosingDialog(bool removeRule = false)
         {
-            var rc = new ChangeRuleResult(removeRule, SelectedRule?.Nombre ?? "");
+            var rc = new ChangeRuleResult(removeRule, SelectedRule?.Id);
             var result = new DialogResult
             {
                 Parameters = new DialogParameters { { "Result", rc } },
@@ -40,10 +40,7 @@ namespace Cohere.Views
             RequestClose.Invoke(result);
         }
 
-        public Boolean CanCloseDialog()
-        {
-            return true;
-        }
+        public Boolean CanCloseDialog() => true;
 
         public void OnDialogClosed() { }
 
