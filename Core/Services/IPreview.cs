@@ -3,7 +3,7 @@
     /// <summary>
     /// Servicio que ofrece analisis, completado de variables y muestra visual para el lenguaje ZPL.
     /// </summary>
-    public interface IPreviewService
+    public interface IPreview
     {
         /// <summary>
         /// Contenido procesado para generar la preview
@@ -26,19 +26,24 @@
         /// Completa las variables de una etiqueta con los datos de un producto especificado.
         /// </summary>
         /// <returns>A si mismo, para concatenar metodos</returns>
-        public IPreviewService LoadVariables();
+        public IPreview LoadVariables();
 
         /// <summary>
-        /// Carga las fuentes de texto para poder renderizar distintos alfabetos.
-        /// <br/>
-        /// Los parametros para cargar otra fuente son especificados en la metadata de la etiqueta.
+        /// <b>DEBE SER LLAMADO ANTES DE <see cref="LoadVariables"/></b><br/><br/>
+        /// Procesa los parametros definidos en la metadata.
         /// </summary>
         /// <returns>A si mismo, para concatenar metodos</returns>
-        public IPreviewService LoadFonts();
+        public IPreview ParseMetadata();
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        public bool HasMetadata();
 
         /// <summary>
         /// Crea la preview de la etiqueta
         /// </summary>
-        public Task<byte[]?> Build(string dpi, string size);
+        public Task<List<byte[]?>?> Build(string dpi, string size);
     }
 }

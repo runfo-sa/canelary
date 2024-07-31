@@ -5,7 +5,7 @@ namespace Core.Services
 {
     public interface IBackend
     {
-        public Dictionary<string, string> GetValues();
+        public Dictionary<string, string?> GetValues(int id);
 
         public Dictionary<Product, Dictionary<string, string?>> GetValues(List<Product> products, List<RuleAttributes> attributes);
 

@@ -23,9 +23,35 @@ namespace TwinsBackend.Models
             return [.. context.Database.SqlQueryRaw<Product>("Twins.ListarProductos @Etiqueta", param)];
         }
 
-        public Dictionary<String, String> GetValues()
+        public Dictionary<string, string?> GetValues(int id)
         {
-            throw new NotImplementedException();
+            int cte = 2;
+            var queryBuild = new StringBuilder(
+                ";WITH cte1 AS (SELECT * FROM TwinsDBQuatro053.configuracion.Mercaderias WITH(NOLOCK) WHERE Id = @Id)");
+
+            using var context = new TwinsDbContext();
+            foreach (var val in context.Variables)
+            {
+                queryBuild.Append($", cte{cte++} AS ({val.Query})");
+            }
+
+            queryBuild.Append(
+                " SELECT T2.N.value('local-name(.)', 'nvarchar(128)') as [Key], T2.N.value('text()[1]', 'nvarchar(MAX)') as [Value] FROM (SELECT * FROM cte2");
+
+            for (int i = 3; i < cte; i++)
+            {
+                queryBuild.Append($", cte{i}");
+            }
+
+            queryBuild.Append(" for xml path(''), type) as T1(X) CROSS APPLY T1.X.nodes('/*') as T2(N)");
+
+            var query = queryBuild.ToString();
+            var idParam = new SqlParameter("@Id", id);
+            var queryParam = new SqlParameter("@Query", query);
+
+            return context.Database
+                .SqlQueryRaw<KeyPair>("Twins.RunQuery @Query, @Id", queryParam, idParam)
+                .ToDictionary(p => p.Key, p => p.Value, StringComparer.CurrentCultureIgnoreCase);
         }
 
         public Dictionary<Product, Dictionary<string, string?>> GetValues(List<Product> products, List<RuleAttributes> attributes)
@@ -40,7 +66,8 @@ namespace TwinsBackend.Models
                 queryBuild.Append($", cte{cte++} AS ({val.Query})");
             }
 
-            queryBuild.Append(" SELECT T2.N.value('local-name(.)', 'nvarchar(128)') as [Key], T2.N.value('text()[1]', 'nvarchar(MAX)') as [Value] FROM (SELECT * FROM cte2");
+            queryBuild.Append(
+                " SELECT T2.N.value('local-name(.)', 'nvarchar(128)') as [Key], T2.N.value('text()[1]', 'nvarchar(MAX)') as [Value] FROM (SELECT * FROM cte2");
 
             for (int i = 3; i < cte; i++)
             {
@@ -57,7 +84,7 @@ namespace TwinsBackend.Models
                 var queryParam = new SqlParameter("@Query", query);
                 dict.Add(prod, context.Database
                     .SqlQueryRaw<KeyPair>("Twins.RunQuery @Query, @Id", queryParam, idParam)
-                    .ToDictionary(p => p.Key, p => p.Value));
+                    .ToDictionary(p => p.Key, p => p.Value, StringComparer.CurrentCultureIgnoreCase));
             }
 
             return dict;

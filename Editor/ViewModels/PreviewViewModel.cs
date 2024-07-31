@@ -10,8 +10,34 @@ namespace Editor.ViewModels
 {
     public class PreviewViewModel : BindableBase
     {
+        private List<byte[]>? _labelsRawData;
+
         public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
         public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
+
+        private int _currentLabel = 0;
+        public int CurrentLabel
+        {
+            get => _currentLabel;
+            set
+            {
+                SetProperty(ref _currentLabel, value);
+                PreviousLabel.RaiseCanExecuteChanged();
+                NextLabel.RaiseCanExecuteChanged();
+            }
+        }
+
+        private int _totalLabels = 0;
+        public int TotalLabel
+        {
+            get => _totalLabels;
+            set
+            {
+                SetProperty(ref _totalLabels, value);
+                PreviousLabel.RaiseCanExecuteChanged();
+                NextLabel.RaiseCanExecuteChanged();
+            }
+        }
 
         private BitmapSource _previewImage = null!;
         public BitmapSource PreviewImage
@@ -33,28 +59,11 @@ namespace Editor.ViewModels
         }
 
         public DelegateCommand RotateRightCommand { get; private set; }
-
         public DelegateCommand RotateLeftCommand { get; private set; }
-
-        public DelegateCommand DownSizeCommand => new(() =>
-        {
-            SizeList.MoveCurrentToNext();
-            if (SizeList.IsCurrentAfterLast)
-            {
-                SizeList.MoveCurrentToFirst();
-            }
-            SizeList.Refresh();
-        });
-
-        public DelegateCommand UpSizeCommand => new(() =>
-        {
-            SizeList.MoveCurrentToPrevious();
-            if (SizeList.IsCurrentBeforeFirst)
-            {
-                SizeList.MoveCurrentToLast();
-            }
-            SizeList.Refresh();
-        });
+        public DelegateCommand DownSizeCommand { get; private set; }
+        public DelegateCommand UpSizeCommand { get; private set; }
+        public DelegateCommand PreviousLabel { get; private set; }
+        public DelegateCommand NextLabel { get; private set; }
 
         public IEditorPreviewMediator Mediator { get; }
 
@@ -77,22 +86,68 @@ namespace Editor.ViewModels
                 var angle = PreviewAngle - 90.0;
                 PreviewAngle = angle < 0.0 ? 270.0 : angle;
             }, () => PreviewImage != null);
+
+            UpSizeCommand = new(() =>
+            {
+                SizeList.MoveCurrentToPrevious();
+                if (SizeList.IsCurrentBeforeFirst)
+                {
+                    SizeList.MoveCurrentToLast();
+                }
+                SizeList.Refresh();
+            });
+
+            DownSizeCommand = new(() =>
+            {
+                SizeList.MoveCurrentToNext();
+                if (SizeList.IsCurrentAfterLast)
+                {
+                    SizeList.MoveCurrentToFirst();
+                }
+                SizeList.Refresh();
+            });
+
+            PreviousLabel = new(() =>
+            {
+                if (_labelsRawData != null)
+                {
+                    using MemoryStream stream = new(_labelsRawData[--CurrentLabel]);
+                    PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                }
+            }, () => _labelsRawData?.Count > 0 && CurrentLabel > 0);
+
+            NextLabel = new(() =>
+            {
+                if (_labelsRawData != null)
+                {
+                    using MemoryStream stream = new(_labelsRawData[++CurrentLabel]);
+                    PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                }
+            }, () => _labelsRawData?.Count > 0 && CurrentLabel < _labelsRawData.Count - 1);
         }
 
         public async void GeneratePreview(string content)
         {
+            _labelsRawData = null;
+
             var preview = PreviewServiceProvider
                 .ProvideService(content)
-                .LoadVariables()
-                .LoadFonts();
+                .ParseMetadata()
+                .LoadVariables();
 
-            var bytes = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);
-            if (bytes is not null)
+            var labels = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);
+            if (labels is not null)
             {
-                using MemoryStream stream = new(bytes);
+                _labelsRawData = labels
+                    .Where(b => b != null)
+                    .Select(b => b!)
+                    .ToList();
+                CurrentLabel = 0;
+                using MemoryStream stream = new(_labelsRawData[CurrentLabel]);
                 PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             }
 
+            TotalLabel = _labelsRawData?.Count - 1 ?? 0;
             Mediator.SendErrors.Execute(preview.Error);
         }
 

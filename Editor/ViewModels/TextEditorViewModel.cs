@@ -271,6 +271,7 @@ namespace Editor.ViewModels
             var item = TabsList[CurrentTabIndex];
             var content = PreviewServiceProvider
                 .ProvideService(item.Content.Text)
+                .ParseMetadata()
                 .LoadVariables()
                 .Content;
 

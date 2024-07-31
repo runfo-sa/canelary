@@ -1,0 +1,18 @@
+using Core.Services;
+
+namespace LabelaryPreview
+{
+    [Module(ModuleName = "LabelaryPreview#False", OnDemand = false)]
+    public class LabelaryModule : IModule
+    {
+        public void OnInitialized(IContainerProvider containerProvider)
+        {
+            if (SettingsService.Instance.PreviewEngine == "Labelary")
+            {
+                PreviewServiceProvider.Set(content => new Labelary(content));
+            }
+        }
+
+        public void RegisterTypes(IContainerRegistry containerRegistry) { }
+    }
+}

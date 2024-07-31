@@ -25,15 +25,14 @@
 
         <DockPanel LastChildFill="False"
                    Margin="5">
-            <TextBlock FontSize="22"
+            <TextBlock FontSize="24"
                        FontWeight="DemiBold"
                        Text="Preview"
                        VerticalAlignment="Center" />
+
             <Button DockPanel.Dock="Right"
                     Command="{Binding RotateRightCommand}"
                     Content="{materialIcons:MaterialIconExt Kind=RotateRight, Size=24}"
-                    FontFamily="16"
-                    FontWeight="DemiBold"
                     VerticalAlignment="Center" />
             <Separator DockPanel.Dock="Right"
                        Opacity="0"
@@ -41,7 +40,35 @@
             <Button DockPanel.Dock="Right"
                     Command="{Binding RotateLeftCommand}"
                     Content="{materialIcons:MaterialIconExt Kind=RotateLeft, Size=24}"
-                    FontFamily="16"
+                    VerticalAlignment="Center" />
+
+            <Separator DockPanel.Dock="Right"
+                       Opacity="0"
+                       Width="20" />
+
+            <Button DockPanel.Dock="Right"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Command="{Binding NextLabel}"
+                    Content="{materialIcons:MaterialIconExt Kind=ArrowRightDropCircle,Size=20}"
+                    FontWeight="DemiBold"
+                    VerticalAlignment="Center" />
+            <TextBlock DockPanel.Dock="Right"
+                       FontSize="20"
+                       Margin="5,0"
+                       VerticalAlignment="Center">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}/{1}">
+                        <Binding Path="CurrentLabel" />
+                        <Binding Path="TotalLabel" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <Button DockPanel.Dock="Right"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Command="{Binding PreviousLabel}"
+                    Content="{materialIcons:MaterialIconExt Kind=ArrowLeftDropCircle,Size=20}"
                     FontWeight="DemiBold"
                     VerticalAlignment="Center" />
         </DockPanel>

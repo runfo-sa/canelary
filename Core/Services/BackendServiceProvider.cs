@@ -4,7 +4,7 @@
     {
         public static IBackend Backend { get; private set; } = null!;
 
-        public static void Add(IBackend backend)
+        public static void Set(IBackend backend)
         {
             if (backend.GetType().Name == SettingsService.Instance.Backend)
             {

@@ -8,7 +8,7 @@ namespace TwinsBackend
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            BackendServiceProvider.Add(new Twins());
+            BackendServiceProvider.Set(new Twins());
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry) { }

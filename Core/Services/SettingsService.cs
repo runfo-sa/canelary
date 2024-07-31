@@ -31,7 +31,7 @@ namespace Core.Services
         public required List<FilterDirectory> VirtualDirectories { get; set; }
 
         [YamlMember(Description = " - Modulo utilizado para generar la preview de etiquetas")]
-        public PreviewEngine PreviewEngine { get; set; } = PreviewEngine.Labelary;
+        public string PreviewEngine { get; set; } = "Labelary";
 
         [YamlMember(Description = " - Backend utilizado")]
         public string Backend { get; set; } = "Twins";

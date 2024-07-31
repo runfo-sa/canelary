@@ -29,7 +29,7 @@ VirtualDirectories:
     Filter: "PRIMARIA"
 
 # - Modulo utilizado para generar la preview de etiquetas
-PreviewEngine: Labelary
+PreviewEngine: "Labelary"
 
 # - Backend utilizado
 Backend: "Twins"

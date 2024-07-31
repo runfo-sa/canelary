@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Core.Services.LabelaryModel
+namespace LabelaryPreview.Models
 {
-    public enum LabelaryLanguageType
+    public enum LanguageType
     {
         [EnumMember(Value = "Chinese")]
         Chinese = 'J',

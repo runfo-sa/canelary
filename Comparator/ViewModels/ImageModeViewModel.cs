@@ -126,17 +126,25 @@ namespace Comparator.ViewModels
             var sizeValue = _size.Value;
             var preview = PreviewServiceProvider
                 .ProvideService(content)
-                .LoadVariables()
-                .LoadFonts();
+                .ParseMetadata()
+                .LoadVariables();
 
             using var task = Task.Run(() => preview.Build(dpiValue, sizeValue));
             task.Wait();
 
-            var bytes = task.Result;
-            if (bytes is not null)
+            var labels = task.Result;
+            if (labels is not null)
             {
-                using MemoryStream stream = new(bytes);
-                return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                foreach (var label in labels)
+                {
+                    if (label is not null)
+                    {
+                        {
+                            using MemoryStream stream = new(label);
+                            return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                        }
+                    }
+                }
             }
 
             return null;

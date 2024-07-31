@@ -1,21 +1,21 @@
-﻿using Core.Services.SettingsModel;
-
-namespace Core.Services
+﻿namespace Core.Services
 {
     public static class PreviewServiceProvider
     {
+        private static Func<string, IPreview>? _callPreview;
+
         /// <summary>
-        /// Devuelve una instancia del servicio <see cref="IPreviewService"/> <br/>
-        /// La elección es en base al enum <see cref="PreviewEngine"/> para el parametro <see cref="SettingsService.PreviewEngine"/>
+        /// Devuelve una instancia del servicio <see cref="IPreview"/> <br/>
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        public static IPreviewService ProvideService(string content)
+        /// <exception cref="NullReferenceException"></exception>
+        public static IPreview ProvideService(string content)
         {
-            return SettingsService.Instance.PreviewEngine switch
-            {
-                PreviewEngine.Labelary => new LabelaryService(content),
-                _ => throw new NotImplementedException(),
-            };
+            return (_callPreview != null) ? _callPreview.Invoke(content) : throw new NullReferenceException("No hay ningun preview engine definido!");
+        }
+
+        public static void Set(Func<string, IPreview> func)
+        {
+            _callPreview = func;
         }
     }
 }

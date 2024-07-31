@@ -1,27 +1,33 @@
-﻿using Core.Models;
-using Core.Services.LabelaryModel;
+﻿using Core.Logger;
+using Core.Services;
+using LabelaryPreview.Models;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
-namespace Core.Services
+namespace LabelaryPreview
 {
     /// <summary>
     /// Servicio que se comunica con la API de Labelary,
     /// para analizar y generar la muestra visual de una etiqueta.
     /// </summary>
-    public class LabelaryService(string content) : IPreviewService
+    public partial class Labelary(string content) : IPreview
     {
+        private const string START_METADATA = "^FX Start Metadata#Labelary";
+
         private string _content = content;
         public string Content => _content;
 
         private readonly StringBuilder _error = new();
         public string Error => _error.ToString();
 
-        public IPreviewService LoadVariables()
+        private Metadata? _metadata;
+
+        public IPreview LoadVariables()
         {
-            Dictionary<string, string> keyValues = BackendServiceProvider.Backend.GetValues();
+            Dictionary<string, string?> keyValues = BackendServiceProvider.Backend.GetValues(_metadata?.ProductId ?? 1);
 
             int startIdx;
             int endIdx = _content.LastIndexOf("@]");
@@ -31,7 +37,7 @@ namespace Core.Services
                 startIdx = _content.LastIndexOf("[@", endIdx);
                 if (startIdx > 0)
                 {
-                    var key = _content[(startIdx + 2)..endIdx].ToLower();
+                    var key = _content[(startIdx + 2)..endIdx];
                     if (keyValues.TryGetValue(key, out var value))
                     {
                         _content = _content.Replace($"[@{key}@]", value, StringComparison.CurrentCultureIgnoreCase);
@@ -47,24 +53,29 @@ namespace Core.Services
             return this;
         }
 
-        public IPreviewService LoadFonts()
+        public IPreview ParseMetadata()
         {
-            var startIdx = _content.IndexOf("^FX Start Metadata");
-            var endIdx = _content.IndexOf("^FX End Metadata");
-
-            if (startIdx > 0 && endIdx > startIdx)
+            if (!HasMetadata())
             {
-                var rawMetadata = _content[(startIdx + "^FX Start Metadata".Length)..endIdx]
+                return this;
+            }
+
+            var startIdx = _content.IndexOf(START_METADATA);
+            var endIdx = _content.IndexOf("^FX End Metadata", startIdx);
+
+            if (endIdx > startIdx)
+            {
+                var rawMetadata = _content[(startIdx + START_METADATA.Length)..endIdx]
                     .Trim()
                     .Replace("^FX ", "");
 
                 var deserializer = new DeserializerBuilder().Build();
-                var metadata = deserializer
-                    .Deserialize<LabelMetadata<LabelaryLanguage>>(rawMetadata);
+                _metadata = deserializer
+                    .Deserialize<Metadata>(rawMetadata);
 
-                if (metadata.Languages is not null)
+                if (_metadata.Languages is not null)
                 {
-                    foreach (var language in metadata.Languages)
+                    foreach (var language in _metadata.Languages)
                     {
                         _content = language.ParseContent(_content);
                     }
@@ -74,8 +85,16 @@ namespace Core.Services
             return this;
         }
 
-        public async Task<byte[]?> Build(string dpi, string size)
+        public bool HasMetadata()
         {
+            return _content.Contains(START_METADATA);
+        }
+
+        public async Task<List<byte[]?>?> Build(string dpi, string size)
+        {
+            int labelsCount = RegexLabel().Matches(_content).Count;
+            List<byte[]?> labels = [];
+
             try
             {
                 using HttpClient client = new()
@@ -89,10 +108,15 @@ namespace Core.Services
                     "application/x-www-form-urlencoded"
                 );
 
-                string uri = $"http://api.labelary.com/v1/printers/{dpi}dpmm/labels/{size}/0/";
-                using HttpResponseMessage response = await client.PostAsync(uri, body);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsByteArrayAsync();
+                for (int i = 0; i < labelsCount; i++)
+                {
+                    string uri = $"http://api.labelary.com/v1/printers/{dpi}dpmm/labels/{size}/{i}/";
+                    using HttpResponseMessage response = await client.PostAsync(uri, body);
+                    response.EnsureSuccessStatusCode();
+                    var label = await response.Content.ReadAsByteArrayAsync();
+                    labels.Add(label);
+                }
+                return labels;
             }
             catch (Exception err)
             {
@@ -126,7 +150,7 @@ namespace Core.Services
             }
             catch (Exception err)
             {
-                Logger.Logger.Log(err.Message);
+                Logger.Log(err.Message);
             }
 
             return null;
@@ -153,5 +177,8 @@ namespace Core.Services
 
             return [.. warningsList];
         }
+
+        [GeneratedRegex("\\^XA")]
+        private static partial Regex RegexLabel();
     }
 }
