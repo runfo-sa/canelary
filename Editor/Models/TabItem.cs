@@ -55,6 +55,11 @@ namespace Editor.Models
             Content.UndoStack.PropertyChanged += ResetChanges;
         }
 
+        public void SetAsUnsaved()
+        {
+            SetUnsavedChanges(null, EventArgs.Empty);
+        }
+
         private void SetUnsavedChanges(object? sender, EventArgs e)
         {
             Header += '*';
@@ -65,7 +70,7 @@ namespace Editor.Models
 
         private void ResetChanges(object? sender, PropertyChangedEventArgs e)
         {
-            if (Content.UndoStack.CanUndo == false && HasUnsavedChanges)
+            if (Content.UndoStack.IsOriginalFile && HasUnsavedChanges)
             {
                 HasUnsavedChanges = false;
                 Header = Header[..(Header.Length - 1)];
@@ -81,9 +86,7 @@ namespace Editor.Models
                 if (Path is not null)
                 {
                     File.WriteAllText(Path, Content.Text);
-                    HasUnsavedChanges = false;
                     Header = Header[..(Header.Length - 1)];
-                    Content.TextChanged += SetUnsavedChanges;
                 }
                 else
                 {
@@ -101,9 +104,11 @@ namespace Editor.Models
                     File.WriteAllText(dialog.FileName, Content.Text);
                     Path = dialog.FileName;
                     Header = dialog.SafeFileName;
-                    HasUnsavedChanges = false;
-                    Content.TextChanged += SetUnsavedChanges;
                 }
+
+                HasUnsavedChanges = false;
+                Content.TextChanged += SetUnsavedChanges;
+                Content.UndoStack.MarkAsOriginalFile();
             }
 
             return true;

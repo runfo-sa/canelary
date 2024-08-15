@@ -1,5 +1,6 @@
 <!DOCTYPE>
-<html lang="es-ar" data-theme="light">
+<html lang="es-ar" data-theme="dark">
+
 <head>
     <link rel="stylesheet" href="style.css">
     <title>Visual Ternera - Manual</title>
@@ -8,11 +9,12 @@
 <body>
     <div class="grid-container">
         <div class="grid-menu">
-            <h2 class="menu-item is-active" style="padding-left: 20px; font-size: 24px;" id="main">Visual Ternera - Manual</h2>
+            <h2 class="menu-item is-active" style="padding-left: 20px; font-size: 24px;" id="main">Visual Ternera -
+                Manual</h2>
             <ul class="tree">
-                <li class="menu-item" id="introduccion/1_introduccion"><b>1.</b> IntroducciÛn</li>
+                <li class="menu-item" id="introduccion/1_introduccion"><b>1.</b> Introducci√≥n</li>
                 <li>
-                    <label class="menu-item" id="instalacion/2_instalacion"><b>2.</b> InstalaciÛn</label>
+                    <label class="menu-item" id="instalacion/2_instalacion"><b>2.</b> Instalaci√≥n</label>
                     <ul>
                         <li class="menu-item" id="instalacion/2_1_requisitos"><b>2.1.</b> Requisitos</li>
                         <li class="menu-item" id="instalacion/2_2_instalar_servicio"><b>2.2.</b> Instalar Servicio</li>
@@ -32,21 +34,26 @@
                         <li>
                             <label class="menu-item" id="manual/3_2_ide"><b>3.2.</b> IDE</label>
                             <ul>
-                                <li class="menu-item" id="manual/3_2_1_inicio"><b>3.2.1.</b> Inicio</li>
+                                <li class="menu-item" id="manual/3_2_1_modulos"><b>3.2.1.</b> M√≥dulos</li>
                                 <li class="menu-item" id="manual/3_2_2_editor"><b>3.2.2.</b> Editor de Etiquetas</li>
-                                <li class="menu-item" id="manual/3_2_3_comparador"><b>3.2.3.</b> Comparador de Etiquetas</li>
+                                <li class="menu-item" id="manual/3_2_3_comparador"><b>3.2.3.</b> Comparador de Etiquetas
+                                </li>
                                 <li>
-                                    <label class="menu-item" id="manual/3_2_4_cohesionador"><b>3.2.4.</b> Cohesionador de Etiquetas</label>
+                                    <label class="menu-item" id="manual/3_2_4_verificador"><b>3.2.4.</b> Verificador de
+                                        Etiquetas</label>
                                     <ul>
-                                        <li class="menu-item" id="manual/3_2_4_1_muestra"><b>3.2.4.1.</b> Generar Muestra</li>
-                                        <li class="menu-item" id="manual/3_2_4_2_re_call"><b>3.2.4.2.</b> Generar RE-CAL-22</li>
+                                        <li class="menu-item" id="manual/3_2_4_1_muestra"><b>3.2.4.1.</b> Generar
+                                            Muestra</li>
+                                        <li class="menu-item" id="manual/3_2_4_2_re_call"><b>3.2.4.2.</b> Generar
+                                            RE-CAL-22</li>
                                     </ul>
                                 </li>
+                                <li class="menu-item" id="manual/3_2_5_git"><b>3.2.5.</b> Integraci√≥n con git
                             </ul>
                         </li>
                     </ul>
                 </li>
-                <li class="menu-item" id="configuracion/4_configuracion"><b>4.</b> ConfiguraciÛn</li>
+                <li class="menu-item" id="configuracion/4_configuracion"><b>4.</b> Configuraci√≥n</li>
                 <li>
                     <label class="menu-item" id="desarrollo/5_desarrollo"><b>5.</b> Desarrollo</label>
                     <ul>
@@ -54,14 +61,20 @@
                 </li>
             </ul>
         </div>
+        <div class="grid-previous">
+            <button class="move-btn" id="previous">&lt;</button>
+        </div>
         <div class="grid-main">
             <iframe id="docs" src="docs/main.html" class="body-text"></iframe>
         </div>
+        <div class="grid-next">
+            <button class="move-btn" id="next">&gt;</button>
+        </div>
         <div class="grid-foot">
-            <!-- <p><small>Agustin Marco ï &lt;agustin.marco@runfo.com.ar></small></p> -->
-            <p><small>Runfo S.A. ï 2024 ï &lt;agustin.marco@runfo.com.ar></small></p>
+            <p><small>Runfo S.A. ‚Ä¢ 2024 ‚Ä¢ &lt;agustin.marco@runfo.com.ar></small></p>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

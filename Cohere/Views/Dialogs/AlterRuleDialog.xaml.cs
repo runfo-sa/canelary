@@ -25,6 +25,8 @@ namespace Cohere.Views
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
 
+        private bool _changes = false;
+
         public AlterRuleDialog()
         {
             InitializeComponent();
@@ -32,6 +34,7 @@ namespace Cohere.Views
 
             using var context = new IdeDbContext();
             Rules = [.. context.Rule];
+
             Rule = Rules[0];
             Description = Rule.Description;
             Attributes = [.. context.RuleAttributes.Where(r => r.RuleId == Rule.Id)];
@@ -68,9 +71,10 @@ namespace Cohere.Views
                     }
                 }
                 context.SaveChanges();
+                _changes = true;
             }
 
-            RequestClose.Invoke();
+            RequestClose.Invoke((_changes) ? ButtonResult.OK : ButtonResult.None);
         }
 
         public Boolean CanCloseDialog() => true;

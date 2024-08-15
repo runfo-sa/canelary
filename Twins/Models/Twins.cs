@@ -23,7 +23,20 @@ namespace TwinsBackend.Models
             return [.. context.Database.SqlQueryRaw<Product>("Twins.ListarProductos @Etiqueta", param)];
         }
 
-        public Dictionary<string, string?> GetValues(int id)
+        public string GetTranslation(int languageId, string description)
+        {
+            using var context = new TwinsDbContext();
+            var id = new SqlParameter("@Idioma", languageId);
+            var desc = new SqlParameter("@Descripcion", description);
+
+            var rc = context.Database
+                .SqlQueryRaw<string?>("Twins.ObtenerTraduccion @Idioma, @Descripcion", id, desc)
+                .AsEnumerable()
+                .FirstOrDefault();
+            return rc ?? "";
+        }
+
+        public List<KeyValuePair<string, string?>> GetValues(int id)
         {
             int cte = 2;
             var queryBuild = new StringBuilder(
@@ -51,10 +64,13 @@ namespace TwinsBackend.Models
 
             return context.Database
                 .SqlQueryRaw<KeyPair>("Twins.RunQuery @Query, @Id", queryParam, idParam)
-                .ToDictionary(p => p.Key, p => p.Value, StringComparer.CurrentCultureIgnoreCase);
+                .AsEnumerable()
+                .Select(v => new KeyValuePair<string, string?>(v.Key, v.Value))
+                .Distinct()
+                .ToList();
         }
 
-        public Dictionary<Product, Dictionary<string, string?>> GetValues(List<Product> products, List<RuleAttributes> attributes)
+        public List<KeyValuePair<Product, List<KeyValuePair<string, string?>>>> GetValues(List<Product> products, List<RuleAttributes> attributes)
         {
             int cte = 2;
             var queryBuild = new StringBuilder(
@@ -76,18 +92,23 @@ namespace TwinsBackend.Models
 
             queryBuild.Append(" for xml path(''), type) as T1(X) CROSS APPLY T1.X.nodes('/*') as T2(N)");
 
-            var dict = new Dictionary<Product, Dictionary<string, string?>>();
+            var list = new List<KeyValuePair<Product, List<KeyValuePair<string, string?>>>>();
             var query = queryBuild.ToString();
+
             foreach (var prod in products)
             {
                 var idParam = new SqlParameter("@Id", prod.Id);
                 var queryParam = new SqlParameter("@Query", query);
-                dict.Add(prod, context.Database
+
+                list.Add(new KeyValuePair<Product, List<KeyValuePair<string, string?>>>(prod, context.Database
                     .SqlQueryRaw<KeyPair>("Twins.RunQuery @Query, @Id", queryParam, idParam)
-                    .ToDictionary(p => p.Key, p => p.Value, StringComparer.CurrentCultureIgnoreCase));
+                    .AsEnumerable()
+                    .Select(v => new KeyValuePair<string, string?>(v.Key, v.Value))
+                    .Distinct()
+                    .ToList()));
             }
 
-            return dict;
+            return list;
         }
 
         private class KeyPair

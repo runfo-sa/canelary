@@ -1,10 +1,84 @@
 ﻿<!DOCTYPE>
-<html lang="es-ar" data-theme="dark">
+<html lang="es-ar">
+
 <head>
     <link rel="stylesheet" href="../../style.css">
+    <script src="../../frame.js"></script>
 </head>
-<body>
-    <h2>Introducción</h2>
-    <p>TODO!</p>
+
+<body class="content">
+    <h1>Manual del Servicio</h1>
+
+    <blockquote>
+        <p>⚠️ Este servicio esta desarrollado con el software de gestión <b>'PiQuatro'</b> en mente.</p>
+    </blockquote>
+
+    <p>El servicio para validar el estado de etiquetas de todos los puestos productivos esta divido en 2 programas:</p>
+    <ul>
+        <li><a href="../../index.html?page=8" target="_top">Servidor</a>, quien se comunica con las
+            maquinas en producción para analizar en qué estado están.</li>
+        <li><a href="../../index.html?page=9" target="_top">Cliente</a>, el Windows Service que estará
+            funcionando en las máquinas de producción.</li>
+    </ul>
+
+    <p>Ejemplo:</p>
+    <table>
+        <tr>
+            <th>Cliente</th>
+            <th>Descripción</th>
+            <th>Ultima Conexión</th>
+        </tr>
+        <tr>
+            <td>192.168.10.102</td>
+            <td>Archivos Sobrantes</td>
+            <td>2024-04-22 11:24:00</td>
+        </tr>
+        <tr>
+            <td>192.168.42.25</td>
+            <td>Okay</td>
+            <td>2024-04-22 11:49:00</td>
+        </tr>
+        <tr>
+            <td>192.168.78.25</td>
+            <td>Desactualizado</td>
+            <td>2024-04-22 11:50:00</td>
+        </tr>
+        <tr>
+            <td>192.168.78.40</td>
+            <td>Multiples Instalaciones</td>
+            <td>2024-04-22 11:50:00</td>
+        </tr>
+        <tr>
+            <td>192.168.28.4</td>
+            <td>Desactualizado y Sobrantes</td>
+            <td>2024-04-22 11:50:00</td>
+        </tr>
+        <tr>
+            <td>192.168.10.25</td>
+            <td>Desactualizado</td>
+            <td>2024-04-19 16:26:00</td>
+        </tr>
+        <tr>
+            <td>192.168.56.1</td>
+            <td>Archivos Sobrantes</td>
+            <td>2024-04-15 11:36:00</td>
+        </tr>
+    </table>
+
+    <h1>Autenticación</h1>
+    <p>La comunicación entre servidor-cliente es validada mediante un método de autenticación.</br>
+        En donde, el cliente le envía al servidor una llave privada encriptada por su llave pública, y la llave pública.
+        Luego el servidor valida que sean las mismas llaves que el autorizo en su archivo de configuración:
+        <b><i>Server/appsettings.json</i></b>.
+    </p>
+
+    <p>Para el cliente las llaves se pueden configurar en <i>'C:\ProgramData\Visual Ternera Service\config.toml'</i>.
+    </p>
+
+    <blockquote>
+        <p>Para poder bajar el instalador o el cliente desde el servidor, también se necesita ingresar una clave en la
+            URI de la siguiente forma: <b>'http://{hostname}:{port}/instalador?key={clave}'</b></p>
+    </blockquote>
 </body>
+
 </html>

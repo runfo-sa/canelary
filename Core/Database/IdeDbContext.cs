@@ -21,11 +21,6 @@ namespace Core.Database
         /// </summary>
         public DbSet<RuleLabel> RuleLabel { get; set; }
 
-        /// <summary>
-        /// Datos para completar las variables en la preview de etiquetas
-        /// </summary>
-        public DbSet<DummyDataModel> DummyData { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("ide");

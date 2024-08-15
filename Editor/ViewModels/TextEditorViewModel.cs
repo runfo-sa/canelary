@@ -1,5 +1,6 @@
 ﻿using Core.FileTree;
 using Core.Helpers;
+using Core.Models;
 using Core.Services;
 using Editor.Models;
 using Editor.Services;
@@ -29,6 +30,7 @@ namespace Editor.ViewModels
                 SetProperty(ref _currentTabIndex, value);
                 _previewCommand.RaiseCanExecuteChanged();
                 _printCommand.RaiseCanExecuteChanged();
+                _resizeCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -75,10 +77,13 @@ namespace Editor.ViewModels
         private readonly DelegateCommand _previewCommand;
         private readonly DelegateCommand<string?> _printCommand;
         private readonly DelegateCommand _refreshLinter;
+        private readonly DelegateCommand _resizeCommand;
+        private readonly IDialogService _dialogService;
 
-        public TextEditorViewModel(ICommandService commandService, IEditorPreviewMediator mediator)
+        public TextEditorViewModel(ICommandService commandService, IEditorPreviewMediator mediator, IDialogService dialogService)
         {
             Mediator = mediator;
+            _dialogService = dialogService;
             CommandService = commandService;
             CloseMiddleClickCommand = new(CloseMiddleClick);
 
@@ -99,6 +104,9 @@ namespace Editor.ViewModels
 
             _printCommand = new DelegateCommand<string?>(Print, _ => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
             CommandService.PrintCommand.RegisterCommand(_printCommand);
+
+            _resizeCommand = new DelegateCommand(ResizeFile, () => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
+            CommandService.ResizeCommand.RegisterCommand(_resizeCommand);
 
             Mediator.SendErrors.RegisterCommand(new DelegateCommand<string>(ShowErrors));
             Mediator.GenerateLinter.RegisterCommand(new DelegateCommand<string>(async e => await UpdateLinter(e)));
@@ -295,6 +303,37 @@ namespace Editor.ViewModels
             {
                 tab.LintingData = lintings.Select(LintingInfo.Parse).ToList();
             }
+        }
+
+        private void ResizeFile()
+        {
+            var label = TabsList[CurrentTabIndex];
+
+            var param = new DialogParameters
+            {
+                { "LabelName", label.Header }
+            };
+
+            _dialogService.Show("ResizeLabelDialog", param, rc =>
+            {
+                if (rc.Result == ButtonResult.OK)
+                {
+                    var fromDpi = (LabelDpi)rc.Parameters["FromDpi"];
+                    var toDpi = (LabelDpi)rc.Parameters["ToDpi"];
+                    var factor = (float)(Convert.ToDouble(toDpi.Value) / Convert.ToDouble(fromDpi.Value));
+                    var content = ResizeZPL.Resize(label.Content.Text, factor);
+
+                    AddTab(
+                        label.Header.Replace(
+                            $".{SettingsService.Instance.EtiquetasExtension}",
+                            $"_{toDpi.Display}.{SettingsService.Instance.EtiquetasExtension}",
+                            StringComparison.CurrentCultureIgnoreCase
+                        ),
+                        content
+                    );
+                    TabsList.Last().SetAsUnsaved();
+                }
+            });
         }
     }
 }

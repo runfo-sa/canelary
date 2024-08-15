@@ -1,18 +1,41 @@
 ﻿const pages = document.querySelectorAll(".menu-item");
 const docs = document.getElementById("docs");
+var current = 0;
 
 pages.forEach((item) => {
     item.addEventListener('click', active_item);
 })
 
+document.querySelectorAll(".move-btn").forEach((item) => {
+    item.addEventListener('click', switch_page);
+})
+
 function active_item() {
+    var i = 0;
+
     pages.forEach((item) => {
         item.classList.remove('is-active');
-    });
-    this.classList.add('is-active');
 
-    docs.setAttribute('src', "docs/" + this.id + ".html");
+        if (item.id == this.id) {
+            current = i;
+        }
+
+        i++;
+    });
+
+    this.classList.add('is-active');
+    docs.setAttribute('src', "docs/" + this.id + ".html?theme=" + document.documentElement.getAttribute('data-theme'));
     document.title = this.textContent;
+}
+
+function switch_page() {
+    if (this.id == 'next') {
+        current = Math.min(current + 1, pages.length - 1);
+    } else {
+        current = Math.max(current - 1, 0);
+    }
+
+    pages[current].dispatchEvent(new Event("click"));
 }
 
 function getPage(variable) {

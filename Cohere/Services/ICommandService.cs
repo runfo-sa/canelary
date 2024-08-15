@@ -6,5 +6,6 @@
         CompositeCommand LoadProductCommand { get; }
         CompositeCommand RefreshErrorCount { get; }
         CompositeCommand CreateRuleCommand { get; }
+        CompositeCommand RefreshListCommand { get; }
     }
 }

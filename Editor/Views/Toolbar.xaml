@@ -51,12 +51,22 @@
             <ToolBarTray DockPanel.Dock="Right"
                          IsLocked="True">
                 <ToolBar>
+                    <Button x:Name="resolutionButton"
+                            Command="{Binding CommandService.ResizeCommand}"
+                            Margin="5,0">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="Cambiar resolución"
+                                       VerticalAlignment="Center" />
+                            <materialIcons:MaterialIcon Kind="Resize" />
+                        </DockPanel>
+                    </Button>
                     <Button x:Name="previewButton"
                             Command="{Binding CommandService.PreviewCommand}"
                             Margin="5,0">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Right"
-                                       Text="Preview [F5]"
+                                       Text="Previsualizar [F5]"
                                        VerticalAlignment="Center" />
                             <materialIcons:MaterialIcon Kind="ImageOutline" />
                         </DockPanel>

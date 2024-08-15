@@ -37,5 +37,8 @@
 
         private readonly CompositeCommand _printCommand = new();
         public CompositeCommand PrintCommand => _printCommand;
+
+        private readonly CompositeCommand _resizeCommand = new();
+        public CompositeCommand ResizeCommand => _resizeCommand;
     }
 }

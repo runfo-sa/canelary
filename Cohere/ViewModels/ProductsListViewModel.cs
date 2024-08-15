@@ -46,6 +46,13 @@ namespace Cohere.ViewModels
             _dialogService = dialogService;
             CommandService = commandService;
             CommandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(OpenItem));
+            CommandService.RefreshListCommand.RegisterCommand(new DelegateCommand(() =>
+            {
+                if (CurrentLabel != null)
+                {
+                    CommandService.OpenItemCommand.Execute(CurrentLabel);
+                }
+            }));
 
             ChangeRuleCommand = new(() => ChangeRule(CurrentLabel!), () => CurrentLabel != null);
         }
@@ -79,7 +86,7 @@ namespace Cohere.ViewModels
                         {
                             if (!attribute.FixedValue.IsNullOrEmpty())
                             {
-                                var regex = new Regex(attribute.FixedValue!, RegexOptions.Compiled);
+                                var regex = new Regex(attribute.FixedValue!);
                                 attribute.Regex = regex;
                             }
                         }
@@ -92,16 +99,20 @@ namespace Cohere.ViewModels
 
                             foreach (var reg in dict!)
                             {
+                                var error = ProductError.None;
                                 var attribute = attributes.Find(a => a.Name == reg.Key);
+
                                 if (attribute?.Regex != null && reg.Value != null && !attribute.Regex.IsMatch(reg.Value))
                                 {
-                                    prod.Error = ProductError.Incoherent;
+                                    error = ProductError.Incoherent;
                                 }
                                 else if (reg.Value.IsNullOrEmpty())
                                 {
-                                    prod.Error = ProductError.Incomplete;
+                                    error = ProductError.Incomplete;
                                 }
-                                prod.Attributes.Add(new ProductReport(reg.Key, reg.Value, prod.Error, attribute?.Comments));
+
+                                prod.Attributes.Add(new ProductReport(reg.Key, reg.Value, error, attribute?.Comments));
+                                prod.Error = (error > prod.Error) ? error : prod.Error;
                             }
                         }
                     }
@@ -142,7 +153,7 @@ namespace Cohere.ViewModels
                         return;
                     }
 
-                    var ruleLabel = context.RuleLabel.FirstOrDefault(r => r.RuleId == rc.Rule);
+                    var ruleLabel = context.RuleLabel.FirstOrDefault(r => r.LabelName == labelName);
                     if (ruleLabel is not null)
                     {
                         ruleLabel.RuleId = (int)rc.Rule!;

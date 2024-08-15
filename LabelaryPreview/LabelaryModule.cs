@@ -10,6 +10,13 @@ namespace LabelaryPreview
             if (SettingsService.Instance.PreviewEngine == "Labelary")
             {
                 PreviewServiceProvider.Set(content => new Labelary(content));
+                // Como cambiar el regex de la variable:
+                // HighlightingManager.Instance
+                //  .GetDefinition("ZPL")
+                //  .MainRuleSet
+                //  .Rules
+                //  .First(r => r.Color.Name == "Variable")
+                //  .Regex = new Regex("");
             }
         }
 

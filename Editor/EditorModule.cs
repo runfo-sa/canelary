@@ -1,6 +1,7 @@
 ﻿using AdonisUI.Controls;
 using Core.Services;
 using Editor.Views;
+using Editor.Views.Dialogs;
 
 namespace Editor
 {
@@ -18,6 +19,7 @@ namespace Editor
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterInstance(new ModuleLoaderService("Editor", CreateWindow));
+            containerRegistry.RegisterDialog<ResizeLabelDialog>();
 
             _regionManager.RegisterViewWithRegion("Editor#MenuRegion", typeof(Menu));
             _regionManager.RegisterViewWithRegion("Editor#ToolbarRegion", typeof(Toolbar));

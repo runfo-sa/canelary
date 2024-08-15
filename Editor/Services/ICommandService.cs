@@ -14,5 +14,6 @@
         CompositeCommand SwitchLinterCommand { get; }
         CompositeCommand PreviewCommand { get; }
         CompositeCommand PrintCommand { get; }
+        CompositeCommand ResizeCommand { get; }
     }
 }

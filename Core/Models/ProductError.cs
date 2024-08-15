@@ -2,8 +2,8 @@
 {
     public enum ProductError
     {
-        Incomplete,
+        None,
         Incoherent,
-        None
+        Incomplete
     }
 }
