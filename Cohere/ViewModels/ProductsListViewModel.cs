@@ -129,7 +129,7 @@ namespace Cohere.ViewModels
 
         private void ChangeRule(LabelFile file)
         {
-            _dialogService.ShowDialog("SelectRuleDialog", result =>
+            _dialogService.Show("SelectRuleDialog", result =>
             {
                 if (result.Result != ButtonResult.OK)
                 {

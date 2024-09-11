@@ -15,8 +15,8 @@
     <PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
     <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
-    <PackageReference Include="Prism.Wpf" Version="9.0.401-pre" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
   </ItemGroup>
 
   <ItemGroup>

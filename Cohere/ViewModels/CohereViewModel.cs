@@ -49,7 +49,7 @@ namespace Cohere.ViewModels
             {
                 { "File", _currentLabel }
             };
-            _dialogService.ShowDialog("GenerateSample", param);
+            _dialogService.Show("GenerateSample", param, _ => { });
         }
     }
 }

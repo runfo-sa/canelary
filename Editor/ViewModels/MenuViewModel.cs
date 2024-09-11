@@ -7,8 +7,8 @@ namespace Editor.ViewModels
     {
         public ICommandService CommandService => commandService;
 
-        public DelegateCommand OpenSettingsCommand => new(() => dialogService.ShowDialog("Settings"));
+        public DelegateCommand OpenSettingsCommand => new(() => dialogService.Show("Settings"));
         public DelegateCommand HelpCommand => new(() => Process.Start(new ProcessStartInfo(".\\Manual\\index.html") { UseShellExecute = true }));
-        public DelegateCommand AboutCommand => new(() => dialogService.ShowDialog("About"));
+        public DelegateCommand AboutCommand => new(() => dialogService.Show("About"));
     }
 }

@@ -83,5 +83,17 @@ namespace Main
             ResourceLocator.SetColorScheme(Current.Resources,
                 theme == Theme.Dark ? ResourceLocator.DarkColorScheme : ResourceLocator.LightColorScheme);
         }
+
+        public static string? FilePath { get; private set; }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            if (e.Args != null && e.Args.Length > 0)
+            {
+                FilePath = e.Args[0];
+                //TODO: Throw event
+            }
+        }
     }
 }
