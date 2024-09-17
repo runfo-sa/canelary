@@ -32,12 +32,12 @@
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Azure.Identity" Version="1.12.0" />
     <PackageReference Include="DiffPlex" Version="1.7.2" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
     <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
-    <PackageReference Include="YamlDotNet" Version="16.1.0" />
+    <PackageReference Include="YamlDotNet" Version="16.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,12 +46,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\ZPL.xshd" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="office">
-      <HintPath>..\..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\office.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

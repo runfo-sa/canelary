@@ -1,9 +1,9 @@
 ﻿using Cohere.Models;
 using Core.Services;
-using Microsoft.Office.Interop.Word;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO;
 using System.Windows.Controls;
-using Range = Microsoft.Office.Interop.Word.Range;
 
 namespace Cohere.Views
 {
@@ -15,35 +15,51 @@ namespace Cohere.Views
 
         public DelegateCommand CloseDialogCommand => new(() =>
         {
-            var wordApp = new Application();
-            var doc = wordApp.Documents.Open(SettingsService.Instance.RecallTemplate);
-
-            SetBookmark(doc, "destino", destino.Text);
-            SetBookmark(doc, "autor", autor.Text);
-            SetBookmark(doc, "detalle", detalle.Text);
-            SetBookmark(doc, "etiqueta_after", etiqueta_after.Text);
-            SetBookmark(doc, "etiqueta_before", etiqueta_before.Text);
-            SetBookmark(doc, "fecha_solicitud", fecha_solicitud.Text);
-            SetBookmark(doc, "impresora", impresora.Text);
-            SetBookmark(doc, "motivo", motivo.Text);
-            SetBookmark(doc, "observaciones", observaciones.Text);
-            SetBookmark(doc, "solicitado", solicitado.Text);
-
-            foreach (var prod in _products)
+            if (SettingsService.Instance.RecallTemplate is not null)
             {
-                Row row = doc.Tables[2].Rows.Add();
-                row.Cells[1].Range.Text = prod.Senasa;
-                row.Cells[1].Range.Font.Bold = 0;
-                row.Cells[2].Range.Text = prod.Name;
-                row.Cells[2].Range.Font.Bold = 0;
-                row.Cells[3].Range.Text = prod.Code;
-                row.Cells[3].Range.Font.Bold = 0;
+                var dict = new Dictionary<string, string>()
+                {
+                    {"destino", destino.Text},
+                    {"autor", autor.Text},
+                    {"detalle", detalle.Text},
+                    {"etiqueta_after", etiqueta_after.Text},
+                    {"etiqueta_before", etiqueta_before.Text},
+                    {"fecha_solicitud", fecha_solicitud.Text},
+                    {"impresora", impresora.Text},
+                    {"motivo", motivo.Text},
+                    {"observaciones", observaciones.Text},
+                    {"solicitado", solicitado.Text}
+                };
+
+                var timestamp = DateTime.Now.ToString("yyMMdd_HH-mm-ss");
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"RE-CAL-22_{timestamp}.docx");
+                File.Copy(SettingsService.Instance.RecallTemplate, path, true);
+
+                using var doc = WordprocessingDocument.Open(path, true);
+
+                foreach (var bookmark in doc.MainDocumentPart!.RootElement!.Descendants<BookmarkStart>())
+                {
+                    if (dict.TryGetValue(bookmark.Name!, out var value))
+                    {
+                        bookmark.Parent.Append(new Paragraph(new Run(new Text(value))));
+                    }
+                }
+
+                var table = doc.MainDocumentPart.RootElement.Descendants<Table>().Last();
+                foreach (var prod in _products)
+                {
+                    var row = new TableRow();
+                    var cell1 = new TableCell(new Paragraph(new Run(new Text(prod.Senasa))));
+                    var cell2 = new TableCell(new Paragraph(new Run(new Text(prod.Name))));
+                    var cell3 = new TableCell(new Paragraph(new Run(new Text(prod.Code))));
+
+                    row.Append(cell1, cell2, cell3);
+                    table.Append(row);
+                }
+
+                doc.Save();
             }
 
-            var timestamp = DateTime.Now.ToString("yyMMdd_HH-mm-ss");
-            doc.SaveAs(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"RE-CAL-22_{timestamp}.docx"));
-            doc.Close();
-            wordApp.Quit();
             RequestClose.Invoke();
         });
 
@@ -53,13 +69,6 @@ namespace Cohere.Views
         {
             InitializeComponent();
             DataContext = this;
-        }
-
-        private static void SetBookmark(Document doc, string bookmark, string value)
-        {
-            Bookmark bkm = doc.Bookmarks[bookmark];
-            Range range = bkm.Range;
-            range.Text = value;
         }
 
         public Boolean CanCloseDialog()

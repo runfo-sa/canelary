@@ -3,6 +3,7 @@ using Editor.Services;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -103,6 +104,27 @@ namespace Editor.Controls
                     editor._markerService.Create(l.Offset, l.Length, l.Message);
                 }
             }
+        }
+
+        private double _scrollOffset;
+        private int _caretLine;
+
+        private void OnScrollOffsetUnload(Object sender, RoutedEventArgs e)
+        {
+            _scrollOffset = VerticalOffset;
+            _caretLine = TextArea.Caret.Line;
+            Trace.WriteLine("unload");
+        }
+
+        private void OnScrollOffsetLoad(Object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ScrollToVerticalOffset(_scrollOffset);
+            TextArea.Caret.Line = _caretLine;
+
+            if (IsVisible)
+                Trace.WriteLine("load");
+            else
+                Trace.WriteLine("unload");
         }
     }
 }

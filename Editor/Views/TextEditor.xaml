@@ -57,28 +57,29 @@
                         Content="⤫" />
             </DockPanel>
         </DataTemplate>
-
-        <DataTemplate x:Key="contentTemplate"
-                      DataType="{x:Type model:TabItem}">
-            <control:LinterTextEditor Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
-                                      Document="{Binding Content}"
-                                      FontFamily="Cascadia Mono Regular"
-                                      FontSize="14"
-                                      Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"
-                                      LinterData="{Binding LintingData}"
-                                      ShowLineNumbers="True"
-                                      SyntaxHighlighting="ZPL"
-                                      WordWrap="True" />
-        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
         <TabControl BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1BackgroundBrush}}"
-                    ContentTemplate="{Binding Source={StaticResource contentTemplate}}"
+                    control:TabContent.IsCached="True"
                     ItemsSource="{Binding TabsList}"
                     ItemTemplate="{Binding Source={StaticResource headerTemplate}}"
                     Template="{DynamicResource TabEditorTemplate}"
-                    SelectedIndex="{Binding CurrentTabIndex}" />
+                    SelectedIndex="{Binding CurrentTabIndex}">
+            <control:TabContent.Template>
+                <DataTemplate DataType="{x:Type model:TabItem}">
+                    <control:LinterTextEditor Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
+                                              Document="{Binding Content}"
+                                              FontFamily="Cascadia Mono Regular"
+                                              FontSize="14"
+                                              Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"
+                                              LinterData="{Binding LintingData}"
+                                              ShowLineNumbers="True"
+                                              SyntaxHighlighting="ZPL"
+                                              WordWrap="True" />
+                </DataTemplate>
+            </control:TabContent.Template>
+        </TabControl>
         <ScrollViewer Height="128"
                       Visibility="{Binding ShowErrorWindow}"
                       VerticalAlignment="Bottom">
