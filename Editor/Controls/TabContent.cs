@@ -104,7 +104,7 @@ namespace Editor.Controls
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static object GetInternalContentManager(DependencyObject obj)
         {
-            return (object)obj.GetValue(InternalContentManagerProperty);
+            return obj.GetValue(InternalContentManagerProperty);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -121,8 +121,7 @@ namespace Editor.Controls
         {
             if (obj == null) return;
 
-            var tabControl = obj as TabControl;
-            if (tabControl == null)
+            if (obj is not TabControl tabControl)
             {
                 throw new InvalidOperationException("Cannot set TabContent.IsCached on object of type " + args.NewValue.GetType().Name +
                     ". Only objects of type TabControl can have TabContent.IsCached property.");
@@ -150,9 +149,10 @@ namespace Editor.Controls
             const string xaml =
                 "<DataTemplate><Border b:TabContent.InternalTabControl=\"{Binding RelativeSource={RelativeSource AncestorType=TabControl}}\" /></DataTemplate>";
 
-            var context = new ParserContext();
-
-            context.XamlTypeMapper = new XamlTypeMapper(new string[0]);
+            var context = new ParserContext
+            {
+                XamlTypeMapper = new XamlTypeMapper([])
+            };
             context.XamlTypeMapper.AddMappingProcessingInstruction("b", typeof(TabContent).Namespace, typeof(TabContent).Assembly.FullName);
 
             context.XmlnsDictionary.Add("", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
@@ -165,9 +165,8 @@ namespace Editor.Controls
         private static void OnInternalTabControlChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             if (obj == null) return;
-            var container = obj as Decorator;
 
-            if (container == null)
+            if (obj is not Decorator container)
             {
                 var message = "Cannot set TabContent.InternalTabControl on object of type " + obj.GetType().Name +
                     ". Only controls that derive from Decorator, such as Border can have a TabContent.InternalTabControl.";
@@ -175,7 +174,7 @@ namespace Editor.Controls
             }
 
             if (args.NewValue == null) return;
-            if (!(args.NewValue is TabControl))
+            if (args.NewValue is not TabControl)
             {
                 throw new InvalidOperationException("Value of TabContent.InternalTabControl cannot be of type " + args.NewValue.GetType().Name + ", it must be of type TabControl");
             }
@@ -226,7 +225,7 @@ namespace Editor.Controls
 
         public class ContentManager
         {
-            private TabControl _tabControl;
+            private readonly TabControl _tabControl;
             private Decorator _border;
 
             public ContentManager(TabControl tabControl, Decorator border)
@@ -249,7 +248,7 @@ namespace Editor.Controls
                 _border.Child = GetCurrentContent();
             }
 
-            private ContentControl GetCurrentContent()
+            private ContentControl? GetCurrentContent()
             {
                 var item = _tabControl.SelectedItem;
                 if (item == null) return null;

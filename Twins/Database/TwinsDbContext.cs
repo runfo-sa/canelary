@@ -1,8 +1,8 @@
 ﻿using Core.Services;
 using Microsoft.EntityFrameworkCore;
-using TwinsBackend.Database.Model;
+using BackendTwins.Database.Model;
 
-namespace TwinsBackend.Database
+namespace BackendTwins.Database
 {
     public class TwinsDbContext : DbContext
     {

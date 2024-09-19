@@ -128,20 +128,8 @@
                 </StackPanel>
             </Border>
 
-            <DockPanel Grid.Row="2"
-                       LastChildFill="False"
-                       VerticalAlignment="Bottom">
-                <TextBlock DockPanel.Dock="Left"
-                           FontWeight="DemiBold"
-                           Text="{Binding GitTag.Tag, StringFormat='Versión: \{0\}'}" />
-                <TextBlock DockPanel.Dock="Right">
-                    <Hyperlink NavigateUri="{Binding GitTagUri}"
-                               RequestNavigate="Hyperlink_RequestNavigate">
-                        <TextBlock FontWeight="DemiBold"
-                                   Text="{Binding GitTag.Message}" />
-                    </Hyperlink>
-                </TextBlock>
-            </DockPanel>
+            <ContentControl prism:RegionManager.RegionName="Main#VersionRegion"
+                            Grid.Row="2" />
         </Grid>
     </Grid>
 </adonisControls:AdonisWindow>

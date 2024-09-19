@@ -149,12 +149,9 @@ namespace Editor.ViewModels
         private int NextNewItem()
         {
             var lastNew = TabsList.LastOrDefault(item => item.Header.StartsWith("new ") && item.Path is null);
-            if (lastNew is not null)
+            if (lastNew is not null && int.TryParse(lastNew.Header[4..], out int idx))
             {
-                if (int.TryParse(lastNew.Header[4..], out int idx))
-                {
-                    return idx + 1;
-                }
+                return idx + 1;
             }
 
             return 1;
@@ -178,7 +175,7 @@ namespace Editor.ViewModels
 
         private void OpenCurrentItem(object? item)
         {
-            if (item is not null && item is LabelFile file)
+            if (item is IFile file)
             {
                 var tabExists = TabsList.FirstOrDefault(item => item.Header == file.Name);
                 if (tabExists is not null)
@@ -187,7 +184,7 @@ namespace Editor.ViewModels
                 }
                 else
                 {
-                    var content = File.ReadAllText(file.Path);
+                    var content = file.Read();
                     AddTab(file.Name, content, file.Path);
                 }
             }
@@ -318,20 +315,20 @@ namespace Editor.ViewModels
             {
                 if (rc.Result == ButtonResult.OK)
                 {
-                    var fromDpi = (LabelDpi)rc.Parameters["FromDpi"];
-                    var toDpi = (LabelDpi)rc.Parameters["ToDpi"];
-                    var factor = (float)(Convert.ToDouble(toDpi.Value) / Convert.ToDouble(fromDpi.Value));
+                    var fromDpi = (LabelDpi?)rc.Parameters["FromDpi"];
+                    var toDpi = (LabelDpi?)rc.Parameters["ToDpi"];
+                    var factor = (float)(Convert.ToDouble(toDpi?.Value) / Convert.ToDouble(fromDpi?.Value));
                     var content = ResizeZPL.Resize(label.Content.Text, factor);
 
                     AddTab(
                         label.Header.Replace(
                             $".{SettingsService.Instance.EtiquetasExtension}",
-                            $"_{toDpi.Display}.{SettingsService.Instance.EtiquetasExtension}",
+                            $"_{toDpi?.Display}.{SettingsService.Instance.EtiquetasExtension}",
                             StringComparison.CurrentCultureIgnoreCase
                         ),
                         content
                     );
-                    TabsList.Last().SetAsUnsaved();
+                    TabsList[^1].SetAsUnsaved();
                 }
             });
         }

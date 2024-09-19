@@ -9,13 +9,14 @@
         public static string Resize(string rawCommands, float? scaleFactor)
         {
             // if there are no ZPL commands, return the same.
-            if (!rawCommands.Contains("^"))
+            if (!rawCommands.Contains('^'))
                 return rawCommands;
 
             // ZPL commands to be handled. Other commands remain intact.
             // key is the command name, value is the maximum number of parameters to process.
             // if null all parameters will be scaled.
-            Dictionary<string, int?> cmds = new Dictionary<string, int?> {
+            Dictionary<string, int?> cmds = new()
+            {
                 {"FO", 2},
                 {"PW", null},
                 {"FT", 2},
@@ -40,10 +41,8 @@
                 {"BC", null},
                 {"B7", 2}
             };
-            if (scaleFactor == null)
-            {
-                scaleFactor = 1.5f; // assuming scaling from 203 dpi to 300 dpi, i.e. 8dpi to 12dpi. 300f / 203;
-            }
+
+            scaleFactor ??= 1.5f; // Assuming scaling from 203 dpi to 300 dpi, i.e. 8dpi to 12dpi. 300f / 203.
 
             var sections = rawCommands.Split('^');
             foreach (var cmd in cmds)
@@ -52,7 +51,7 @@
                 {
                     if (sections[j].StartsWith(cmd.Key))
                     {
-                        sections[j] = ScaleSection(cmd, sections[j], scaleFactor ?? 1);
+                        sections[j] = ScaleSection(cmd, sections[j], (float)scaleFactor);
                     }
                 }
             }
@@ -66,7 +65,7 @@
 
         private static string ScaleSection(KeyValuePair<string, int?> cmd, string section, float scaleFactor)
         {
-            string[] parts = section.Substring(cmd.Key.Length).Split(',');
+            string[] parts = section[cmd.Key.Length..].Split(',');
             for (int p = 0; p < parts.Length; ++p)
             {
                 float f;

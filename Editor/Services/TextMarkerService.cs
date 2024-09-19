@@ -35,8 +35,8 @@ namespace Editor.Services
             {
                 return;
             }
-            int viewStart = visualLines.First().FirstDocumentLine.Offset;
-            int viewEnd = visualLines.Last().LastDocumentLine.EndOffset;
+            int viewStart = visualLines[0].FirstDocumentLine.Offset;
+            int viewEnd = visualLines[^1].LastDocumentLine.EndOffset;
             foreach (TextMarker marker in markers.FindOverlappingSegments(viewStart, viewEnd - viewStart))
             {
                 if (marker.BackgroundColor != null)
@@ -74,7 +74,6 @@ namespace Editor.Services
                     geometry.Freeze();
 
                     drawingContext.DrawGeometry(Brushes.Transparent, usedPen, geometry);
-                    break;
                 }
             }
         }
@@ -116,7 +115,7 @@ namespace Editor.Services
 
         public IEnumerable<TextMarker> GetMarkersAtOffset(int offset)
         {
-            return markers == null ? Enumerable.Empty<TextMarker>() : markers.FindSegmentsContaining(offset);
+            return markers == null ? [] : markers.FindSegmentsContaining(offset);
         }
     }
 }

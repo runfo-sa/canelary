@@ -1,6 +1,5 @@
 ﻿using Core.Services;
 using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Core.FileTree
 {
@@ -24,8 +23,8 @@ namespace Core.FileTree
                 return _cachedRoot;
             }
 
-            var files = Directory.GetFiles(_settings.EtiquetasDir, $"*.{_settings.EtiquetasExtension}");
             List<VirtualDirectory> dirs = [new VirtualDirectory("Otros")];
+            var files = VersionServiceProvider.Version.ListFiles();
             _cachedRoot = [];
 
             foreach (var dir in _settings.VirtualDirectories)
@@ -35,18 +34,17 @@ namespace Core.FileTree
 
             foreach (var file in files)
             {
-                var filename = Path.GetFileName(file);
                 foreach (var dir in _settings.VirtualDirectories)
                 {
-                    if (filename.Contains(dir.Filter, StringComparison.CurrentCultureIgnoreCase))
+                    if (file.Name.Contains(dir.Filter, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        dirs.First(d => d.Name == dir.Name).Files.Add(new LabelFile(file));
+                        dirs.First(d => d.Name == dir.Name).Files.Add(file);
                         goto OuterLoop; // Despues de agregar el archivo al directorio virtual saltamos al final del loop.
                     }
                 }
 
                 // Si no se pudo agregar el archivo a ningun directorio virtual definido, se lo asigna al directorio general "Otros".
-                dirs[0].Files.Add(new LabelFile(file));
+                dirs[0].Files.Add(file);
 
             OuterLoop:
                 continue;

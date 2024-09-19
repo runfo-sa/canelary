@@ -1,7 +1,7 @@
-﻿using Core.Services;
-using TwinsBackend.Models;
+﻿using BackendTwins.Models;
+using Core.Services;
 
-namespace TwinsBackend
+namespace BackendTwins
 {
     [Module(ModuleName = "TwinsBackend#False", OnDemand = false)]
     public class TwinsModule : IModule

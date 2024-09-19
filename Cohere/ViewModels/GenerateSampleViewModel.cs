@@ -15,7 +15,7 @@ namespace Cohere.ViewModels
         public static string Title => "Generar Muestra";
 
         private readonly IDialogService _dialogService;
-        private LabelFile _labelFile = null!;
+        private IFile _labelFile = null!;
 
         private readonly ListCollectionView _printers = new(PrinterSettings.InstalledPrinters.Cast<string>().ToList());
         public ListCollectionView Printers => _printers;
@@ -64,7 +64,7 @@ namespace Cohere.ViewModels
                 if (prod.Printable)
                 {
                     var label = PreviewServiceProvider
-                        .ProvideService(File.ReadAllText(_labelFile.Path))
+                        .ProvideService(_labelFile.Read())
                         .LoadVariables();
                     PrinterHelper.SendStringToPrinter(Printers.CurrentItem.ToString()!, label.Content, $"{_labelFile.Name} - {prod.Name}");
                 }
@@ -99,7 +99,7 @@ namespace Cohere.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (parameters.TryGetValue("File", out LabelFile? file) && file is not null)
+            if (parameters.TryGetValue("File", out IFile? file) && file is not null)
             {
                 _labelFile = file;
 

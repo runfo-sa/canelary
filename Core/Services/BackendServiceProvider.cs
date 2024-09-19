@@ -13,7 +13,7 @@
 
             if (Backend == null)
             {
-                throw new NullReferenceException("No hay backend definido!");
+                throw new NoServiceException("No hay backend definido!");
             }
         }
     }

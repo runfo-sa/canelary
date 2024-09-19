@@ -1,4 +1,4 @@
-﻿namespace LabelaryPreview.Models
+﻿namespace PreviewLabelary.Models
 {
     public record struct Language(LanguageType LanguageType, char Letter)
     {

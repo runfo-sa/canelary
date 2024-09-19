@@ -1,0 +1,7 @@
+﻿# Git config file
+
+# - Dirección de etiquetas
+EtiquetasDir: "C:\\soft\\PiQuatroRunfo\\Etiquetas"
+
+# - Repositorio donde se almacenan globalmente las eitquetas
+GitRepo: "https://github.com/runfo-sa/Etiquetas/"

@@ -7,7 +7,6 @@ namespace Comparator.ViewModels
 
     /// <summary>
     /// <para><b>View Model</b> para la ventana de Comparación de etiquetas.</para>
-    /// <para>TODO!: Enlace a la descripcion del manual, 5.Desarrollo/Comparador.</para>
     /// </summary>
     public class ComparatorViewModel : BindableBase
     {
@@ -57,7 +56,7 @@ namespace Comparator.ViewModels
                     return;
                 }
 
-                var sr = (SelectionResult)result.Parameters["SelectionResult"];
+                var sr = result.Parameters["SelectionResult"] as SelectionResult;
                 _commandService.ChangeFiles.Execute(sr);
             });
         }

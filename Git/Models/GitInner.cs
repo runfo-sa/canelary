@@ -1,10 +1,10 @@
-﻿using Core.Services;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
+using Version.Git.Models;
 
-namespace Core.Git
+namespace VersionGit.Models
 {
-    public class Git
+    public static class GitInner
     {
         public static string RunGitCommand(string command, string args, string workingDirectory)
         {
@@ -41,7 +41,7 @@ namespace Core.Git
             var tags = RunGitCommand(
                 "for-each-ref",
                 "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
-                SettingsService.Instance.EtiquetasDir)
+                Settings.Instance.EtiquetasDir)
                 .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
                 .Select(GitTag.Parse);
 

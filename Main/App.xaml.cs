@@ -70,7 +70,7 @@ namespace Main
             return new DirectoryModuleCatalog() { ModulePath = @".\\Modules" };
         }
 
-        public void ResolveException(object? sender, UnhandledExceptionEventArgs args)
+        public static void ResolveException(object? sender, UnhandledExceptionEventArgs args)
         {
             Exception ex = (Exception)args.ExceptionObject;
             ExceptionPopUp popUp = new(ex.GetBaseException().Message);

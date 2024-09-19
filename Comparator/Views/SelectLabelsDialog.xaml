@@ -37,8 +37,7 @@
                                FontWeight="DemiBold"
                                Text="Versión:"
                                VerticalAlignment="Center" />
-                    <ComboBox DisplayMemberPath="Tag"
-                              ItemsSource="{Binding LeftGitVer}"
+                    <ComboBox ItemsSource="{Binding LeftVersion}"
                               FontSize="16"
                               Margin="33, 0"
                               SelectionChanged="LeftFetchFiles" />
@@ -69,8 +68,7 @@
                                FontWeight="DemiBold"
                                Text="Versión:"
                                VerticalAlignment="Center" />
-                    <ComboBox DisplayMemberPath="Tag"
-                              ItemsSource="{Binding RightGitVer}"
+                    <ComboBox ItemsSource="{Binding RightVersion}"
                               FontSize="16"
                               Margin="33,0"
                               SelectionChanged="RightFetchFiles" />

@@ -10,7 +10,7 @@
         /// <exception cref="NullReferenceException"></exception>
         public static IPreview ProvideService(string content)
         {
-            return (_callPreview != null) ? _callPreview.Invoke(content) : throw new NullReferenceException("No hay ningun preview engine definido!");
+            return (_callPreview != null) ? _callPreview.Invoke(content) : throw new NoServiceException("No hay ningun preview engine definido!");
         }
 
         public static void Set(Func<string, IPreview> func)

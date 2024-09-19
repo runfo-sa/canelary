@@ -1,6 +1,6 @@
 using Core.Services;
 
-namespace LabelaryPreview
+namespace PreviewLabelary
 {
     [Module(ModuleName = "LabelaryPreview#False", OnDemand = false)]
     public class LabelaryModule : IModule
@@ -16,7 +16,6 @@ namespace LabelaryPreview
                 //  .MainRuleSet
                 //  .Rules
                 //  .First(r => r.Color.Name == "Variable")
-                //  .Regex = new Regex("");
             }
         }
 

@@ -139,10 +139,8 @@ namespace Comparator.ViewModels
                 {
                     if (label is not null)
                     {
-                        {
-                            using MemoryStream stream = new(label);
-                            return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                        }
+                        using MemoryStream stream = new(label);
+                        return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
                     }
                 }
             }

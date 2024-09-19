@@ -1,6 +1,6 @@
 ﻿using Core.Logger;
 using Core.Services;
-using LabelaryPreview.Models;
+using PreviewLabelary.Models;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
-namespace LabelaryPreview
+namespace PreviewLabelary
 {
     /// <summary>
     /// Servicio que se comunica con la API de Labelary,

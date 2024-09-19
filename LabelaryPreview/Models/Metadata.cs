@@ -1,4 +1,4 @@
-﻿namespace LabelaryPreview.Models
+﻿namespace PreviewLabelary.Models
 {
     /// <summary>
     /// Metadata para una etiqueta,

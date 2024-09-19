@@ -3,8 +3,6 @@ using Core.Database.IdeDbModels;
 using Core.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Controls;
 
 namespace Cohere.Views
@@ -28,12 +26,7 @@ namespace Cohere.Views
             }
         }
 
-        private string? _description;
-        public string? Description
-        {
-            get => _description;
-            set { _description = value; }
-        }
+        public string? Description { get; set; }
 
         public string Etiqueta { get; set; } = null!;
 
@@ -45,10 +38,7 @@ namespace Cohere.Views
             InitializeComponent();
             DataContext = this;
 
-            Etiquetas = [.. Directory
-                .GetFiles(SettingsService.Instance.EtiquetasDir, $"*.{SettingsService.Instance.EtiquetasExtension}")
-                .Select(p => Path.GetFileNameWithoutExtension(p))
-            ];
+            Etiquetas = [.. VersionServiceProvider.Version.ListFiles().Select(f => f.Name)];
 
             AttributesList = BackendServiceProvider.Backend.GetAttributes();
 
@@ -62,19 +52,18 @@ namespace Cohere.Views
 
         private void ClosingDialog()
         {
-            if (CreateRule(Etiqueta, RuleName, Attributes, Description))
+            if (CreateRule(Etiqueta, RuleName, Description))
             {
                 RequestClose.Invoke();
             }
         }
 
-        private bool CreateRule(string label, string ruleName, IEnumerable<RuleAttributes> attributes, string? description)
+        private bool CreateRule(string label, string ruleName, string? description)
         {
             using (var context = new IdeDbContext())
             {
                 if (context.Rule.FirstOrDefault(r => r.Name == ruleName) != null)
                 {
-                    Trace.WriteLine("Regla ya existente");
                     return false;
                 }
 
@@ -92,11 +81,11 @@ namespace Cohere.Views
                 }
                 else
                 {
-                    ruleLabel = context.RuleLabel.Add(new RuleLabel()
+                    context.RuleLabel.Add(new RuleLabel()
                     {
                         LabelName = label,
                         RuleId = rule.Id
-                    }).Entity;
+                    });
                 }
                 context.SaveChanges();
 

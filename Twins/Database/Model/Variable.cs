@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TwinsBackend.Database.Model
+namespace BackendTwins.Database.Model
 {
     [PrimaryKey(nameof(Id))]
     public class Variable

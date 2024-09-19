@@ -16,7 +16,7 @@ namespace Cohere.ViewModels
 
         private void ProcessProduct(object? item)
         {
-            if (item is not null && item is Product prod)
+            if (item is Product prod)
             {
                 SelectedValues.Clear();
                 foreach (var value in prod.Attributes)

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace LabelaryPreview.Models
+namespace PreviewLabelary.Models
 {
     public enum LanguageType
     {

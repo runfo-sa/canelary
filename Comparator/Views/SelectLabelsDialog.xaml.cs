@@ -1,6 +1,5 @@
 ﻿using Comparator.Models;
 using Core.FileTree;
-using Core.Git;
 using Core.Models;
 using Core.Services;
 using System.IO;
@@ -11,55 +10,42 @@ namespace Comparator.Views
 {
     public partial class SelectLabelsDialog : UserControl, IDialogAware
     {
-        public string Title => "Seleccionar Etiquetas";
+        public static string Title => "Seleccionar Etiquetas";
 
         public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
         public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
-        public ListCollectionView LeftGitVer { get; set; }
-        public ListCollectionView RightGitVer { get; set; }
+        public ListCollectionView LeftVersion { get; set; }
+        public ListCollectionView RightVersion { get; set; }
 
-        public LabelFile LeftLabel => (LabelFile)leftLabel.SelectedItem;
-        public LabelFile RightLabel => (LabelFile)rightLabel.SelectedItem;
+        public IFile LeftLabel => (IFile)leftLabel.SelectedItem;
+        public IFile RightLabel => (IFile)rightLabel.SelectedItem;
 
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
-
-        private readonly IEnumerable<LabelFile> _files;
-        private readonly SettingsService _settings;
 
         public SelectLabelsDialog()
         {
             InitializeComponent();
             DataContext = this;
 
-            _settings = SettingsService.Instance;
-            _files = Directory
-                .GetFiles(_settings.EtiquetasDir, $"*.{_settings.EtiquetasExtension}")
-                .Select(f => new LabelFile(f));
+            IEnumerable<IFile> _files = VersionServiceProvider.Version.ListFiles();
 
             leftLabel.ItemsSource = _files;
             rightLabel.ItemsSource = _files;
 
-            var tags = Git.RunGitCommand(
-                "for-each-ref",
-                "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
-                _settings.EtiquetasDir)
-            .Split("\\n", StringSplitOptions.RemoveEmptyEntries).Select(GitTag.Parse)
-            .Prepend(GitTag.Local);
-
-            LeftGitVer = new(tags.ToList());
-            RightGitVer = new(tags.ToList());
+            LeftVersion = new(VersionServiceProvider.Version.ListVersions().ToList());
+            RightVersion = new(VersionServiceProvider.Version.ListVersions().ToList());
 
             CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
         }
 
-        private void LeftFetchFiles(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void LeftFetchFiles(Object sender, SelectionChangedEventArgs e)
         {
             leftLabel.IsEnabled = false;
             acceptButton.IsEnabled = false;
 
-            leftLabel.ItemsSource = FetchFiles((GitTag)LeftGitVer.CurrentItem);
+            leftLabel.ItemsSource = VersionServiceProvider.Version.ListFiles((string)LeftVersion.CurrentItem);
             if (leftLabel.ItemsSource is not null)
             {
                 leftLabel.IsEnabled = true;
@@ -70,12 +56,12 @@ namespace Comparator.Views
             CloseDialogCommand.RaiseCanExecuteChanged();
         }
 
-        private void RightFetchFiles(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void RightFetchFiles(Object sender, SelectionChangedEventArgs e)
         {
             rightLabel.IsEnabled = false;
             acceptButton.IsEnabled = false;
 
-            rightLabel.ItemsSource = FetchFiles((GitTag)RightGitVer.CurrentItem);
+            rightLabel.ItemsSource = VersionServiceProvider.Version.ListFiles((string)RightVersion.CurrentItem);
             if (rightLabel.ItemsSource is not null)
             {
                 rightLabel.IsEnabled = true;
@@ -84,33 +70,6 @@ namespace Comparator.Views
             }
 
             CloseDialogCommand.RaiseCanExecuteChanged();
-        }
-
-        private IEnumerable<LabelFile>? FetchFiles(GitTag current)
-        {
-            if (current == GitTag.Local)
-            {
-                return _files;
-            }
-            return LoadGitFile(current);
-        }
-
-        private IEnumerable<LabelFile> LoadGitFile(GitTag git)
-        {
-            string path = Path.Combine(Path.GetTempPath(), $"Visual Ternera - {git.Tag}");
-            Directory.CreateDirectory(path);
-
-            if (Git.RunGitCommand("tag", "--points-at HEAD", path) != git.Tag)
-            {
-                Git.RunGitCommand("init", "", path);
-                Git.RunGitCommand("remote add origin", _settings.GitRepo, path);
-                Git.RunGitCommand("fetch", "--all --tags --prune", path);
-                Git.RunGitCommand("checkout", $"tags/{git.Tag}", path);
-            }
-
-            return Directory
-                .GetFiles(path, $"*.{_settings.EtiquetasExtension}")
-                .Select(f => new LabelFile(f));
         }
 
         private void ClosingDialog()

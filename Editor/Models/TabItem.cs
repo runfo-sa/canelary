@@ -2,7 +2,6 @@
 using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Win32;
 using System.ComponentModel;
-using System.IO;
 
 namespace Editor.Models
 {
@@ -85,7 +84,7 @@ namespace Editor.Models
             {
                 if (Path is not null)
                 {
-                    File.WriteAllText(Path, Content.Text);
+                    VersionServiceProvider.Version.SaveFile(Path, Content.Text);
                     Header = Header[..(Header.Length - 1)];
                 }
                 else
@@ -101,7 +100,7 @@ namespace Editor.Models
                         return false;
                     }
 
-                    File.WriteAllText(dialog.FileName, Content.Text);
+                    VersionServiceProvider.Version.SaveFile(dialog.FileName, Content.Text);
                     Path = dialog.FileName;
                     Header = dialog.SafeFileName;
                 }

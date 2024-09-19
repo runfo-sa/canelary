@@ -19,8 +19,8 @@ namespace Cohere.ViewModels
 
         public ObservableCollection<Product> ProductsList { get; set; } = [];
 
-        private LabelFile? _currentLabel;
-        public LabelFile? CurrentLabel
+        private IFile? _currentLabel;
+        public IFile? CurrentLabel
         {
             get => _currentLabel;
             set
@@ -59,7 +59,7 @@ namespace Cohere.ViewModels
 
         private void OpenItem(object? item)
         {
-            if (item is not null && item is LabelFile file)
+            if (item is IFile file)
             {
                 ProductsList.Clear();
                 CurrentLabel = file;
@@ -122,12 +122,12 @@ namespace Cohere.ViewModels
                     }
                 }
 
-                var errorCount = ProductsList.Where(p => p.Error != ProductError.None).Count();
+                var errorCount = ProductsList.Count(p => p.Error != ProductError.None);
                 CommandService.RefreshErrorCount.Execute(new ErrorCounter(errorCount, ProductsList.Count));
             }
         }
 
-        private void ChangeRule(LabelFile file)
+        private void ChangeRule(IFile file)
         {
             _dialogService.Show("SelectRuleDialog", result =>
             {
@@ -136,12 +136,12 @@ namespace Cohere.ViewModels
                     return;
                 }
 
-                var rc = (ChangeRuleResult)result.Parameters["Result"];
+                var rc = result.Parameters["Result"] as ChangeRuleResult;
                 using (var context = new IdeDbContext())
                 {
                     var labelName = Path.GetFileNameWithoutExtension(file.Name);
 
-                    if (rc.Remove)
+                    if (rc!.Remove)
                     {
                         var removeRule = context.RuleLabel.FirstOrDefault(r => r.LabelName == labelName);
                         if (removeRule != null)

@@ -4,9 +4,9 @@ using Core.Services.BackendModel;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
-using TwinsBackend.Database;
+using BackendTwins.Database;
 
-namespace TwinsBackend.Models
+namespace BackendTwins.Models
 {
     public class Twins : IBackend
     {
@@ -111,10 +111,10 @@ namespace TwinsBackend.Models
             return list;
         }
 
-        private class KeyPair
+        private sealed class KeyPair
         {
             public string Key { get; set; } = string.Empty;
-            public string? Value { get; set; }
+            public string? Value { get; set; } = null;
         }
     }
 }

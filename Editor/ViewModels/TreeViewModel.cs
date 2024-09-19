@@ -7,7 +7,7 @@ namespace Editor.ViewModels
 {
     public class TreeViewModel : BindableBase
     {
-        public ObservableCollection<object> Tree { get => _tree.Root; set { } }
+        public ObservableCollection<object> Tree => _tree.Root;
         public DelegateCommand ClickSelectedCommand { get; private set; }
         public DelegateCommand<KeyEventArgs> PressSelectedCommand { get; private set; }
         public DelegateCommand<object?> ChangedItemCommand { get; private set; }

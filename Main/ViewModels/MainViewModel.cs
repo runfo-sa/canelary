@@ -1,13 +1,11 @@
 ﻿using Core.Database;
 using Core.Database.ServiceDbModels;
 using Core.Events;
-using Core.Git;
 using Core.Models;
 using Core.Services;
 using Core.Services.SettingsModel;
 using Main.Models;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Windows.Threading;
 
 namespace Main.ViewModels
@@ -24,8 +22,6 @@ namespace Main.ViewModels
             set => SetProperty(ref _lastRefreshed, value);
         }
 
-        public GitTag GitTag { get; set; }
-        public string GitTagUri { get; set; } = string.Empty;
         public ObservableCollection<Client> ClientsList { get; set; }
         public ObservableCollection<ModuleAction> ModulesButtons { get; set; }
 
@@ -52,13 +48,6 @@ namespace Main.ViewModels
             };
             updateTime.Tick += UpdateTime;
             updateTime.Start();
-
-            var tag = Git.GetLastTag();
-            if (tag is not null)
-            {
-                GitTag = (GitTag)tag;
-                GitTagUri = Path.Combine(SettingsService.Instance.GitRepo, $"releases/tag/{GitTag.Tag}");
-            }
 
             ChangeThemeCommand = new(ChangeTheme);
             UpdateClientsCommand = new(UpdateClients);
@@ -100,7 +89,7 @@ namespace Main.ViewModels
             }
         }
 
-        private void ChangeTheme()
+        private static void ChangeTheme()
         {
             SettingsService.Instance.Theme = SettingsService.Instance.Theme switch
             {

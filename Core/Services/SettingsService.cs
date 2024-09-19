@@ -6,9 +6,6 @@ namespace Core.Services
 {
     public class SettingsService
     {
-        [YamlMember(Description = " - Dirección de etiquetas")]
-        public required string EtiquetasDir { get; set; }
-
         [YamlMember(Description = " - Cadena de conexión con la base de datos SQL Server")]
         public required string SqlConnection { get; set; }
 
@@ -21,9 +18,6 @@ namespace Core.Services
         [YamlMember(Description = " - Region a usar por el programa, para darle formato a las fechas y numeros")]
         public string Culture { get; set; } = "es-MX";
 
-        [YamlMember(Description = " - Repositorio donde se almacenan globalmente las eitquetas")]
-        public required string GitRepo { get; set; }
-
         [YamlMember(Description = " - Extensión de los archivos de etiqueta, sirve para filtrar")]
         public string EtiquetasExtension { get; set; } = "e01";
 
@@ -35,6 +29,9 @@ namespace Core.Services
 
         [YamlMember(Description = " - Backend utilizado")]
         public string Backend { get; set; } = "Twins";
+
+        [YamlMember(Description = " - Version system")]
+        public string VersionSystem { get; set; } = "Git";
 
         private static readonly Lazy<SettingsService> Lazy =
             new(() =>

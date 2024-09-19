@@ -1,4 +1,4 @@
-﻿namespace Core.Git
+﻿namespace VersionGit.Models
 {
     public record struct GitTag(string Tag, string Date, string Message)
     {
@@ -12,6 +12,7 @@
             return new GitTag(inputs[0], inputs[1], inputs[2]);
         }
 
-        public static GitTag Local = new("Local", DateTime.Now.ToString(), "Cambios locales");
+        private static GitTag _local = new("Local", DateTime.Now.ToString(), "Cambios locales");
+        public static GitTag Local => _local;
     }
 }

@@ -1,8 +1,5 @@
 ﻿# Visual Ternera config file
 
-# - Dirección de etiquetas
-EtiquetasDir: ""
-
 # - Cadena de conexión con la base de datos SQL Server
 SqlConnection: ""
 
@@ -14,9 +11,6 @@ Theme: Dark
 
 # - Region a usar por el programa, para darle formato a las fechas y numeros
 Culture: "es-MX"
-
-# - Repositorio donde se almacenan globalmente las eitquetas
-GitRepo: "https://github.com/runfo-sa/Etiquetas/"
 
 # - Extensión de los archivos de etiqueta, sirve para filtrar
 EtiquetasExtension: "e01"
@@ -33,3 +27,6 @@ PreviewEngine: "Labelary"
 
 # - Backend utilizado
 Backend: "Twins"
+
+# - Version system
+VersionSystem: "Git"

@@ -3,7 +3,6 @@ using Editor.Services;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -52,21 +51,18 @@ namespace Editor.Controls
                 var markersAtOffset = _markerService.GetMarkersAtOffset(offset);
                 var markerWithToolTip = markersAtOffset.FirstOrDefault(marker => marker.ToolTip != null);
 
-                if (markerWithToolTip is not null)
+                if (markerWithToolTip is not null && _toolTip is null)
                 {
-                    if (_toolTip is null)
+                    _toolTip = new ToolTip();
+                    _toolTip.Closed += ToolTipClosed;
+                    _toolTip.PlacementTarget = this;
+                    _toolTip.Content = new TextBlock
                     {
-                        _toolTip = new ToolTip();
-                        _toolTip.Closed += ToolTipClosed;
-                        _toolTip.PlacementTarget = this;
-                        _toolTip.Content = new TextBlock
-                        {
-                            Text = markerWithToolTip.ToolTip,
-                            TextWrapping = TextWrapping.Wrap
-                        };
-                        _toolTip.IsOpen = true;
-                        e.Handled = true;
-                    }
+                        Text = markerWithToolTip.ToolTip,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    _toolTip.IsOpen = true;
+                    e.Handled = true;
                 }
             }
         }
@@ -104,27 +100,6 @@ namespace Editor.Controls
                     editor._markerService.Create(l.Offset, l.Length, l.Message);
                 }
             }
-        }
-
-        private double _scrollOffset;
-        private int _caretLine;
-
-        private void OnScrollOffsetUnload(Object sender, RoutedEventArgs e)
-        {
-            _scrollOffset = VerticalOffset;
-            _caretLine = TextArea.Caret.Line;
-            Trace.WriteLine("unload");
-        }
-
-        private void OnScrollOffsetLoad(Object sender, DependencyPropertyChangedEventArgs e)
-        {
-            ScrollToVerticalOffset(_scrollOffset);
-            TextArea.Caret.Line = _caretLine;
-
-            if (IsVisible)
-                Trace.WriteLine("load");
-            else
-                Trace.WriteLine("unload");
         }
     }
 }

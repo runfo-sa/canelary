@@ -10,17 +10,11 @@ namespace Cohere.Views
     {
         public static string Title => "Modificar Regla";
 
-        public ObservableCollection<RuleAttributes> Attributes { get; set; } = [];
+        public ObservableCollection<RuleAttributes> Attributes { get; set; }
         public List<string> AttributesList { get; set; }
         public List<Rule> Rules { get; set; }
         public Rule Rule { get; set; }
-
-        private string? _description;
-        public string? Description
-        {
-            get => _description;
-            set { _description = value; }
-        }
+        public string? Description { get; set; }
 
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
@@ -70,11 +64,14 @@ namespace Cohere.Views
                         context.RuleAttributes.Add(attr);
                     }
                 }
-                context.SaveChanges();
-                _changes = true;
+
+                if (context.SaveChanges() > 0)
+                {
+                    _changes = true;
+                }
             }
 
-            RequestClose.Invoke((_changes) ? ButtonResult.OK : ButtonResult.None);
+            RequestClose.Invoke(_changes ? ButtonResult.OK : ButtonResult.None);
         }
 
         public Boolean CanCloseDialog() => true;

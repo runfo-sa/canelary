@@ -6,10 +6,9 @@ namespace Cohere.ViewModels
 {
     public class CohereViewModel : BindableBase
     {
-        private readonly ICommandService _commandService;
         private readonly IDialogService _dialogService;
         private int _productsCount = 0;
-        private LabelFile? _currentLabel;
+        private IFile? _currentLabel;
 
         private int errorCount = 0;
         public int ErrorCount
@@ -25,15 +24,15 @@ namespace Cohere.ViewModels
             _dialogService = dialogService;
 
             containerRegistry.RegisterScoped<ICommandService, CommandsService>();
-            _commandService = container.Resolve<ICommandService>();
-            _commandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(e =>
+            var commandService = container.Resolve<ICommandService>();
+            commandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(e =>
             {
-                if (e is not null and LabelFile file)
+                if (e is IFile file)
                 {
                     _currentLabel = file;
                 }
             }));
-            _commandService.RefreshErrorCount.RegisterCommand(new DelegateCommand<ErrorCounter>(e =>
+            commandService.RefreshErrorCount.RegisterCommand(new DelegateCommand<ErrorCounter>(e =>
             {
                 ErrorCount = e.ErrorCount;
                 _productsCount = e.ProductsCount;

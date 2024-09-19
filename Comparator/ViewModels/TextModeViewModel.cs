@@ -5,7 +5,7 @@ using Core.Models;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Document;
-using System.IO;
+using System.ComponentModel;
 
 namespace Comparator.ViewModels
 {
@@ -55,15 +55,17 @@ namespace Comparator.ViewModels
         public DelegateCommand CalculateDiffCommand { get; private set; }
 
         private SideBySideDiffModel? _diff = null;
+        private readonly ICommandService _commandService;
 
-        public TextModeViewModel(ICommandService commandService, LabelFile leftFile, LabelFile rightFile)
+        public TextModeViewModel(ICommandService commandService, IFile leftFile, IFile rightFile)
         {
-            LeftText = new TextDocument(File.ReadAllText(leftFile.Path));
-            RightText = new TextDocument(File.ReadAllText(rightFile.Path));
+            LeftText = new TextDocument(leftFile.Read());
+            RightText = new TextDocument(rightFile.Read());
             LeftFilename = leftFile.Name;
             RightFilename = rightFile.Name;
+            _commandService = commandService;
 
-            CalculateDiffCommand = new(async () =>
+            CalculateDiffCommand = new(() =>
             {
                 if (_diff != null)
                 {
@@ -73,27 +75,37 @@ namespace Comparator.ViewModels
                 var leftText = LeftText.Text;
                 var rightText = RightText.Text;
 
-                _diff = await Task.Run(() =>
-                {
-                    return SideBySideDiffBuilder.Diff(leftText, rightText);
-                });
-
-                commandService.GenerateDiff.Execute(_diff);
+                var worker = new BackgroundWorker();
+                worker.DoWork += BackgroundWork;
+                worker.RunWorkerCompleted += BackgroundDone;
+                worker.RunWorkerAsync((leftText, rightText));
             });
 
-            commandService.ChangeFiles.RegisterCommand(new DelegateCommand<SelectionResult>(ChangeFiles));
-            commandService.Refresh.RegisterCommand(new DelegateCommand(()
+            _commandService.ChangeFiles.RegisterCommand(new DelegateCommand<SelectionResult>(ChangeFiles));
+            _commandService.Refresh.RegisterCommand(new DelegateCommand(()
                 => ChangeFiles(new SelectionResult(leftFile, rightFile, new LabelDpi(), new LabelSize()))));
         }
 
         private void ChangeFiles(SelectionResult result)
         {
             _diff = null;
-            LeftText = new TextDocument(File.ReadAllText(result.LeftFile.Path));
-            RightText = new TextDocument(File.ReadAllText(result.RightFile.Path));
+            LeftText = new TextDocument(result.LeftFile.Read());
+            RightText = new TextDocument(result.RightFile.Read());
             LeftFilename = result.LeftFile.Name;
             RightFilename = result.RightFile.Name;
             CalculateDiffCommand.Execute();
+        }
+
+        private static void BackgroundWork(object? sender, DoWorkEventArgs e)
+        {
+            var tuple = ((string, string)?)e.Argument;
+            e.Result = SideBySideDiffBuilder.Diff(tuple?.Item1, tuple?.Item2);
+        }
+
+        private void BackgroundDone(object? sender, RunWorkerCompletedEventArgs e)
+        {
+            _diff = (SideBySideDiffModel?)e.Result;
+            _commandService.GenerateDiff.Execute(_diff);
         }
     }
 }

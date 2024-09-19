@@ -32,14 +32,14 @@ namespace Comparator.Views
                     return;
                 }
 
-                var sr = (SelectionResult)result.Parameters["SelectionResult"];
+                var sr = result.Parameters["SelectionResult"] as SelectionResult;
                 var commandService = container.Resolve<ICommandService>();
 
                 var regionManager = new RegionManager();
                 RegionManager.SetRegionManager(this, regionManager);
                 _region = regionManager.Regions["ContentRegion"];
 
-                var textVM = new TextModeViewModel(commandService, sr.LeftFile, sr.RightFile);
+                var textVM = new TextModeViewModel(commandService, sr!.LeftFile, sr.RightFile);
                 _textView = new TextMode(commandService)
                 {
                     DataContext = textVM
