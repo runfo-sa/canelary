@@ -37,10 +37,10 @@
                                FontWeight="DemiBold"
                                Text="Versión:"
                                VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding LeftVersion}"
+                    <ComboBox x:Name="leftVersion"
+                              ItemsSource="{Binding LeftVersion}"
                               FontSize="16"
-                              Margin="33, 0"
-                              SelectionChanged="LeftFetchFiles" />
+                              Margin="33, 0" />
                 </DockPanel>
             </StackPanel>
 
@@ -68,10 +68,10 @@
                                FontWeight="DemiBold"
                                Text="Versión:"
                                VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding RightVersion}"
+                    <ComboBox x:Name="rightVersion"
+                              ItemsSource="{Binding RightVersion}"
                               FontSize="16"
-                              Margin="33,0"
-                              SelectionChanged="RightFetchFiles" />
+                              Margin="33,0" />
                 </DockPanel>
             </StackPanel>
 

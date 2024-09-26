@@ -1,5 +1,6 @@
 ﻿using Core.Database.IdeDbModels;
 using Core.Services.BackendModel;
+using System.Text;
 
 namespace Core.Services
 {
@@ -14,5 +15,9 @@ namespace Core.Services
         public List<Product> GetProducts(string label);
 
         public string GetTranslation(int languageId, string description);
+
+        public string ParseVariable(string key, ref List<KeyValuePair<string, string?>> dictionary);
+
+        public string LoadVariables(string content, int id, ref StringBuilder error);
     }
 }

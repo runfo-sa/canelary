@@ -6,8 +6,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
-    <DockPanel Grid.Row="2"
-               LastChildFill="False"
+    <DockPanel LastChildFill="False"
                VerticalAlignment="Bottom">
         <TextBlock DockPanel.Dock="Left"
                    FontWeight="DemiBold"

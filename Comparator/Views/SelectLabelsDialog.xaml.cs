@@ -29,15 +29,24 @@ namespace Comparator.Views
             InitializeComponent();
             DataContext = this;
 
-            IEnumerable<IFile> _files = VersionServiceProvider.Version.ListFiles();
-
-            leftLabel.ItemsSource = _files;
-            rightLabel.ItemsSource = _files;
-
-            LeftVersion = new(VersionServiceProvider.Version.ListVersions().ToList());
-            RightVersion = new(VersionServiceProvider.Version.ListVersions().ToList());
-
             CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
+
+            var (files, versions) = VersionServiceProvider.Version.FetchFileVer();
+            leftLabel.ItemsSource = files;
+            LeftVersion = new(versions.ToList());
+            rightLabel.ItemsSource = files;
+            RightVersion = new(versions.ToList());
+
+            if (VersionServiceProvider.Version.FetchByFile())
+            {
+                leftLabel.SelectionChanged += LeftFetchFiles;
+                rightLabel.SelectionChanged += RightFetchFiles;
+            }
+            else
+            {
+                leftVersion.SelectionChanged += LeftFetchFiles;
+                rightVersion.SelectionChanged += RightFetchFiles;
+            }
         }
 
         private void LeftFetchFiles(Object sender, SelectionChangedEventArgs e)
@@ -45,7 +54,16 @@ namespace Comparator.Views
             leftLabel.IsEnabled = false;
             acceptButton.IsEnabled = false;
 
-            leftLabel.ItemsSource = VersionServiceProvider.Version.ListFiles((string)LeftVersion.CurrentItem);
+            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(LeftLabel, (string)LeftVersion.CurrentItem);
+            if (VersionServiceProvider.Version.FetchByFile())
+            {
+                LeftVersion = new(versions.ToList());
+            }
+            else
+            {
+                leftLabel.ItemsSource = files;
+            }
+
             if (leftLabel.ItemsSource is not null)
             {
                 leftLabel.IsEnabled = true;
@@ -61,7 +79,16 @@ namespace Comparator.Views
             rightLabel.IsEnabled = false;
             acceptButton.IsEnabled = false;
 
-            rightLabel.ItemsSource = VersionServiceProvider.Version.ListFiles((string)RightVersion.CurrentItem);
+            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(RightLabel, (string)RightVersion.CurrentItem);
+            if (VersionServiceProvider.Version.FetchByFile())
+            {
+                RightVersion = new(versions.ToList());
+            }
+            else
+            {
+                rightLabel.ItemsSource = files;
+            }
+
             if (rightLabel.ItemsSource is not null)
             {
                 rightLabel.IsEnabled = true;

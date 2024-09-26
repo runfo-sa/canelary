@@ -7,17 +7,6 @@ namespace VersionGit.Models
 {
     public class Git : IVersion
     {
-        public IEnumerable<string> ListVersions()
-        {
-            return GitInner.RunGitCommand(
-                "for-each-ref",
-                "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
-                Settings.Instance.EtiquetasDir)
-            .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
-            .Select(s => GitTag.Parse(s).Tag)
-            .Prepend("Local");
-        }
-
         public IEnumerable<IFile> ListFiles()
         {
             return Directory
@@ -25,13 +14,21 @@ namespace VersionGit.Models
                 .Select(f => new LabelFile(f));
         }
 
-        public IEnumerable<IFile>? ListFiles(string version)
+        public (IEnumerable<IFile>, IEnumerable<String>) FetchFileVer(IFile? file = null, String version = "Local")
         {
+            var versions = GitInner.RunGitCommand(
+                 "for-each-ref",
+                 "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
+                 Settings.Instance.EtiquetasDir)
+             .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
+             .Select(s => GitTag.Parse(s).Tag)
+             .Prepend("Local");
+
             if (version == "Local")
             {
-                return ListFiles();
+                return (ListFiles(), versions);
             }
-            return LoadGitFiles(version);
+            return (LoadGitFiles(version), versions);
         }
 
         private static IEnumerable<LabelFile> LoadGitFiles(string tag)
@@ -56,5 +53,7 @@ namespace VersionGit.Models
         {
             new LabelFile(path).Write(content);
         }
+
+        public Boolean FetchByFile() => false;
     }
 }

@@ -2,7 +2,19 @@
 {
     public static class VersionServiceProvider
     {
-        public static IVersion Version { get; private set; } = null!;
+        private static IVersion? _version;
+        public static IVersion Version
+        {
+            get
+            {
+                if (_version == null)
+                {
+                    throw new NoServiceException("No hay servicio de versionado definido!");
+                }
+                return _version;
+            }
+            private set => _version = value;
+        }
 
         public static void Set(IVersion version)
         {
@@ -10,10 +22,13 @@
             {
                 Version = version;
             }
+        }
 
-            if (Version == null)
+        public static void SetView(string versionName, Type viewType, IRegionManager regionManager)
+        {
+            if (versionName == SettingsService.Instance.VersionSystem)
             {
-                throw new NoServiceException("No hay servicio de versionado definido!");
+                regionManager.RegisterViewWithRegion("Main#VersionRegion", viewType);
             }
         }
     }

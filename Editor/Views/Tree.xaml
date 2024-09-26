@@ -1,5 +1,6 @@
 ﻿<UserControl x:Class="Editor.Views.Tree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:controls="clr-namespace:Core.Controls;assembly=Core"
              xmlns:core="clr-namespace:Core.FileTree;assembly=Core"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -8,9 +9,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <controls:FileSelector x:Key="fileSelector" />
+    </UserControl.Resources>
+
     <TreeView x:Name="treeView"
               FontSize="14"
-              ItemsSource="{Binding Tree}">
+              ItemsSource="{Binding Tree}"
+              ItemTemplateSelector="{StaticResource fileSelector}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="PreviewMouseDoubleClick">
                 <i:InvokeCommandAction Command="{Binding ClickSelectedCommand}" />
@@ -32,7 +38,7 @@
                            Text="{Binding Name}" />
             </HierarchicalDataTemplate>
 
-            <DataTemplate DataType="{x:Type core:LabelFile}">
+            <DataTemplate x:Key="fileTemplate">
                 <TextBlock HorizontalAlignment="Stretch"
                            Text="{Binding Name}" />
             </DataTemplate>

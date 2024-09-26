@@ -1,10 +1,12 @@
-﻿using Core.Database.IdeDbModels;
+﻿using BackendTwins.Database;
+using Core.Database.IdeDbModels;
 using Core.Services;
 using Core.Services.BackendModel;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Text;
-using BackendTwins.Database;
 
 namespace BackendTwins.Models
 {
@@ -115,6 +117,96 @@ namespace BackendTwins.Models
         {
             public string Key { get; set; } = string.Empty;
             public string? Value { get; set; } = null;
+        }
+
+        public string ParseVariable(string key, ref List<KeyValuePair<string, string?>> dictionary)
+        {
+            var parts = key.Split(';');
+            var reg = dictionary.Find(v => v.Key.Equals(parts[0], StringComparison.CurrentCultureIgnoreCase));
+            if (reg.Value != null)
+            {
+                parts[0] = reg.Value;
+            }
+            else
+            {
+                return "";
+            }
+
+            if (parts.Length > 1)
+            {
+                var functions = parts[1].Split('-');
+                foreach (var func in functions)
+                {
+                    var function = func[..2];
+                    switch (function)
+                    {
+                        case "FK":
+                            parts[0] = Convert.ToDecimal((double)Convert.ToInt32(parts[0]) / 1000.0)
+                                .ToString(func[2..]);
+                            break;
+
+                        case "FF":
+                            parts[0] = DateTime
+                                .ParseExact(parts[0], "yyyyMMdd", CultureInfo.InvariantCulture)
+                                .ToString(func[2..]);
+                            break;
+
+                        case "FD":
+                            parts[0] = Convert.ToDecimal(parts[0]).ToString(func[2..]);
+                            break;
+
+                        case "FR":
+                            char padChar = func[2];
+                            parts[0] = parts[0].PadLeft(Convert.ToInt32(func[3..]), padChar);
+                            break;
+
+                        case "FC":
+                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(",", "") : parts[0].Replace(".", ",");
+                            break;
+
+                        case "FP":
+                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(".", "") : parts[0].Replace(",", ".");
+                            break;
+
+                        case "FI":
+                            parts[0] = BackendServiceProvider.Backend.GetTranslation(func[2] - '0', parts[0]);
+                            break;
+                    }
+                }
+            }
+
+            return parts[0];
+        }
+
+        public string LoadVariables(string content, Int32 id, ref StringBuilder error)
+        {
+            var dictionary = GetValues(id);
+
+            int startIdx;
+            int endIdx = content.LastIndexOf("@]");
+
+            while (endIdx > 0)
+            {
+                startIdx = content.LastIndexOf("[@");
+                if (startIdx > 0)
+                {
+                    var key = content[(startIdx + 2)..endIdx];
+                    var value = ParseVariable(key, ref dictionary);
+                    if (value.IsNullOrEmpty())
+                    {
+                        error.AppendLine($"Variable [@{key}@] no esta cargada para el producto");
+                    }
+                    content = content.Replace($"[@{key}@]", value, StringComparison.CurrentCultureIgnoreCase);
+                    endIdx = content.LastIndexOf("@]");
+                }
+                else
+                {
+                    error.AppendLine($"Variable definida erroneamente, falta '[@' pos: {endIdx}.");
+                    endIdx = content.LastIndexOf("@]", endIdx - 2);
+                }
+            }
+
+            return content;
         }
     }
 }

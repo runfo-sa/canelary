@@ -4,12 +4,12 @@ namespace Core.Services
 {
     public interface IVersion
     {
-        public IEnumerable<string> ListVersions();
-
         public IEnumerable<IFile> ListFiles();
 
-        public IEnumerable<IFile>? ListFiles(string version);
+        public (IEnumerable<IFile>, IEnumerable<string>) FetchFileVer(IFile? file = null, string version = "Local");
 
         public void SaveFile(string path, string content);
+
+        public bool FetchByFile();
     }
 }

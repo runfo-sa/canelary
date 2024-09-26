@@ -2,7 +2,6 @@
 using Core.Services;
 using PreviewLabelary.Models;
 using System.Diagnostics;
-using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,28 +20,14 @@ namespace PreviewLabelary
         private string _content = content;
         public string Content => _content;
 
-        private readonly StringBuilder _error = new();
+        private StringBuilder _error = new();
         public string Error => _error.ToString();
 
         private Metadata? _metadata;
 
         public IPreview LoadVariables()
         {
-            List<KeyValuePair<string, string?>> dictionary = BackendServiceProvider.Backend.GetValues(_metadata?.ProductId ?? 1);
-
-            int startIdx;
-            int endIdx = _content.LastIndexOf("@]");
-
-            while (endIdx > 0)
-            {
-                startIdx = _content.LastIndexOf("[@", endIdx);
-                if (startIdx > 0)
-                {
-                    var key = _content[(startIdx + 2)..endIdx];
-                    _content = _content.Replace($"[@{key}@]", ParseVariable(key, ref dictionary), StringComparison.CurrentCultureIgnoreCase);
-                }
-                endIdx = _content.LastIndexOf("@]", startIdx);
-            }
+            _content = BackendServiceProvider.Backend.LoadVariables(_content, _metadata?.ProductId ?? 1, ref _error);
             return this;
         }
 
@@ -173,65 +158,5 @@ namespace PreviewLabelary
 
         [GeneratedRegex("\\^XA")]
         private static partial Regex RegexLabel();
-
-        private string ParseVariable(string key, ref List<KeyValuePair<string, string?>> dictionary)
-        {
-            var parts = key.Split(';');
-            var reg = dictionary.Find(v => v.Key.Equals(parts[0], StringComparison.CurrentCultureIgnoreCase));
-            if (reg.Value != null)
-            {
-                parts[0] = reg.Value;
-            }
-            else
-            {
-                _error.AppendLine($"Variable [@{parts[0]}@] no esta cargada para el producto");
-                return "";
-            }
-
-            if (parts.Length > 1)
-            {
-                var functions = parts[1].Split('-');
-                foreach (var func in functions)
-                {
-                    var function = func[..2];
-                    switch (function)
-                    {
-                        case "FK":
-                            parts[0] = Convert.ToDecimal((double)Convert.ToInt32(parts[0]) / 1000.0)
-                                .ToString(func[2..]);
-                            break;
-
-                        case "FF":
-                            parts[0] = DateTime
-                                .ParseExact(parts[0], "yyyyMMdd", CultureInfo.InvariantCulture)
-                                .ToString(func[2..]);
-                            break;
-
-                        case "FD":
-                            parts[0] = Convert.ToDecimal(parts[0]).ToString(func[2..]);
-                            break;
-
-                        case "FR":
-                            char padChar = func[2];
-                            parts[0] = parts[0].PadLeft(Convert.ToInt32(func[3..]), padChar);
-                            break;
-
-                        case "FC":
-                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(",", "") : parts[0].Replace(".", ",");
-                            break;
-
-                        case "FP":
-                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(".", "") : parts[0].Replace(",", ".");
-                            break;
-
-                        case "FI":
-                            parts[0] = BackendServiceProvider.Backend.GetTranslation(func[2] - '0', parts[0]);
-                            break;
-                    }
-                }
-            }
-
-            return parts[0];
-        }
     }
 }
