@@ -1,5 +1,6 @@
 ﻿using Core.FileTree;
 using Core.Services;
+using System.Diagnostics;
 using System.IO;
 using Version.Git.Models;
 
@@ -7,22 +8,29 @@ namespace VersionGit.Models
 {
     public class Git : IVersion
     {
-        public IEnumerable<IFile> ListFiles()
-        {
-            return Directory
-                .GetFiles(Settings.Instance.EtiquetasDir, $"*.{SettingsService.Instance.EtiquetasExtension}")
-                .Select(f => new LabelFile(f));
-        }
+        public string? FolderPath { get; set; }
 
-        public (IEnumerable<IFile>, IEnumerable<String>) FetchFileVer(IFile? file = null, String version = "Local")
+        public static IEnumerable<string> ListVersions()
         {
-            var versions = GitInner.RunGitCommand(
+            return GitInner.RunGitCommand(
                  "for-each-ref",
                  "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
                  Settings.Instance.EtiquetasDir)
              .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
              .Select(s => GitTag.Parse(s).Tag)
              .Prepend("Local");
+        }
+
+        public IEnumerable<IFile> ListFiles()
+        {
+            return Directory
+                .GetFiles(Settings.Instance.EtiquetasDir, $"*.{SettingsService.Instance.Extension}")
+                .Select(f => new LabelFile(f));
+        }
+
+        public (IEnumerable<IFile>, IEnumerable<String>) FetchFileVer(IFile? file = null, String version = "Local")
+        {
+            var versions = ListVersions();
 
             if (version == "Local")
             {
@@ -31,7 +39,7 @@ namespace VersionGit.Models
             return (LoadGitFiles(version), versions);
         }
 
-        private static IEnumerable<LabelFile> LoadGitFiles(string tag)
+        public static IEnumerable<LabelFile> LoadGitFiles(string tag)
         {
             string path = Path.Combine(Path.GetTempPath(), $"Visual Ternera - tag");
             Directory.CreateDirectory(path);
@@ -45,15 +53,21 @@ namespace VersionGit.Models
             }
 
             return Directory
-                .GetFiles(path, $"*.{SettingsService.Instance.EtiquetasExtension}")
+                .GetFiles(path, $"*.{SettingsService.Instance.Extension}")
                 .Select(f => new LabelFile(f));
         }
 
-        public void SaveFile(String path, String content)
+        public bool SaveFile(String path, String content)
         {
             new LabelFile(path).Write(content);
+            return true;
         }
 
         public Boolean FetchByFile() => false;
+
+        public void Publish()
+        {
+            Trace.WriteLine(FolderPath);
+        }
     }
 }

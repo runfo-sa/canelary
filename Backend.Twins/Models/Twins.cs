@@ -119,7 +119,7 @@ namespace BackendTwins.Models
             public string? Value { get; set; } = null;
         }
 
-        public string ParseVariable(string key, ref List<KeyValuePair<string, string?>> dictionary)
+        private static string ParseVariable(string key, ref List<KeyValuePair<string, string?>> dictionary)
         {
             var parts = key.Split(';');
             var reg = dictionary.Find(v => v.Key.Equals(parts[0], StringComparison.CurrentCultureIgnoreCase));

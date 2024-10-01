@@ -84,12 +84,15 @@ namespace Editor.Models
             {
                 if (Path is not null)
                 {
-                    VersionServiceProvider.Version.SaveFile(Path, Content.Text);
+                    if (!VersionServiceProvider.Version.SaveFile(Path, Content.Text))
+                    {
+                        return false;
+                    }
                     Header = Header[..(Header.Length - 1)];
                 }
                 else
                 {
-                    string extension = SettingsService.Instance.EtiquetasExtension;
+                    string extension = SettingsService.Instance.Extension;
                     SaveFileDialog dialog = new()
                     {
                         Filter = $"ZPL File (*.{extension})|*.{extension}|Todos los archivos (*.*)|*.*"
@@ -100,7 +103,10 @@ namespace Editor.Models
                         return false;
                     }
 
-                    VersionServiceProvider.Version.SaveFile(dialog.FileName, Content.Text);
+                    if (!VersionServiceProvider.Version.SaveFile(dialog.FileName, Content.Text))
+                    {
+                        return false;
+                    }
                     Path = dialog.FileName;
                     Header = dialog.SafeFileName;
                 }

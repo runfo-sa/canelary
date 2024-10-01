@@ -16,7 +16,8 @@ namespace VersionDatabase
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            VersionServiceProvider.SetView("Database", typeof(VersionView), _regionManager);
+            VersionServiceProvider.SetView("Database", "Main#VersionRegion", typeof(VersionView), _regionManager);
+            VersionServiceProvider.SetView("Database", "Publicar#Region", typeof(PublishView), _regionManager);
         }
     }
 }

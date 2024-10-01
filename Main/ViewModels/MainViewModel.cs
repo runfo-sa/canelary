@@ -1,7 +1,6 @@
 ﻿using Core.Database;
 using Core.Database.ServiceDbModels;
 using Core.Events;
-using Core.Models;
 using Core.Services;
 using Core.Services.SettingsModel;
 using Main.Models;
@@ -49,21 +48,17 @@ namespace Main.ViewModels
             updateTime.Tick += UpdateTime;
             updateTime.Start();
 
-            ChangeThemeCommand = new(ChangeTheme);
+            ChangeThemeCommand = new(SwitchTheme);
             UpdateClientsCommand = new(UpdateClients);
 
             ClientsList = [.. new ServiceDbContext().EstadoCliente];
 
             _moduleManager.Run();
             ModulesButtons = [
-                .. _moduleManager.Modules
-                .Select(m =>
-                {
-                    var metadata = ModuleMetadata.Parse(m.ModuleName);
-                    return new ModuleAction(metadata, new DelegateCommand<string>(LoadModule));
+                .. SettingsService.Instance.Modules
+                .Select(m => {
+                    return new ModuleAction(m, new DelegateCommand<string>(LoadModule));
                 })
-                .Where(m => m.Metadata.AsButton)
-                .OrderBy(m => m.Metadata.Position)
             ];
         }
 
@@ -89,7 +84,7 @@ namespace Main.ViewModels
             }
         }
 
-        private static void ChangeTheme()
+        private static void SwitchTheme()
         {
             SettingsService.Instance.Theme = SettingsService.Instance.Theme switch
             {

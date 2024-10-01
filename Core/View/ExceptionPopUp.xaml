@@ -1,4 +1,4 @@
-﻿<adonisControls:AdonisWindow x:Class="Main.Views.ExceptionPopUp"
+﻿<adonisControls:AdonisWindow x:Class="Core.View.ExceptionPopUp"
                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                              xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
                              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"

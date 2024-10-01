@@ -2,7 +2,7 @@
 
 namespace Core.Logger
 {
-    public class Logger
+    public static class Logger
     {
         /// <summary>
         /// Registra el contenido pasado a un archivo .log.

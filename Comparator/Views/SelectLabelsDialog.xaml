@@ -38,7 +38,6 @@
                                Text="Versión:"
                                VerticalAlignment="Center" />
                     <ComboBox x:Name="leftVersion"
-                              ItemsSource="{Binding LeftVersion}"
                               FontSize="16"
                               Margin="33, 0" />
                 </DockPanel>
@@ -69,7 +68,6 @@
                                Text="Versión:"
                                VerticalAlignment="Center" />
                     <ComboBox x:Name="rightVersion"
-                              ItemsSource="{Binding RightVersion}"
                               FontSize="16"
                               Margin="33,0" />
                 </DockPanel>

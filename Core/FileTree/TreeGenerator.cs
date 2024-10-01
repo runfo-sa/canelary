@@ -4,19 +4,19 @@ using System.Collections.ObjectModel;
 namespace Core.FileTree
 {
     /// <summary>
-    /// Genera el arbol de directorios, utilizar la propiedad Root para desplegar el arbol.
+    /// Genera el arbol de etiquetas.
     /// </summary>
     public class TreeGenerator()
     {
-        /// <summary>
-        /// Raiz del arbol de directorios.
-        /// </summary>
-        public ObservableCollection<object> Root => InitTree();
-
         private readonly SettingsService _settings = SettingsService.Instance;
         private ObservableCollection<object>? _cachedRoot;
 
-        private ObservableCollection<object> InitTree()
+        public void ClearCache()
+        {
+            _cachedRoot = null;
+        }
+
+        public ObservableCollection<object> InitTree()
         {
             if (_cachedRoot != null)
             {

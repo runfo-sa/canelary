@@ -19,7 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Preview.Labelary", "Preview
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version.Git", "Version.Git\Version.Git.csproj", "{594530AB-C81A-40F8-ADF3-4FB0D6678BC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Version.Database", "Version.Database\Version.Database.csproj", "{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version.Database", "Version.Database\Version.Database.csproj", "{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publish", "Publish\Publish.csproj", "{62183909-4098-481B-A92E-2C80E684DEE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A19D59C9-80F5-495C-8B78-A5A2E8689DD2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +70,10 @@ Global
 		{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62183909-4098-481B-A92E-2C80E684DEE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62183909-4098-481B-A92E-2C80E684DEE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62183909-4098-481B-A92E-2C80E684DEE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62183909-4098-481B-A92E-2C80E684DEE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

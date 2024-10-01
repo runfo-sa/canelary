@@ -7,7 +7,7 @@ namespace PreviewLabelary
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            if (SettingsService.Instance.PreviewEngine == "Labelary")
+            if (SettingsService.Instance.Preview == "Labelary")
             {
                 PreviewServiceProvider.Set(content => new Labelary(content));
                 // Como cambiar el regex de la variable:

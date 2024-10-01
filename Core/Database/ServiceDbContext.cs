@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Database
 {
     /// <summary>
-    /// Instancia de conexión con la base de datos del servicio
+    /// Conexión con la base de datos, en el esquema del servicio
     /// </summary>
     public class ServiceDbContext : DbContext
     {
         /// <summary>
-        /// Tabla que almacena el estado de todos los clientes
+        /// Estado de los clientes
         /// </summary>
         public DbSet<Client> EstadoCliente { get; set; }
 

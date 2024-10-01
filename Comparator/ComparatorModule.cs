@@ -4,7 +4,7 @@ using Core.Services;
 
 namespace Comparator
 {
-    [Module(ModuleName = "Comparador#True#Compare#2", OnDemand = true)]
+    [Module(ModuleName = "Comparar", OnDemand = true)]
     public class ComparatorModule : IModule
     {
         private IContainerProvider? _container;
@@ -16,7 +16,7 @@ namespace Comparator
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterInstance(new ModuleLoaderService("Comparador", CreateWindow));
+            containerRegistry.RegisterInstance(new ModuleLoaderService("Comparar", CreateWindow));
             containerRegistry.RegisterDialog<SelectLabelsDialog>();
         }
 
@@ -25,7 +25,7 @@ namespace Comparator
             var view = _container?.Resolve<Views.Comparator>();
             var win = new AdonisWindow
             {
-                Title = $"Visual Ternera - Comparador",
+                Title = $"Visual Ternera - Comparar",
                 Content = view
             };
 

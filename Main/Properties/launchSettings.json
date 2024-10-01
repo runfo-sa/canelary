@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Main": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\soft\\PiQuatroRunfo\\Etiquetas\\CAJA_BRASIL.e01\""
-    }
-  }
-}

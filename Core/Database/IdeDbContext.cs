@@ -4,20 +4,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database
 {
+    /// <summary>
+    /// Conexión con la base de datos, en el esquema del editor
+    /// </summary>
     public class IdeDbContext : DbContext
     {
         /// <summary>
-        /// Tabla con las reglas que se aplican en el proceso de cohesion
+        /// Reglas que se aplican en el proceso de verificación
         /// </summary>
         public DbSet<Rule> Rule { get; set; }
 
         /// <summary>
-        /// Variables que debe mirar cada regla en el proceso de cohesion
+        /// Variables que debe mirar cada regla en el proceso de verificación
         /// </summary>
         public DbSet<RuleAttributes> RuleAttributes { get; set; }
 
         /// <summary>
-        ///
+        /// Asociación entre las reglas y las etiquetas
         /// </summary>
         public DbSet<RuleLabel> RuleLabel { get; set; }
 

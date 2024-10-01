@@ -5,7 +5,7 @@ using Editor.Views.Dialogs;
 
 namespace Editor
 {
-    [Module(ModuleName = "Editor#True#FileEdit#1", OnDemand = true)]
+    [Module(ModuleName = "Editar", OnDemand = true)]
     public class EditorModule(IRegionManager regionManager) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;
@@ -18,7 +18,7 @@ namespace Editor
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterInstance(new ModuleLoaderService("Editor", CreateWindow));
+            containerRegistry.RegisterInstance(new ModuleLoaderService("Editar", CreateWindow));
             containerRegistry.RegisterDialog<ResizeLabelDialog>();
 
             _regionManager.RegisterViewWithRegion("Editor#MenuRegion", typeof(Menu));
@@ -32,7 +32,7 @@ namespace Editor
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - Editor",
+                Title = $"Visual Ternera - Editar",
                 Content = _container?.Resolve<Views.Editor>()
             }.Show();
         }

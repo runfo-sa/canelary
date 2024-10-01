@@ -2,6 +2,9 @@
 
 namespace Core.Services
 {
+    /// <summary>
+    /// Servicio encargado de vincular los modulos con una sola instancia correspondiente.
+    /// </summary>
     public class ModuleLoaderService
     {
         private static readonly Lazy<IEventAggregator> _lazyEventAggregator =
@@ -13,11 +16,7 @@ namespace Core.Services
         {
             EventAggregator
                 .GetEvent<LoadModuleEvent>()
-                .Subscribe(action, ThreadOption.UIThread, true, name =>
-                {
-                    var pos = name.IndexOf('#');
-                    return (pos > 0) ? name[..pos] == moduleName : name == moduleName;
-                });
+                .Subscribe(action, ThreadOption.UIThread, true, name => name == moduleName);
         }
     }
 }

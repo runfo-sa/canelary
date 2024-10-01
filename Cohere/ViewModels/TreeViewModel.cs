@@ -7,7 +7,7 @@ namespace Cohere.ViewModels
 {
     public class TreeViewModel : BindableBase
     {
-        public ObservableCollection<object> Tree { get => _tree.Root; set { } }
+        public ObservableCollection<object> Tree { get; set; }
         public DelegateCommand ClickSelectedCommand { get; private set; }
         public DelegateCommand<KeyEventArgs> PressSelectedCommand { get; private set; }
         public DelegateCommand<object?> ChangedItemCommand { get; private set; }
@@ -18,6 +18,7 @@ namespace Cohere.ViewModels
 
         public TreeViewModel(ICommandService commandService)
         {
+            Tree = _tree.InitTree();
             _commandService = commandService;
             PressSelectedCommand = new(PressSelected);
             ChangedItemCommand = new((obj) => _currentItem = obj);

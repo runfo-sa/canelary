@@ -3,9 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Database.ServiceDbModels
 {
-    /// <summary>
-    /// Representación del estado de un cliente del servicio
-    /// </summary>
     [PrimaryKey(nameof(Id))]
     [Index(nameof(Cliente), IsUnique = true)]
     public class Client

@@ -5,7 +5,6 @@ using Core.Services.SettingsModel;
 using Core.View;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Main.ViewModels;
-using Main.Views;
 using System.Globalization;
 using System.Reflection;
 using System.Windows;
@@ -17,7 +16,7 @@ namespace Main
     {
         protected override Window CreateShell()
         {
-            // Vinculamos las exepciones no capturadas a una funcion
+            // Enviamos las exepciones no capturadas a una funcion
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ResolveException);
 
             // Asignamos la región a utilizar para el formato de números y fechas
@@ -82,18 +81,6 @@ namespace Main
         {
             ResourceLocator.SetColorScheme(Current.Resources,
                 theme == Theme.Dark ? ResourceLocator.DarkColorScheme : ResourceLocator.LightColorScheme);
-        }
-
-        public static string? FilePath { get; private set; }
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-            if (e.Args != null && e.Args.Length > 0)
-            {
-                FilePath = e.Args[0];
-                //TODO: Throw event
-            }
         }
     }
 }

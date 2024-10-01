@@ -169,6 +169,10 @@ BEGIN
     FROM [etiquetas].[Etiquetas]
     WHERE idEtiqueta = @idEtiqueta
 
+    UPDATE A SET A.[version] = @version
+    FROM [etiquetas].[DefinicionEtiquetas] as A
+    WHERE A.[idEtiqueta] = @idEtiqueta
+
     DROP TABLE #etiquetas_tmp
 END
 GO
@@ -193,7 +197,7 @@ BEGIN
 END
 GO
 
-CREATE or ALTER PROC [etiquetas].[CrearEtiqueta](@nombre VARCHAR(MAX), @descripcion VARCHAR(MAX), @codigo NVARCHAR(MAX)) as
+CREATE or ALTER PROC [etiquetas].[CrearEtiqueta](@nombre VARCHAR(MAX), @descripcion VARCHAR(MAX) = '', @codigo NVARCHAR(MAX)) as
 BEGIN
     DECLARE @idEtiqueta INT
     

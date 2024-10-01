@@ -1,32 +1,43 @@
-﻿# Visual Ternera config file
+﻿# Visual Ternera archivo de configuración
 
 # - Cadena de conexión con la base de datos SQL Server
-SqlConnection: ""
+SqlConnection: "Server=rafatest.runfosa.local;Database=VisualTernera;User=amarco;Password=$Homu177013;Encrypt=True;TrustServerCertificate=True"
 
-# - Dirección al archivo template de RE-CAL-22
-RecallTemplate: ""
+# - Dirección a la plantilla utilizada para generar un reporte de cambios
+ReportTemplate: "C:\\Users\\Agustin.Marco\\Documents\\RE-CAL-22 - Template.docx"
 
-# - Tema del editor, posibles modos: dark, light
+# - Tema del editor, posibles modos: Dark, Light
 Theme: Dark
 
 # - Region a usar por el programa, para darle formato a las fechas y numeros
 Culture: "es-MX"
 
-# - Extensión de los archivos de etiqueta, sirve para filtrar
-EtiquetasExtension: "e01"
+# - Extensión de los archivos de etiqueta
+Extension: "e01"
 
-# - Lista de directorios virtuales, por los cuales se deberian filtrar la carpeta de etiquetas
+# - Lista de directorios virtuales, con los cuales se generera la jerarquía de etiquetas
 VirtualDirectories:
   - Name: "Caja"
     Filter: "CAJA"
   - Name: "Primaria"
     Filter: "PRIMARIA"
 
-# - Modulo utilizado para generar la preview de etiquetas
-PreviewEngine: "Labelary"
+# - Servicio responsable de generar una previsualización digital de la etiqueta seleccionada
+Preview: "Labelary"
 
-# - Backend utilizado
+# - Servicio encargado de proporcionar los datos necesarios para completar las variables encontradas en las etiquetas con datos reales 
 Backend: "Twins"
 
-# - Version system
-VersionSystem: "Git"
+# - Servicio que administra el sistema de control de versionado a utilizar
+Version: "Database"
+
+# - Lista de modulos disponibles en el sistema
+Modules:
+ - Name: "Editar"
+   Icon: FileEdit
+ - Name: "Comparar"
+   Icon: Compare
+ - Name: "Verificar"
+   Icon: NotebookCheck
+ - Name: "Publicar"
+   Icon: Publish 

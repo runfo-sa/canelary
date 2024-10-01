@@ -13,13 +13,19 @@
     <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
-    <PackageReference Include="YamlDotNet" Version="16.1.2" />
+    <PackageReference Include="YamlDotNet" Version="16.1.3" />
   </ItemGroup>
 
   <ItemGroup>
 	  <Content Include="Manual\**">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="View\ExceptionPopUp.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

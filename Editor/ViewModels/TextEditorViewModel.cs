@@ -159,7 +159,7 @@ namespace Editor.ViewModels
 
         private void OpenFile()
         {
-            string extension = SettingsService.Instance.EtiquetasExtension;
+            string extension = SettingsService.Instance.Extension;
             OpenFileDialog dialog = new()
             {
                 Filter =
@@ -201,7 +201,11 @@ namespace Editor.ViewModels
             {
                 CommandService.PreviewCommand.Execute(null);
             }
-            TabsList[CurrentTabIndex].SaveItem();
+
+            if (TabsList[CurrentTabIndex].SaveItem())
+            {
+                CommandService.ReloadTree.Execute(null);
+            }
         }
 
         private void SaveAsFile()
@@ -210,7 +214,10 @@ namespace Editor.ViewModels
             {
                 var item = TabsList[CurrentTabIndex];
                 item.Path = null;
-                item.SaveItem();
+                if (item.SaveItem())
+                {
+                    CommandService.ReloadTree.Execute(null);
+                }
             }
         }
 
@@ -218,7 +225,10 @@ namespace Editor.ViewModels
         {
             foreach (var item in TabsList)
             {
-                item.SaveItem();
+                if (item.SaveItem())
+                {
+                    CommandService.ReloadTree.Execute(null);
+                }
             }
         }
 
@@ -322,8 +332,8 @@ namespace Editor.ViewModels
 
                     AddTab(
                         label.Header.Replace(
-                            $".{SettingsService.Instance.EtiquetasExtension}",
-                            $"_{toDpi?.Display}.{SettingsService.Instance.EtiquetasExtension}",
+                            $".{SettingsService.Instance.Extension}",
+                            $"_{toDpi?.Display}.{SettingsService.Instance.Extension}",
                             StringComparison.CurrentCultureIgnoreCase
                         ),
                         content

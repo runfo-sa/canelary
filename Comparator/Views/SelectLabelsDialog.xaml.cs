@@ -15,9 +15,6 @@ namespace Comparator.Views
         public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
         public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
-        public ListCollectionView LeftVersion { get; set; }
-        public ListCollectionView RightVersion { get; set; }
-
         public IFile LeftLabel => (IFile)leftLabel.SelectedItem;
         public IFile RightLabel => (IFile)rightLabel.SelectedItem;
 
@@ -33,9 +30,9 @@ namespace Comparator.Views
 
             var (files, versions) = VersionServiceProvider.Version.FetchFileVer();
             leftLabel.ItemsSource = files;
-            LeftVersion = new(versions.ToList());
+            leftVersion.ItemsSource = versions;
             rightLabel.ItemsSource = files;
-            RightVersion = new(versions.ToList());
+            rightVersion.ItemsSource = versions;
 
             if (VersionServiceProvider.Version.FetchByFile())
             {
@@ -51,24 +48,14 @@ namespace Comparator.Views
 
         private void LeftFetchFiles(Object sender, SelectionChangedEventArgs e)
         {
-            leftLabel.IsEnabled = false;
-            acceptButton.IsEnabled = false;
-
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(LeftLabel, (string)LeftVersion.CurrentItem);
+            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(LeftLabel, (string)leftVersion.SelectedItem);
             if (VersionServiceProvider.Version.FetchByFile())
             {
-                LeftVersion = new(versions.ToList());
+                leftVersion.ItemsSource = versions;
             }
             else
             {
                 leftLabel.ItemsSource = files;
-            }
-
-            if (leftLabel.ItemsSource is not null)
-            {
-                leftLabel.IsEnabled = true;
-                acceptButton.IsEnabled = true;
-                leftLabel.SelectedIndex = 0;
             }
 
             CloseDialogCommand.RaiseCanExecuteChanged();
@@ -76,24 +63,14 @@ namespace Comparator.Views
 
         private void RightFetchFiles(Object sender, SelectionChangedEventArgs e)
         {
-            rightLabel.IsEnabled = false;
-            acceptButton.IsEnabled = false;
-
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(RightLabel, (string)RightVersion.CurrentItem);
+            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(RightLabel, (string)rightVersion.SelectedItem);
             if (VersionServiceProvider.Version.FetchByFile())
             {
-                RightVersion = new(versions.ToList());
+                rightVersion.ItemsSource = versions;
             }
             else
             {
                 rightLabel.ItemsSource = files;
-            }
-
-            if (rightLabel.ItemsSource is not null)
-            {
-                rightLabel.IsEnabled = true;
-                acceptButton.IsEnabled = true;
-                rightLabel.SelectedIndex = 1;
             }
 
             CloseDialogCommand.RaiseCanExecuteChanged();

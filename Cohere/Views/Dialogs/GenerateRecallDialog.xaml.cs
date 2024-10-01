@@ -15,7 +15,7 @@ namespace Cohere.Views
 
         public DelegateCommand CloseDialogCommand => new(() =>
         {
-            if (SettingsService.Instance.RecallTemplate is not null)
+            if (SettingsService.Instance.ReportTemplate is not null)
             {
                 var dict = new Dictionary<string, string>()
                 {
@@ -33,7 +33,7 @@ namespace Cohere.Views
 
                 var timestamp = DateTime.Now.ToString("yyMMdd_HH-mm-ss");
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"RE-CAL-22_{timestamp}.docx");
-                File.Copy(SettingsService.Instance.RecallTemplate, path, true);
+                File.Copy(SettingsService.Instance.ReportTemplate, path, true);
 
                 using var doc = WordprocessingDocument.Open(path, true);
 

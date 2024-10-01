@@ -8,7 +8,7 @@
                              xmlns:prism="http://prismlibrary.com/"
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                              Title="Visual Ternera - Main"
-                             Height="576"
+                             Height="690"
                              Width="1024"
                              WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -40,7 +40,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type model:ModuleAction}">
                                     <Button Command="{Binding Command}"
-                                            CommandParameter="{Binding Metadata.RawName}"
+                                            CommandParameter="{Binding Module.Name}"
                                             HorizontalContentAlignment="Stretch"
                                             Margin="15">
                                         <Grid>
@@ -48,13 +48,13 @@
                                                 <ColumnDefinition Width="25*" />
                                                 <ColumnDefinition Width="75*" />
                                             </Grid.ColumnDefinitions>
-                                            <materialIcons:MaterialIcon Kind="{Binding Metadata.Icon}"
+                                            <materialIcons:MaterialIcon Kind="{Binding Module.Icon}"
                                                                         Width="Auto" />
                                             <TextBlock Grid.Column="1"
                                                        FontSize="32"
                                                        FontWeight="DemiBold"
                                                        HorizontalAlignment="Center"
-                                                       Text="{Binding Metadata.Name}"
+                                                       Text="{Binding Module.Name}"
                                                        VerticalAlignment="Center" />
                                         </Grid>
                                     </Button>

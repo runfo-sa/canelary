@@ -1,6 +1,6 @@
 ﻿using AdonisUI.Controls;
 
-namespace Main.Views
+namespace Core.View
 {
     public partial class ExceptionPopUp : AdonisWindow
     {

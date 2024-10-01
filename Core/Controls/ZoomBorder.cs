@@ -6,7 +6,9 @@ using System.Windows.Media;
 namespace Core.Controls
 {
     /// <summary>
-    /// Custom control para manipular el zoom de las imagenes.
+    /// Permite modificar el zoom y desplazamiento de las imagenes
+    /// <br/>
+    /// Fuente: <see href="https://stackoverflow.com/questions/741956/pan-zoom-image"/>
     /// </summary>
     public class ZoomBorder : Border
     {
@@ -28,10 +30,7 @@ namespace Core.Controls
 
         public override UIElement Child
         {
-            get
-            {
-                return base.Child;
-            }
+            get => base.Child;
             set
             {
                 if (value != null && value != Child)
@@ -52,12 +51,12 @@ namespace Core.Controls
                 group.Children.Add(tt);
                 _child.RenderTransform = group;
                 _child.RenderTransformOrigin = new Point(0.0, 0.0);
-                MouseWheel += child_MouseWheel;
-                MouseLeftButtonDown += child_MouseLeftButtonDown;
-                MouseLeftButtonUp += child_MouseLeftButtonUp;
-                MouseMove += child_MouseMove;
+                MouseWheel += Child_MouseWheel;
+                MouseLeftButtonDown += Child_MouseLeftButtonDown;
+                MouseLeftButtonUp += Child_MouseLeftButtonUp;
+                MouseMove += Child_MouseMove;
                 PreviewMouseRightButtonDown += new MouseButtonEventHandler(
-                  child_PreviewMouseRightButtonDown);
+                  Child_PreviewMouseRightButtonDown);
             }
         }
 
@@ -79,7 +78,7 @@ namespace Core.Controls
 
         #region Child Events
 
-        private void child_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (_child != null)
             {
@@ -87,7 +86,7 @@ namespace Core.Controls
                 var tt = GetTranslateTransform(_child);
 
                 double zoom = e.Delta > 0 ? .2 : -.2;
-                if (!(e.Delta > 0) && (st.ScaleX < .4 || st.ScaleY < .4))
+                if ((e.Delta <= 0) && (st.ScaleX < .4 || st.ScaleY < .4))
                     return;
 
                 Point relative = e.GetPosition(_child);
@@ -105,7 +104,7 @@ namespace Core.Controls
             }
         }
 
-        private void child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (_child != null)
             {
@@ -117,7 +116,7 @@ namespace Core.Controls
             }
         }
 
-        private void child_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Child_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (_child != null)
             {
@@ -126,22 +125,19 @@ namespace Core.Controls
             }
         }
 
-        void child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        void Child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Reset();
         }
 
-        private void child_MouseMove(object sender, MouseEventArgs e)
+        private void Child_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_child != null)
+            if (_child != null && _child.IsMouseCaptured)
             {
-                if (_child.IsMouseCaptured)
-                {
-                    var tt = GetTranslateTransform(_child);
-                    Vector v = _start - e.GetPosition(this);
-                    tt.X = _origin.X - v.X;
-                    tt.Y = _origin.Y - v.Y;
-                }
+                var tt = GetTranslateTransform(_child);
+                Vector v = _start - e.GetPosition(this);
+                tt.X = _origin.X - v.X;
+                tt.Y = _origin.Y - v.Y;
             }
         }
 

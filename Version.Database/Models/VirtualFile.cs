@@ -1,4 +1,5 @@
 ﻿using Core.FileTree;
+using Core.View;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using VersionDatabase.Db;
@@ -7,7 +8,7 @@ namespace Version.Database.Models
 {
     public class VirtualFile(string name, int id) : IFile
     {
-        public string Path { get; set; } = $"{name};{id}";
+        public string Path { get; set; } = $"{name}@{id}";
 
         public string Name { get; set; } = name;
 
@@ -42,7 +43,27 @@ namespace Version.Database.Models
             return context.Etiquetas
                 .Where(e => e.IdEtiqueta == _id)
                 .Select(e => e.Version.ToString())
-                .AsEnumerable();
+                .ToList();
+        }
+
+        public bool Create(string content)
+        {
+            using var context = new DatabaseDbContext();
+
+            var nombreParam = new SqlParameter("@nombre", Name);
+            var codParam = new SqlParameter("@codigo", content);
+
+            try
+            {
+                context.Database.ExecuteSqlRaw("EXEC [etiquetas].[CrearEtiqueta] @nombre, @codigo", nombreParam, codParam);
+            }
+            catch (SqlException ex)
+            {
+                ExceptionPopUp popUp = new(ex.GetBaseException().Message);
+                popUp.ShowDialog();
+                return false;
+            }
+            return true;
         }
     }
 }

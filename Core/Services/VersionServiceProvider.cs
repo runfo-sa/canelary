@@ -18,17 +18,17 @@
 
         public static void Set(IVersion version)
         {
-            if (version.GetType().Name == SettingsService.Instance.VersionSystem)
+            if (version.GetType().Name == SettingsService.Instance.Version)
             {
                 Version = version;
             }
         }
 
-        public static void SetView(string versionName, Type viewType, IRegionManager regionManager)
+        public static void SetView(string versionName, string region, Type viewType, IRegionManager regionManager)
         {
-            if (versionName == SettingsService.Instance.VersionSystem)
+            if (versionName == SettingsService.Instance.Version)
             {
-                regionManager.RegisterViewWithRegion("Main#VersionRegion", viewType);
+                regionManager.RegisterViewWithRegion(region, viewType);
             }
         }
     }

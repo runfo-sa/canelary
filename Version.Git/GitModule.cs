@@ -16,7 +16,8 @@ namespace VersionGit
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            VersionServiceProvider.SetView("Git", typeof(VersionView), _regionManager);
+            VersionServiceProvider.SetView("Git", "Main#VersionRegion", typeof(VersionView), _regionManager);
+            VersionServiceProvider.SetView("Git", "Publicar#Region", typeof(PublishView), _regionManager);
         }
     }
 }

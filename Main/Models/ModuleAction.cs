@@ -1,6 +1,9 @@
-﻿using Core.Models;
+﻿using Core.Services.SettingsModel;
 
 namespace Main.Models
 {
-    public record struct ModuleAction(ModuleMetadata Metadata, DelegateCommand<string> Command);
+    /// <summary>
+    /// Vincula un <see cref="Core.Services.SettingsModel.Module"/> con un comando.
+    /// </summary>
+    public record struct ModuleAction(Module Module, DelegateCommand<string> Command);
 }

@@ -40,5 +40,8 @@
 
         private readonly CompositeCommand _resizeCommand = new();
         public CompositeCommand ResizeCommand => _resizeCommand;
+
+        private readonly CompositeCommand _reloadTree = new();
+        public CompositeCommand ReloadTree => _reloadTree;
     }
 }
