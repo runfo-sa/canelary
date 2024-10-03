@@ -1,7 +1,7 @@
 ﻿using Comparator.Models;
-using Core.FileTree;
+using Core.Events;
 using Core.Models;
-using Core.Services;
+using Core.Services.VersionModel;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,11 +15,13 @@ namespace Comparator.Views
         public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
         public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
-        public IFile LeftLabel => (IFile)leftLabel.SelectedItem;
-        public IFile RightLabel => (IFile)rightLabel.SelectedItem;
-
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
+
+        private static readonly Lazy<IEventAggregator> _lazyEventAggregator =
+            new(() => ContainerLocator.Container.Resolve<IEventAggregator>());
+
+        private static IEventAggregator EventAggregator => _lazyEventAggregator.Value;
 
         public SelectLabelsDialog()
         {
@@ -28,62 +30,31 @@ namespace Comparator.Views
 
             CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
 
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer();
-            leftLabel.ItemsSource = files;
-            leftVersion.ItemsSource = versions;
-            rightLabel.ItemsSource = files;
-            rightVersion.ItemsSource = versions;
-
-            if (VersionServiceProvider.Version.FetchByFile())
-            {
-                leftLabel.SelectionChanged += LeftFetchFiles;
-                rightLabel.SelectionChanged += RightFetchFiles;
-            }
-            else
-            {
-                leftVersion.SelectionChanged += LeftFetchFiles;
-                rightVersion.SelectionChanged += RightFetchFiles;
-            }
+            EventAggregator
+             .GetEvent<RecvFilesEvent>()
+             .Subscribe(RecvFiles);
         }
 
-        private void LeftFetchFiles(Object sender, SelectionChangedEventArgs e)
+        private static void ClosingDialog()
         {
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(LeftLabel, (string)leftVersion.SelectedItem);
-            if (VersionServiceProvider.Version.FetchByFile())
-            {
-                leftVersion.ItemsSource = versions;
-            }
-            else
-            {
-                leftLabel.ItemsSource = files;
-            }
-
-            CloseDialogCommand.RaiseCanExecuteChanged();
+            EventAggregator.GetEvent<SendFilesEvent>().Publish();
         }
 
-        private void RightFetchFiles(Object sender, SelectionChangedEventArgs e)
+        private void RecvFiles(ComparasionFiles files)
         {
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer(RightLabel, (string)rightVersion.SelectedItem);
-            if (VersionServiceProvider.Version.FetchByFile())
-            {
-                rightVersion.ItemsSource = versions;
-            }
-            else
-            {
-                rightLabel.ItemsSource = files;
-            }
+            var sr = new SelectionResult(
+                files.Left,
+                files.Right,
+                (LabelDpi)DpiList.CurrentItem,
+                (LabelSize)SizeList.CurrentItem
+            );
 
-            CloseDialogCommand.RaiseCanExecuteChanged();
-        }
-
-        private void ClosingDialog()
-        {
-            var sr = new SelectionResult(LeftLabel, RightLabel, (LabelDpi)DpiList.CurrentItem, (LabelSize)SizeList.CurrentItem);
             var result = new DialogResult
             {
                 Parameters = new DialogParameters { { "SelectionResult", sr } },
                 Result = ButtonResult.OK
             };
+
             RequestClose.Invoke(result);
         }
 

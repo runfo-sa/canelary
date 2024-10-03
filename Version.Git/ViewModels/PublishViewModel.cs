@@ -22,7 +22,8 @@ namespace VersionGit.ViewModels
 
         public PublishViewModel()
         {
-            var (files, versions) = VersionServiceProvider.Version.FetchFileVer();
+            var files = VersionServiceProvider.Version.ListFiles();
+            var versions = VersionServiceProvider.Version.ListVersions();
             Versions = new(versions.ToList());
             Files = new(files.Select(f => f.Name).ToList());
 

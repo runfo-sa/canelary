@@ -4,7 +4,7 @@ using VersionDatabase.Views;
 
 namespace VersionDatabase
 {
-    [Module(ModuleName = "Database#False", OnDemand = false)]
+    [Module(ModuleName = "Database", OnDemand = false)]
     public class DatabaseModule(IRegionManager regionManager) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;
@@ -18,6 +18,7 @@ namespace VersionDatabase
         {
             VersionServiceProvider.SetView("Database", "Main#VersionRegion", typeof(VersionView), _regionManager);
             VersionServiceProvider.SetView("Database", "Publicar#Region", typeof(PublishView), _regionManager);
+            VersionServiceProvider.SetView("Database", "Comparator#Selector", typeof(CompareSelectorView), _regionManager);
         }
     }
 }

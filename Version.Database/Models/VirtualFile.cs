@@ -12,15 +12,18 @@ namespace Version.Database.Models
 
         public string Name { get; set; } = name;
 
-        private readonly int _id = id;
+        public readonly int Id = id;
+
+        public int? Version { get; set; } = -1;
 
         public string Read()
         {
             using var context = new DatabaseDbContext();
 
-            var idParam = new SqlParameter("@idEtiqueta", _id);
+            var idParam = new SqlParameter("@idEtiqueta", Id);
+            var verParam = new SqlParameter("@version", Version);
             var code = context.Database
-                .SqlQueryRaw<string?>("EXEC [etiquetas].[GenerarCodigo] @idEtiqueta", idParam)
+                .SqlQueryRaw<string?>("EXEC [etiquetas].[GenerarCodigo] @idEtiqueta, @version", idParam, verParam)
                 .AsEnumerable()
                 .FirstOrDefault();
 
@@ -31,7 +34,7 @@ namespace Version.Database.Models
         {
             using var context = new DatabaseDbContext();
 
-            var idParam = new SqlParameter("@idEtiqueta", _id);
+            var idParam = new SqlParameter("@idEtiqueta", Id);
             var codParam = new SqlParameter("@codigo", content);
 
             context.Database.ExecuteSqlRaw("EXEC [etiquetas].[ActualizarEtiqueta] @idEtiqueta, @codigo", idParam, codParam);
@@ -41,7 +44,7 @@ namespace Version.Database.Models
         {
             var context = new DatabaseDbContext();
             return context.Etiquetas
-                .Where(e => e.IdEtiqueta == _id)
+                .Where(e => e.IdEtiqueta == Id)
                 .Select(e => e.Version.ToString())
                 .ToList();
         }

@@ -10,7 +10,7 @@ namespace VersionGit.Models
     {
         public string? FolderPath { get; set; }
 
-        public static IEnumerable<string> ListVersions()
+        public IEnumerable<string> ListVersions(IFile? file = null)
         {
             return GitInner.RunGitCommand(
                  "for-each-ref",
@@ -21,27 +21,20 @@ namespace VersionGit.Models
              .Prepend("Local");
         }
 
-        public IEnumerable<IFile> ListFiles()
+        public IEnumerable<IFile> ListFiles(string version = "Local")
         {
+            if (version != "Local")
+            {
+                return LoadGitFiles(version);
+            }
             return Directory
                 .GetFiles(Settings.Instance.EtiquetasDir, $"*.{SettingsService.Instance.Extension}")
                 .Select(f => new LabelFile(f));
         }
 
-        public (IEnumerable<IFile>, IEnumerable<String>) FetchFileVer(IFile? file = null, String version = "Local")
-        {
-            var versions = ListVersions();
-
-            if (version == "Local")
-            {
-                return (ListFiles(), versions);
-            }
-            return (LoadGitFiles(version), versions);
-        }
-
         public static IEnumerable<LabelFile> LoadGitFiles(string tag)
         {
-            string path = Path.Combine(Path.GetTempPath(), $"Visual Ternera - tag");
+            string path = Path.Combine(Path.GetTempPath(), $"Visual Ternera - {tag}");
             Directory.CreateDirectory(path);
 
             if (GitInner.RunGitCommand("tag", "--points-at HEAD", path) != tag)
@@ -57,13 +50,11 @@ namespace VersionGit.Models
                 .Select(f => new LabelFile(f));
         }
 
-        public bool SaveFile(String path, String content)
+        public bool SaveFile(string path, string content)
         {
             new LabelFile(path).Write(content);
             return true;
         }
-
-        public Boolean FetchByFile() => false;
 
         public void Publish()
         {

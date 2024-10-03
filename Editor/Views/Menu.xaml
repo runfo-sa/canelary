@@ -62,10 +62,6 @@
                       IsChecked="True"
                       Header="_Habilitar Linter" />
         </MenuItem>
-        <MenuItem Header="_Git">
-            <MenuItem Header="_Actualizar repositorio local" />
-            <MenuItem Header="_Publicar cambios" />
-        </MenuItem>
         <MenuItem Header="_?">
             <MenuItem Command="{Binding HelpCommand}"
                       Header="_Ayuda" />

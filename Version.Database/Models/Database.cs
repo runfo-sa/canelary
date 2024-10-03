@@ -8,14 +8,26 @@ namespace VersionDatabase.Models
 {
     public class Database : IVersion
     {
-        public IEnumerable<IFile> ListFiles()
+        public IEnumerable<IFile> ListFiles(string version = "Local")
         {
             using var context = new DatabaseDbContext();
+
             return context.Etiquetas
                 .Select(e => new { e.Nombre, e.IdEtiqueta })
                 .Distinct()
                 .Select(n => new VirtualFile(n.Nombre, n.IdEtiqueta))
                 .ToList();
+        }
+
+        public IEnumerable<string> ListVersions(IFile? file = null)
+        {
+            if (file is VirtualFile vfile)
+            {
+                return vfile.ListVersions();
+            }
+
+            var files = (IEnumerable<VirtualFile>)ListFiles();
+            return files.First().ListVersions();
         }
 
         public bool SaveFile(string path, string content)
@@ -34,18 +46,6 @@ namespace VersionDatabase.Models
                 return new VirtualFile(name, 0).Create(content);
             }
         }
-
-        public (IEnumerable<IFile>, IEnumerable<String>) FetchFileVer(IFile? file = null, String version = "Local")
-        {
-            var files = (IEnumerable<VirtualFile>)ListFiles();
-            if (file is VirtualFile vfile)
-            {
-                return (files, vfile.ListVersions());
-            }
-            return (files, files.First().ListVersions());
-        }
-
-        public Boolean FetchByFile() => true;
 
         public void Publish()
         {

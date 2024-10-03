@@ -197,10 +197,16 @@ BEGIN
 END
 GO
 
-CREATE or ALTER PROC [etiquetas].[CrearEtiqueta](@nombre VARCHAR(MAX), @descripcion VARCHAR(MAX) = '', @codigo NVARCHAR(MAX)) as
+CREATE or ALTER PROC [etiquetas].[CrearEtiqueta](@nombre VARCHAR(MAX), @codigo NVARCHAR(MAX), @descripcion VARCHAR(MAX) = '') as
 BEGIN
     DECLARE @idEtiqueta INT
-    
+
+    IF (@nombre in (SELECT nombre FROM [etiquetas].[Etiquetas]))
+    BEGIN
+        RAISERROR('Ya existe una etiqueta con el mismo nombre', 11, 1)
+        RETURN;
+    END
+
     SELECT @idEtiqueta = MAX([idEtiqueta]) + 1
     FROM [etiquetas].[Etiquetas]
 
@@ -210,6 +216,6 @@ BEGIN
     INSERT INTO [etiquetas].[DefinicionEtiquetas]
     VALUES (@idEtiqueta, 1)
 
-    EXEC [etiquetas].[CrearFormato] @idEtiqueta = 1, @codigo = @codigo
+    EXEC [etiquetas].[CrearFormato] @idEtiqueta = @idEtiqueta, @codigo = @codigo
 END
 GO

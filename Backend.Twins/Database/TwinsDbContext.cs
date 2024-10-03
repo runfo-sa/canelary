@@ -1,6 +1,6 @@
-﻿using Core.Services;
+﻿using BackendTwins.Database.Model;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
-using BackendTwins.Database.Model;
 
 namespace BackendTwins.Database
 {

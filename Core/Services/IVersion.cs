@@ -7,13 +7,11 @@ namespace Core.Services
     /// </summary>
     public interface IVersion
     {
-        public IEnumerable<IFile> ListFiles();
+        public IEnumerable<IFile> ListFiles(string version = "Local");
 
-        public (IEnumerable<IFile>, IEnumerable<string>) FetchFileVer(IFile? file = null, string version = "Local");
+        public IEnumerable<string> ListVersions(IFile? file = null);
 
         public bool SaveFile(string path, string content);
-
-        public bool FetchByFile();
 
         public void Publish();
     }

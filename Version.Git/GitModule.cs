@@ -4,7 +4,7 @@ using VersionGit.Views;
 
 namespace VersionGit
 {
-    [Module(ModuleName = "Git#False", OnDemand = false)]
+    [Module(ModuleName = "Git", OnDemand = false)]
     public class GitModule(IRegionManager regionManager) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;

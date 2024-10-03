@@ -3,7 +3,7 @@ using Core.Services;
 
 namespace BackendTwins
 {
-    [Module(ModuleName = "TwinsBackend#False", OnDemand = false)]
+    [Module(ModuleName = "TwinsBackend", OnDemand = false)]
     public class TwinsModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)

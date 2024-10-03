@@ -1,84 +1,28 @@
 ﻿<UserControl x:Class="Comparator.Views.SelectLabelsDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <GroupBox>
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="1" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="1" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="1" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                <DockPanel LastChildFill="False"
-                           Margin="5">
-                    <TextBlock FontSize="16"
-                               FontWeight="DemiBold"
-                               Text="Etiqueta 1:"
-                               VerticalAlignment="Center" />
-                    <ComboBox x:Name="leftLabel"
-                              DisplayMemberPath="Name"
-                              FontSize="16"
-                              Margin="15,0" />
-                </DockPanel>
-                <DockPanel LastChildFill="False"
-                           Margin="5"
-                           Width="Auto">
-                    <TextBlock FontSize="16"
-                               FontWeight="DemiBold"
-                               Text="Versión:"
-                               VerticalAlignment="Center" />
-                    <ComboBox x:Name="leftVersion"
-                              FontSize="16"
-                              Margin="33, 0" />
-                </DockPanel>
-            </StackPanel>
-
-            <Border Grid.Row="1"
-                    Background="Transparent"
+            <Border Background="Transparent"
                     BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer2BorderBrush}}"
-                    BorderThickness="1" />
+                    BorderThickness="2">
+                <ContentControl prism:RegionManager.RegionName="Comparator#Selector" />
+            </Border>
 
-            <StackPanel Grid.Row="2"
-                        VerticalAlignment="Center">
-                <DockPanel LastChildFill="False"
-                           Margin="5">
-                    <TextBlock FontSize="16"
-                               FontWeight="DemiBold"
-                               Text="Etiqueta 2:"
-                               VerticalAlignment="Center" />
-                    <ComboBox x:Name="rightLabel"
-                              DisplayMemberPath="Name"
-                              FontSize="16"
-                              Margin="15,0" />
-                </DockPanel>
-                <DockPanel LastChildFill="False"
-                           Margin="5">
-                    <TextBlock FontSize="16"
-                               FontWeight="DemiBold"
-                               Text="Versión:"
-                               VerticalAlignment="Center" />
-                    <ComboBox x:Name="rightVersion"
-                              FontSize="16"
-                              Margin="33,0" />
-                </DockPanel>
-            </StackPanel>
-
-            <Border Grid.Row="3"
-                    Background="Transparent"
-                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer2BorderBrush}}"
-                    BorderThickness="1" />
-
-            <DockPanel Grid.Row="4"
+            <DockPanel Grid.Row="1"
                        LastChildFill="False"
                        Margin="0,10">
                 <TextBlock FontSize="14"
@@ -104,12 +48,12 @@
                            VerticalAlignment="Center" />
             </DockPanel>
 
-            <Border Grid.Row="5"
+            <Border Grid.Row="2"
                     Background="Transparent"
                     BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer2BorderBrush}}"
                     BorderThickness="1" />
 
-            <DockPanel Grid.Row="6"
+            <DockPanel Grid.Row="3"
                        LastChildFill="False">
                 <Button DockPanel.Dock="Right"
                         Content="Cancelar"

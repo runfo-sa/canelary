@@ -2,7 +2,7 @@ using Core.Services;
 
 namespace PreviewLabelary
 {
-    [Module(ModuleName = "LabelaryPreview#False", OnDemand = false)]
+    [Module(ModuleName = "LabelaryPreview", OnDemand = false)]
     public class LabelaryModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
