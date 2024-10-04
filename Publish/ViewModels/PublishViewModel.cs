@@ -1,14 +1,12 @@
-﻿using Core.Services;
+﻿using Core.Events;
 
 namespace Publish.ViewModels
 {
-    public class PublishViewModel : BindableBase
+    public class PublishViewModel(IEventAggregator eventAggregator) : BindableBase
     {
-        public DelegateCommand PublishCommand { get; private set; }
-
-        public PublishViewModel()
-        {
-            PublishCommand = new(VersionServiceProvider.Version.Publish);
-        }
+        public DelegateCommand PublishCommand { get; private set; } =
+            new(() => eventAggregator
+                .GetEvent<PublishEvent>()
+                .Publish());
     }
 }

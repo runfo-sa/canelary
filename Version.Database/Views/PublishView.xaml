@@ -9,19 +9,54 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <DataGrid AutoGenerateColumns="False"
                   ColumnWidth="*"
                   FontSize="16"
                   FontWeight="DemiBold"
-                  IsReadOnly="False"
                   ItemsSource="{Binding Labels}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}"
-                                    Header="Nombre" />
-                <DataGridComboBoxColumn  ItemsSource="{Binding Versions}"
-                                         Header="Version"
-                                         SelectedItemBinding="{Binding CurrentVersion}" />
+                                    Header="Nombre"
+                                    IsReadOnly="True"
+                                    Width="3*" />
+                <DataGridTextColumn Binding="{Binding CurrentVersion}"
+                                    Header="Version Actual"
+                                    IsReadOnly="True"
+                                    Width="2*" />
+                <DataGridTemplateColumn Header="Version"
+                                        IsReadOnly="False"
+                                        Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Versions}"
+                                      SelectedItem="{Binding SelectedVersion, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <DockPanel Grid.Row="1"
+                   LastChildFill="True"
+                   Margin="15">
+            <TextBlock DockPanel.Dock="Top"
+                       FontSize="16"
+                       FontWeight="DemiBold"
+                       Text="Ruta de Compilación:"
+                       VerticalAlignment="Center" />
+            <DockPanel Margin="0,15">
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding OpenFolderCommand}"
+                        Content="{materialIcons:MaterialIconExt Kind=Folder, Size=24}" />
+                <TextBox Text="{Binding FolderPath}"
+                         FontSize="16"
+                         Margin="0,0,10,0" />
+            </DockPanel>
+        </DockPanel>
     </Grid>
 </UserControl>

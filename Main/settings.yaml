@@ -1,7 +1,7 @@
 ﻿# Visual Ternera archivo de configuración
 
 # - Cadena de conexión con la base de datos SQL Server
-SqlConnection: ""
+SqlConnection: "Server=rafatest.runfosa.local;Database=VisualTernera;User=amarco;Password=#Mvqntp+7!;Encrypt=True;TrustServerCertificate=True"
 
 # - Dirección a la plantilla utilizada para generar un reporte de cambios
 ReportTemplate: "C:\\Users\\Agustin.Marco\\Documents\\RE-CAL-22 - Template.docx"

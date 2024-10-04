@@ -23,7 +23,9 @@ namespace Publish
             new AdonisWindow
             {
                 Title = $"Visual Ternera - Publicar",
-                Content = _container?.Resolve<Views.Publish>()
+                Content = _container?.Resolve<Views.Publish>(),
+                Height = 512,
+                Width = 768,
             }.Show();
         }
     }
