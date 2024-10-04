@@ -20,8 +20,13 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="copy /y &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules/&quot;" />
-		<Exec Command="copy /y &quot;Version.Git.Settings.yaml&quot; &quot;$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules/&quot;" />
+		<ItemGroup>
+			<ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)"/>
+			<SetFile Include="Version.Git.Settings.yaml"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(ModFile);@(SetFile)"
+			  DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules"
+			  SkipUnchangedFiles="true"/>
 	</Target>
 	
 </Project>

@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="mkdir &quot;$(TargetDir)/Modules&quot;" />
+    <Exec Command="if not exist &quot;$(TargetDir)/Modules&quot; mkdir &quot;$(TargetDir)/Modules&quot;" />
   </Target>
 
 </Project>

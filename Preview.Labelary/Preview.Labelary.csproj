@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /y &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules/&quot;" />
+	  <ItemGroup>
+		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
+	  </ItemGroup>
+	  <Copy SourceFiles="@(ModFile)"
+			DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules"
+			SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
