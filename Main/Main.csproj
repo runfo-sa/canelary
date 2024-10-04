@@ -68,8 +68,8 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist $(TargetDir)/Modules mkdir $(TargetDir)/Modules" />
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="mkdir &quot;$(TargetDir)/Modules&quot;" />
   </Target>
 
 </Project>

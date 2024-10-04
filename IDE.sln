@@ -8,20 +8,41 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{54436F16-D3C8-4C19-82F9-3408D9A58D25}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{6FDCDC82-335B-48DD-B90B-B57A4F619D79}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comparator", "Comparator\Comparator.csproj", "{366A99E9-8646-4124-8D34-2D2750B690D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cohere", "Cohere\Cohere.csproj", "{3BB073B6-9E35-475E-9BE0-5DC9552A00F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend.Twins", "Backend.Twins\Backend.Twins.csproj", "{CEACFCBB-0B04-4D42-BF43-8E32086C0D7A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Preview.Labelary", "Preview.Labelary\Preview.Labelary.csproj", "{537DFA20-5478-4B32-B5C1-20EA7C48DF3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version.Git", "Version.Git\Version.Git.csproj", "{594530AB-C81A-40F8-ADF3-4FB0D6678BC3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version.Database", "Version.Database\Version.Database.csproj", "{93F5F9F6-A081-43AF-B1DF-401EAFA9F9E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publish", "Publish\Publish.csproj", "{62183909-4098-481B-A92E-2C80E684DEE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54436F16-D3C8-4C19-82F9-3408D9A58D25} = {54436F16-D3C8-4C19-82F9-3408D9A58D25}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A19D59C9-80F5-495C-8B78-A5A2E8689DD2}"
 	ProjectSection(SolutionItems) = preProject
