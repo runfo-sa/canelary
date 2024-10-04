@@ -1,7 +1,7 @@
 ﻿# Database config file
 
 # - Cadena de conexión con la base de datos SQL Server
-SqlConnection: "Server=rafatest.runfosa.local;Database=VisualTernera;User=amarco;Password=#Mvqntp+7!;Encrypt=True;TrustServerCertificate=True"
+SqlConnection: "ab"
 
 # - Esquema default en la base de datos
 Schema: "etiquetas"
