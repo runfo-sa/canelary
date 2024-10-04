@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetName)*$(TargetExt)&quot; &quot;$(SolutionDir)Main\bin\Debug\net8.0-windows\Modules\&quot; /Y /S" />
-	<Exec Command="xcopy &quot;Version.Database.Settings.yaml&quot; &quot;$(SolutionDir)Main\bin\Debug\net8.0-windows\Modules\&quot; /Y /S" />
+    <Exec Command="copy /y &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules/&quot;" />
+    <Exec Command="copy /y &quot;Version.Database.Settings.yaml&quot; &quot;$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules/&quot;" />
   </Target>
 	
 </Project>
