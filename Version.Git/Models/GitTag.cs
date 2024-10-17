@@ -11,8 +11,5 @@
             string[] inputs = input.Split('|', StringSplitOptions.TrimEntries);
             return new GitTag(inputs[0], inputs[1], inputs[2]);
         }
-
-        private static GitTag _local = new("Local", DateTime.Now.ToString(), "Cambios locales");
-        public static GitTag Local => _local;
     }
 }

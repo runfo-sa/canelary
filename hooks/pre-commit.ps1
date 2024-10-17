@@ -25,7 +25,7 @@ foreach($ext in $listOfExtensions) {
         }
         Write-Host "Checking $fileName for secrets"
         foreach($secretName in $listOfSecretNodes) {
-			$pattern = $secretName + ': "$(acceptableString)"'
+			$pattern = $secretName + ': "' + $acceptableString + '"'
 			$settings = Select-String -Path $fileName -Pattern $pattern
 			if ($settings -ne $null) {
 				$str = "[$fileName] contains text other than '$acceptableString', please replace this with $acceptableString before commiting."

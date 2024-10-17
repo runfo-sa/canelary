@@ -87,20 +87,27 @@ CREATE or ALTER VIEW [etiquetas].[ListarEtiquetas] AS
     FROM [etiquetas].[Etiquetas]
 GO
 
-CREATE or ALTER PROC [etiquetas].[GenerarCodigo](@idEtiqueta int) as
+CREATE or ALTER PROC [etiquetas].[GenerarCodigo](@idEtiqueta int, @version int = -1) as
 BEGIN
     SET NOCOUNT ON
 
-    DECLARE @version INT
+    DECLARE @_version INT
     DECLARE @codigo NVARCHAR(MAX)
 
-    SELECT @version = [version]
-    FROM [etiquetas].[DefinicionEtiquetas]
-    WHERE idEtiqueta = @idEtiqueta
+    IF (@version = -1)
+    BEGIN
+        SELECT @_version = [version]
+        FROM [etiquetas].[DefinicionEtiquetas]
+        WHERE idEtiqueta = @idEtiqueta
+    END
+    ELSE
+    BEGIN
+        SET @_version = @version
+    END
 
     SELECT @codigo = coalesce(@codigo + CHAR(13)+CHAR(10) + comandos, comandos)
 	FROM [etiquetas].[FormatoEtiquetas]
-	WHERE idEtiqueta = @idEtiqueta and [version] = @version and habilitada = 1
+	WHERE idEtiqueta = @idEtiqueta and [version] = @_version and habilitada = 1
 	ORDER BY idLinea
 
     SELECT @codigo [codigo]

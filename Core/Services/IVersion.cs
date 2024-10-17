@@ -12,7 +12,5 @@ namespace Core.Services
         public IEnumerable<string> ListVersions(IFile? file = null);
 
         public bool SaveFile(string path, string content);
-
-        public void Publish();
     }
 }

@@ -17,7 +17,7 @@
             </Grid.RowDefinitions>
 
             <Border Background="Transparent"
-                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer2BorderBrush}}"
+                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
                     BorderThickness="2">
                 <ContentControl prism:RegionManager.RegionName="Comparator#Selector" />
             </Border>
@@ -50,7 +50,7 @@
 
             <Border Grid.Row="2"
                     Background="Transparent"
-                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer2BorderBrush}}"
+                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
                     BorderThickness="1" />
 
             <DockPanel Grid.Row="3"

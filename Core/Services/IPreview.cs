@@ -26,7 +26,7 @@
         /// Completa las variables de una etiqueta con los datos de un producto especificado.
         /// </summary>
         /// <returns>A si mismo, para concatenar metodos</returns>
-        public IPreview LoadVariables();
+        public IPreview LoadVariables(int? id = null);
 
         /// <summary>
         /// Procesa las configuraciones definidas en la etiqueta para el <see cref="IPreview"/>.

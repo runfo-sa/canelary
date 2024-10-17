@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using Version.Git.Models;
 
 namespace VersionGit.Models
 {
     public static class GitInner
     {
-        public static string RunGitCommand(string command, string args, string workingDirectory)
+        public static ProcessRecord RunGitCommand(string command, string args, string workingDirectory)
         {
-            StringBuilder sb = new();
+            StringBuilder stdo = new();
+            StringBuilder stde = new();
 
             using var proc = new Process
             {
@@ -18,6 +18,7 @@ namespace VersionGit.Models
                     Arguments = $"{command} {args}",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     CreateNoWindow = true,
                     WorkingDirectory = workingDirectory,
                 }
@@ -26,11 +27,16 @@ namespace VersionGit.Models
 
             while (!proc.StandardOutput.EndOfStream)
             {
-                sb.Append($"{proc.StandardOutput.ReadLine()}");
+                stdo.Append($"{proc.StandardOutput.ReadLine()}");
+            }
+
+            while (!proc.StandardError.EndOfStream)
+            {
+                stde.Append($"{proc.StandardError.ReadLine()}");
             }
 
             proc.WaitForExit();
-            return sb.ToString();
+            return new ProcessRecord(proc.ExitCode, stdo.ToString(), stde.ToString());
         }
 
         /// <summary>
@@ -42,6 +48,7 @@ namespace VersionGit.Models
                 "for-each-ref",
                 "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
                 Settings.Instance.EtiquetasDir)
+                .Message
                 .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
                 .Select(GitTag.Parse);
 

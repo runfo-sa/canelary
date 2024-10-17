@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using YamlDotNet.Serialization;
 
-namespace Version.Git.Models
+namespace VersionGit.Models
 {
     public class Settings
     {

@@ -24,8 +24,8 @@ namespace Publish
             {
                 Title = $"Visual Ternera - Publicar",
                 Content = _container?.Resolve<Views.Publish>(),
-                Height = 512,
-                Width = 768,
+                Height = 768,
+                Width = 1024,
             }.Show();
         }
     }

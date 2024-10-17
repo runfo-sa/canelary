@@ -42,7 +42,8 @@
                                     <Button Command="{Binding Command}"
                                             CommandParameter="{Binding Module.Name}"
                                             HorizontalContentAlignment="Stretch"
-                                            Margin="15">
+                                            Margin="15"
+                                            ToolTip="{Binding Module.Description}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="25*" />

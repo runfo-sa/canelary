@@ -13,6 +13,7 @@ namespace Cohere.Models
 
         public ProductoMuestra(Product product, bool printable = false)
         {
+            Id = product.Id;
             Code = product.Code;
             Name = product.Name;
             Senasa = product.Senasa;

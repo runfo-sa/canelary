@@ -65,7 +65,7 @@ namespace Cohere.ViewModels
                 {
                     var label = PreviewServiceProvider
                         .ProvideService(_labelFile.Read())
-                        .LoadVariables();
+                        .LoadVariables(prod.Id);
                     PrinterHelper.SendStringToPrinter(Printers.CurrentItem.ToString()!, label.Content, $"{_labelFile.Name} - {prod.Name}");
                 }
             }

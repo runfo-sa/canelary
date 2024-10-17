@@ -7,8 +7,8 @@
              mc:Ignorable="d">
     <DockPanel LastChildFill="False"
                VerticalAlignment="Bottom">
-        <TextBlock DockPanel.Dock="Left"
-                   FontWeight="DemiBold"
-                   Text="Powered by Database" />
+        <TextBlock x:Name="DbName"
+                   DockPanel.Dock="Left"
+                   FontWeight="DemiBold" />
     </DockPanel>
 </UserControl>

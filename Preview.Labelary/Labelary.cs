@@ -25,9 +25,9 @@ namespace PreviewLabelary
 
         private Metadata? _metadata;
 
-        public IPreview LoadVariables()
+        public IPreview LoadVariables(int? id = null)
         {
-            _content = BackendServiceProvider.Backend.LoadVariables(_content, _metadata?.ProductId ?? 1, ref _error);
+            _content = BackendServiceProvider.Backend.LoadVariables(_content, id ?? _metadata?.ProductId ?? 0, ref _error);
             return this;
         }
 

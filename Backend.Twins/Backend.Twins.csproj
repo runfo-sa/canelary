@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
   </ItemGroup>
 
@@ -19,11 +19,9 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <ItemGroup>
-		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)"/>
+		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
 	  </ItemGroup>
-	  <Copy SourceFiles="@(ModFile)"
-			DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules"
-			SkipUnchangedFiles="true"/>
+	  <Copy SourceFiles="@(ModFile)" DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

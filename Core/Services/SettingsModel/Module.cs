@@ -2,5 +2,5 @@
 
 namespace Core.Services.SettingsModel
 {
-    public record struct Module(string Name, MaterialIconKind Icon);
+    public record struct Module(string Name, MaterialIconKind Icon, string Description);
 }

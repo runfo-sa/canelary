@@ -15,6 +15,7 @@
             <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -39,6 +40,16 @@
         </DockPanel>
 
         <DockPanel Grid.Row="1"
+                   Margin="15,0"
+                   Visibility="{Binding EnablePush}"
+                   VerticalAlignment="Top">
+            <Button Command="{Binding PushCommand}"
+                    Content="Publicar a Repositorio"
+                    FontSize="14"
+                    FontWeight="Normal" />
+        </DockPanel>
+
+        <DockPanel Grid.Row="2"
                    LastChildFill="True"
                    Margin="15">
             <TextBlock DockPanel.Dock="Top"
@@ -57,7 +68,7 @@
         </DockPanel>
 
         <DockPanel Grid.Column="1"
-                   Grid.RowSpan="2"
+                   Grid.RowSpan="3"
                    Margin="15">
             <TextBlock DockPanel.Dock="Top"
                        FontSize="16"

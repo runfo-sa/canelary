@@ -46,10 +46,5 @@ namespace VersionDatabase.Models
                 return new VirtualFile(name, 0).Create(content);
             }
         }
-
-        public void Publish()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

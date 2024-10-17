@@ -54,12 +54,9 @@ namespace Main.ViewModels
             ClientsList = [.. new ServiceDbContext().EstadoCliente];
 
             _moduleManager.Run();
-            ModulesButtons = [
-                .. SettingsService.Instance.Modules
-                .Select(m => {
-                    return new ModuleAction(m, new DelegateCommand<string>(LoadModule));
-                })
-            ];
+            ModulesButtons =
+                [.. SettingsService.Instance.Modules
+                        .Select(m => new ModuleAction(m, new DelegateCommand<string>(LoadModule)))];
         }
 
         private void UpdateTime(object? sender, EventArgs args)

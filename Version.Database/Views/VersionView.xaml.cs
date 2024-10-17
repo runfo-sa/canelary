@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Windows.Controls;
+using VersionDatabase.Db;
 
 namespace VersionDatabase.Views
 {
@@ -7,6 +9,8 @@ namespace VersionDatabase.Views
         public VersionView()
         {
             InitializeComponent();
+            var context = new DatabaseDbContext().Database.GetDbConnection();
+            DbName.Text = $"{context.DataSource}/{context.Database}";
         }
     }
 }
