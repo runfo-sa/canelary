@@ -27,11 +27,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <TextBlock FontWeight="DemiBold"
                            FontSize="26"
-                           Text="Visual Ternera" />
+                           Text="Canelary" />
 
                 <Border Grid.Row="1"
                         Margin="15">
@@ -64,6 +65,13 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </Border>
+
+                <DockPanel Grid.Row="2"
+                           LastChildFill="False">
+                    <TextBlock FontSize="12"
+                               FontWeight="Light"
+                               Text="{Binding Version}" />
+                </DockPanel>
             </Grid>
         </GroupBox>
 
@@ -86,7 +94,8 @@
                            Text="Estado" />
                 <Button DockPanel.Dock="Right"
                         Command="{Binding ChangeThemeCommand}"
-                        Content="{materialIcons:MaterialIconExt Kind=ThemeLightDark, Size=24}" />
+                        Content="{materialIcons:MaterialIconExt Kind=ThemeLightDark, Size=24}"
+                        ToolTip="Cambiar tema Blanco/Negro" />
             </DockPanel>
 
             <Border Grid.Row="1"

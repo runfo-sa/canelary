@@ -169,7 +169,7 @@ namespace BackendTwins.Models
                             break;
 
                         case "FI":
-                            parts[0] = BackendServiceProvider.Backend.GetTranslation(func[2] - '0', parts[0]);
+                            parts[0] = BackendServiceProvider.Backend.GetTranslation(int.Parse(func[2..]), parts[0]);
                             break;
                     }
                 }

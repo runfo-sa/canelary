@@ -84,7 +84,7 @@ namespace VersionGit.ViewModels
             }
             else
             {
-                GitInner.RunGitCommand("clone", $"{Settings.Instance.GitRepo} {FolderPath}", ".");
+                GitInner.RunGitCommand("clone", $"{Settings.Instance.GitRepo} \"{FolderPath}\"", FolderPath);
             }
         }
 

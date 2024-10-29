@@ -6,7 +6,7 @@ namespace Core.FileTree
     /// <summary>
     /// Directorio virtual para separar logicamente distinto tipos de archivos.
     /// </summary>
-    public class VirtualDirectory(string name)
+    public class VirtualDirectory(string name) : BindableBase
     {
         /// <summary>
         /// Nombre del directorio virtual

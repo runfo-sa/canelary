@@ -6,6 +6,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding CommandService.PreviewCommand}"
+                    Key="F5" />
+        <KeyBinding Command="{Binding CommandService.PrintCommand}"
+                    Key="F6" />
+        <KeyBinding Command="{Binding CommandService.NewCommand}"
+                    Key="N"
+                    Modifiers="Ctrl" />
+        <KeyBinding Command="{Binding CommandService.OpenCommand}"
+                    Key="O"
+                    Modifiers="Ctrl" />
+        <KeyBinding Command="{Binding CommandService.SaveCommand}"
+                    Key="S"
+                    Modifiers="Ctrl" />
+        <KeyBinding Command="{Binding CommandService.SaveAllCommand}"
+                    Key="S"
+                    Modifiers="Ctrl+Shift" />
+        <KeyBinding Command="{Binding CommandService.CloseCommand}"
+                    Key="W"
+                    Modifiers="Ctrl" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

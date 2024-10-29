@@ -6,24 +6,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
-    <UserControl.InputBindings>
-        <KeyBinding Command="{Binding CommandService.NewCommand}"
-                    Key="N"
-                    Modifiers="Ctrl" />
-        <KeyBinding Command="{Binding CommandService.OpenCommand}"
-                    Key="O"
-                    Modifiers="Ctrl" />
-        <KeyBinding Command="{Binding CommandService.SaveCommand}"
-                    Key="S"
-                    Modifiers="Ctrl" />
-        <KeyBinding Command="{Binding CommandService.SaveAllCommand}"
-                    Key="S"
-                    Modifiers="Ctrl+Shift" />
-        <KeyBinding Command="{Binding CommandService.CloseCommand}"
-                    Key="W"
-                    Modifiers="Ctrl" />
-    </UserControl.InputBindings>
-
     <Menu>
         <MenuItem Header="_Archivos">
             <MenuItem Command="{Binding CommandService.NewCommand}"
@@ -42,9 +24,6 @@
                       Header="_Guardar todos"
                       InputGestureText="Ctrl+Shift+S" />
             <Separator />
-            <MenuItem Command="{Binding CommandService.CloseCommand}"
-                      Header="_Cerrar archivo"
-                      InputGestureText="Ctrl+W" />
             <MenuItem Command="{Binding CommandService.CloseAllCommand}"
                       Header="_Cerrar todos" />
             <Separator />

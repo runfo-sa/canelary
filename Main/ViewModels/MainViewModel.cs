@@ -5,6 +5,7 @@ using Core.Services;
 using Core.Services.SettingsModel;
 using Main.Models;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Windows.Threading;
 
 namespace Main.ViewModels
@@ -20,6 +21,11 @@ namespace Main.ViewModels
             get => _lastRefreshed;
             set => SetProperty(ref _lastRefreshed, value);
         }
+
+        public static string Version => Assembly.GetExecutingAssembly()
+            .GetCustomAttributes<AssemblyInformationalVersionAttribute>()
+            .Select(x => x.InformationalVersion)
+            .First();
 
         public ObservableCollection<Client> ClientsList { get; set; }
         public ObservableCollection<ModuleAction> ModulesButtons { get; set; }

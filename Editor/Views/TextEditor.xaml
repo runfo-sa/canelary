@@ -76,29 +76,56 @@
                                               LinterData="{Binding LintingData}"
                                               ShowLineNumbers="True"
                                               SyntaxHighlighting="ZPL"
-                                              WordWrap="True" />
+                                              WordWrap="True">
+                        <control:LinterTextEditor.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="Undo" />
+                                <MenuItem Command="Redo" />
+                                <Separator />
+                                <MenuItem Command="Cut" />
+                                <MenuItem Command="Copy" />
+                                <MenuItem Command="Paste" />
+                            </ContextMenu>
+                        </control:LinterTextEditor.ContextMenu>
+                    </control:LinterTextEditor>
                 </DataTemplate>
             </control:TabContent.Template>
         </TabControl>
-        <ScrollViewer Height="128"
-                      Visibility="{Binding ShowErrorWindow}"
-                      VerticalAlignment="Bottom">
-            <ScrollViewer.Background>
+
+        <Grid Height="256"
+              VerticalAlignment="Bottom"
+              Visibility="{Binding ShowErrorWindow}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static adonisUi:Colors.ErrorColor}}"
-                                 Opacity="0.75" />
-            </ScrollViewer.Background>
-            <DockPanel Margin="10"
-                       LastChildFill="False">
-                <TextBlock FontWeight="DemiBold"
-                           FontSize="12"
-                           Text="{Binding ErrorsMessage}" />
-                <Button Content="⤫"
+                                 Opacity="0.85" />
+            </Grid.Background>
+
+            <DockPanel LastChildFill="False"
+                       Margin="15,5">
+                <TextBlock FontSize="16"
+                           FontWeight="DemiBold"
+                           Text="Errores encontrados:" />
+                <Button DockPanel.Dock="Right"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
-                        VerticalAlignment="Top"
-                        DockPanel.Dock="Right"
-                        Command="{Binding CloseErrorWindowCommand}" />
+                        Command="{Binding CloseErrorWindowCommand}"
+                        Content="⤫"
+                        FontSize="16"
+                        FontWeight="DemiBold"
+                        VerticalAlignment="Top" />
             </DockPanel>
-        </ScrollViewer>
+
+            <ScrollViewer Grid.Row="1"
+                          Margin="15,0,22,20">
+                <TextBlock FontWeight="Normal"
+                           FontSize="12"
+                           Text="{Binding ErrorsMessage}" />
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

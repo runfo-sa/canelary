@@ -31,6 +31,7 @@ namespace Editor.ViewModels
                 _previewCommand.RaiseCanExecuteChanged();
                 _printCommand.RaiseCanExecuteChanged();
                 _resizeCommand.RaiseCanExecuteChanged();
+                _closeAllCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -75,9 +76,10 @@ namespace Editor.ViewModels
 
         private readonly DelegateCommand _saveCommand;
         private readonly DelegateCommand _previewCommand;
-        private readonly DelegateCommand<string?> _printCommand;
+        private readonly DelegateCommand _printCommand;
         private readonly DelegateCommand _refreshLinter;
         private readonly DelegateCommand _resizeCommand;
+        private readonly DelegateCommand _closeAllCommand;
         private readonly IDialogService _dialogService;
 
         public TextEditorViewModel(ICommandService commandService, IEditorPreviewMediator mediator, IDialogService dialogService)
@@ -88,8 +90,8 @@ namespace Editor.ViewModels
             CloseMiddleClickCommand = new(CloseMiddleClick);
 
             CommandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(OpenCurrentItem));
-            CommandService.CloseCommand.RegisterCommand(new DelegateCommand<TabItem>(CloseItem));
             CommandService.NewCommand.RegisterCommand(new DelegateCommand(() => AddTab($"new {NextNewItem()}", "^XA\r\n\r\n^XZ")));
+            CommandService.CloseCommand.RegisterCommand(new DelegateCommand<TabItem>(CloseItem));
             CommandService.OpenCommand.RegisterCommand(new DelegateCommand(OpenFile));
             CommandService.SaveAsCommand.RegisterCommand(new DelegateCommand(SaveAsFile));
             CommandService.SaveAllCommand.RegisterCommand(new DelegateCommand(SaveAllFile));
@@ -102,11 +104,14 @@ namespace Editor.ViewModels
             _saveCommand = new DelegateCommand(SaveFile, () => TabsList.Count > 0 && TabsList[CurrentTabIndex].HasUnsavedChanges);
             CommandService.SaveCommand.RegisterCommand(_saveCommand);
 
-            _printCommand = new DelegateCommand<string?>(Print, _ => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
+            _printCommand = new DelegateCommand(Print, () => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
             CommandService.PrintCommand.RegisterCommand(_printCommand);
 
             _resizeCommand = new DelegateCommand(ResizeFile, () => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
             CommandService.ResizeCommand.RegisterCommand(_resizeCommand);
+
+            _closeAllCommand = new DelegateCommand(CloseAll, () => TabsList.Count > 0);
+            CommandService.CloseAllCommand.RegisterCommand(_closeAllCommand);
 
             Mediator.SendErrors.RegisterCommand(new DelegateCommand<string>(ShowErrors));
             Mediator.GenerateLinter.RegisterCommand(new DelegateCommand<string>(async e => await UpdateLinter(e)));
@@ -267,6 +272,14 @@ namespace Editor.ViewModels
             }
         }
 
+        private void CloseAll()
+        {
+            for (int i = TabsList.Count - 1; i >= 0; i--)
+            {
+                CloseItem(TabsList[i]);
+            }
+        }
+
         private void SendToPreview()
         {
             Mediator.GeneratePreview.Execute(TabsList[CurrentTabIndex].Content.Text);
@@ -281,8 +294,9 @@ namespace Editor.ViewModels
             }
         }
 
-        private void Print(string? printer)
+        private void Print()
         {
+            var printer = (string)ToolbarViewModel.Printers.CurrentItem;
             var item = TabsList[CurrentTabIndex];
             var content = PreviewServiceProvider
                 .ProvideService(item.Content.Text)

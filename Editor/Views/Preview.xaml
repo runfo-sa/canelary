@@ -7,15 +7,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d">
-    <UserControl.InputBindings>
-        <KeyBinding Command="{Binding DownSizeCommand}"
-                    Key="E"
-                    Modifiers="Shift" />
-        <KeyBinding Command="{Binding UpSizeCommand}"
-                    Key="Q"
-                    Modifiers="Shift" />
-    </UserControl.InputBindings>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

@@ -1,11 +1,12 @@
 ﻿using Editor.Models;
 using Editor.Services;
-using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TextEditor = ICSharpCode.AvalonEdit.TextEditor;
 
 namespace Editor.Controls
 {
@@ -13,6 +14,7 @@ namespace Editor.Controls
     {
         private readonly TextMarkerService _markerService;
         private ToolTip? _toolTip;
+        private CompletionWindow? _completionWindow;
 
         public static readonly DependencyProperty LinterDataProperty =
             DependencyProperty.Register(
@@ -38,6 +40,8 @@ namespace Editor.Controls
             textView.MouseHover += ShowTooltip;
             textView.MouseHoverStopped += HideTooltip;
             textView.VisualLinesChanged += VisualLinesChanged;
+
+            TextArea.TextEntered += LoadIntellisense;
         }
 
         private void ShowTooltip(object sender, MouseEventArgs e)
@@ -58,7 +62,7 @@ namespace Editor.Controls
                     _toolTip.PlacementTarget = this;
                     _toolTip.Content = new TextBlock
                     {
-                        Text = markerWithToolTip.ToolTip,
+                        Text = (string?)markerWithToolTip.ToolTip,
                         TextWrapping = TextWrapping.Wrap
                     };
                     _toolTip.IsOpen = true;
@@ -99,6 +103,51 @@ namespace Editor.Controls
                 {
                     editor._markerService.Create(l.Offset, l.Length, l.Message);
                 }
+            }
+        }
+
+        private void LoadIntellisense(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == "^" || e.Text == "~")
+            {
+                _completionWindow = new CompletionWindow(TextArea);
+                var data = _completionWindow.CompletionList.CompletionData;
+
+                ZplCompletionList.List
+                    .Where(i => i.Key.StartsWith(e.Text))
+                    .ToList()
+                    .ForEach(i =>
+                    {
+                        data.Add(i.Value);
+                    });
+
+                _completionWindow.WindowStyle = WindowStyle.None;
+                _completionWindow.AllowsTransparency = true;
+                _completionWindow.Style = Style;
+                _completionWindow.Background = Background;
+                _completionWindow.Foreground = Foreground;
+                _completionWindow.BorderThickness = new Thickness(0.0);
+                _completionWindow.Width = 256.0;
+                _completionWindow.CloseAutomatically = false;
+
+                _completionWindow.Show();
+                _completionWindow.Closed += delegate
+                {
+                    _completionWindow = null;
+                };
+            }
+            else if (_completionWindow != null)
+            {
+                var data = _completionWindow.CompletionList.CompletionData;
+                data.Clear();
+
+                ZplCompletionList.List
+                    .Where(i => i.Key.StartsWith(e.Text))
+                    .ToList()
+                    .ForEach(i =>
+                    {
+                        data.Add(i.Value);
+                    });
             }
         }
     }

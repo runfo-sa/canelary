@@ -21,7 +21,7 @@ namespace Editor.Services
 
             public Color? BackgroundColor { get; set; }
             public Color MarkerColor { get; set; }
-            public string? ToolTip { get; set; }
+            public Object? ToolTip { get; set; }
         }
 
         public void Draw(TextView textView, DrawingContext drawingContext)
@@ -104,7 +104,7 @@ namespace Editor.Services
             _textEditor.TextArea.TextView.Redraw(segment);
         }
 
-        public void Create(int offset, int length, string message)
+        public void Create(int offset, int length, object message)
         {
             var m = new TextMarker(offset, length);
             markers.Add(m);

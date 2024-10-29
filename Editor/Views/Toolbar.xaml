@@ -8,14 +8,6 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              Focusable="True"
              mc:Ignorable="d">
-    <UserControl.InputBindings>
-        <KeyBinding Command="{Binding CommandService.PreviewCommand}"
-                    Key="F5" />
-        <KeyBinding Command="{Binding CommandService.PrintCommand}"
-                    CommandParameter="{Binding ElementName=printerList, Path=SelectedItem}"
-                    Key="F6" />
-    </UserControl.InputBindings>
-
     <GroupBox>
         <DockPanel LastChildFill="False">
             <ToolBarTray DockPanel.Dock="Left"
@@ -72,7 +64,6 @@
                         </DockPanel>
                     </Button>
                     <Button Command="{Binding CommandService.PrintCommand}"
-                            CommandParameter="{Binding ElementName=printerList, Path=SelectedItem}"
                             Margin="5,0">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Right"
@@ -82,8 +73,7 @@
                             <materialIcons:MaterialIcon Kind="PrinterOutline" />
                         </DockPanel>
                     </Button>
-                    <ComboBox x:Name="printerList"
-                              ItemsSource="{Binding Printers}"
+                    <ComboBox ItemsSource="{Binding Printers}"
                               Margin="5,0"
                               SelectedIndex="0"
                               Style="{StaticResource {x:Type ComboBox}}" />
