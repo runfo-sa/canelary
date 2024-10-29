@@ -24,7 +24,8 @@ function active_item() {
     });
 
     this.classList.add('is-active');
-    docs.setAttribute('src', "docs/" + this.id + ".html?theme=" + document.documentElement.getAttribute('data-theme'));
+    const theme = encodeURIComponent(document.documentElement.getAttribute('data-theme'));
+    docs.setAttribute('src', "docs/" + this.id + ".html?theme=" + theme);
     document.title = this.textContent;
 }
 
