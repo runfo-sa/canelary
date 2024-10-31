@@ -25,7 +25,7 @@ namespace Comparator
             var view = _container?.Resolve<Views.Comparator>();
             var win = new AdonisWindow
             {
-                Title = $"Visual Ternera - Comparar",
+                Title = $"Canelary - Comparar",
                 Content = view
             };
 

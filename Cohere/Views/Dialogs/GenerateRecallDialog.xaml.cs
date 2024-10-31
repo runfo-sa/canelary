@@ -41,7 +41,7 @@ namespace Cohere.Views
                 {
                     if (dict.TryGetValue(bookmark.Name!, out var value))
                     {
-                        bookmark.Parent.Append(new Paragraph(new Run(new Text(value))));
+                        bookmark.Parent?.AppendChild(new Paragraph(new Run(new Text(value).ToList()).ToList()));
                     }
                 }
 
@@ -49,7 +49,7 @@ namespace Cohere.Views
                 foreach (var prod in _products)
                 {
                     var row = new TableRow();
-                    var cell1 = new TableCell(new Paragraph(new Run(new Text(prod.Senasa))));
+                    var cell1 = new TableCell(new Paragraph(new Run(new Text(prod.Senasa).ToList()).ToList()).ToList());
                     var cell2 = new TableCell(new Paragraph(new Run(new Text(prod.Name))));
                     var cell3 = new TableCell(new Paragraph(new Run(new Text(prod.Code))));
 

@@ -48,15 +48,29 @@ namespace PreviewLabelary
                     .Replace("^FX ", "");
 
                 var deserializer = new DeserializerBuilder().Build();
-                _metadata = deserializer
-                    .Deserialize<Metadata>(rawMetadata);
 
-                if (_metadata.Languages is not null)
+                try
                 {
-                    foreach (var language in _metadata.Languages)
+                    _metadata = deserializer.Deserialize<Metadata>(rawMetadata);
+                    if (_metadata.Languages is not null)
                     {
-                        _content = language.ParseContent(_content);
+                        foreach (var language in _metadata.Languages)
+                        {
+                            _content = language.ParseContent(_content);
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    _error.AppendLine("Ocurrio el siguiente problema al parsear la metadata:");
+                    _error.AppendLine(e.Message);
+                    var inner = e.InnerException;
+                    while (inner != null)
+                    {
+                        _error.AppendLine(inner.Message);
+                        inner = inner.InnerException;
+                    }
+                    _error.AppendLine();
                 }
             }
 

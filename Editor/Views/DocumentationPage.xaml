@@ -7,38 +7,40 @@
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Width="768">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+             Width="512">
+    <GroupBox BorderThickness="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <TextBlock FontSize="24"
-                   FontWeight="DemiBold">
-            <TextBlock.Text>
-                <MultiBinding StringFormat="{}{0}: {1} ({2})">
-                    <Binding Path="CommandName" />
-                    <Binding Path="ShortDesc" />
-                    <Binding Path="Category" />
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+            <TextBlock FontSize="15"
+                       FontWeight="DemiBold">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}: {1} ({2})">
+                        <Binding Path="CommandName" />
+                        <Binding Path="ShortDesc" />
+                        <Binding Path="Category" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
 
-        <Border Grid.Row="1"
-                BorderThickness="2"
-                BorderBrush="DimGray"
-                Margin="5">
-            <TextBlock FontSize="16"
-                       Margin="5"
-                       Text="{Binding LongDesc}"
+            <Border Grid.Row="1"
+                    BorderThickness="2"
+                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1HighlightBorderBrush}}"
+                    Margin="0,10">
+                <TextBlock FontSize="13"
+                           Margin="5"
+                           Text="{Binding LongDesc}"
+                           TextWrapping="Wrap" />
+            </Border>
+
+            <TextBlock Grid.Row="2"
+                       FontSize="13"
+                       Text="{Binding Parameters}"
                        TextWrapping="Wrap" />
-        </Border>
-
-        <TextBlock Grid.Row="2"
-                   FontSize="16"
-                   Text="{Binding Parameters}"
-                   TextWrapping="Wrap" />
-    </Grid>
+        </Grid>
+    </GroupBox>
 </UserControl>

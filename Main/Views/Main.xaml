@@ -7,7 +7,7 @@
                              xmlns:model="clr-namespace:Main.Models"
                              xmlns:prism="http://prismlibrary.com/"
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                             Title="Visual Ternera - Main"
+                             Title="Canelary - Main"
                              Height="690"
                              Width="1024"
                              WindowStartupLocation="CenterScreen">

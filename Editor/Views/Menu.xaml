@@ -40,6 +40,10 @@
                       IsCheckable="True"
                       IsChecked="True"
                       Header="_Habilitar Linter" />
+            <MenuItem Command="{Binding CommandService.ShowErrorsCommand}"
+                      IsCheckable="True"
+                      IsChecked="True"
+                      Header="_Mostrar Errores" />
         </MenuItem>
         <MenuItem Header="_?">
             <MenuItem Command="{Binding HelpCommand}"

@@ -35,11 +35,18 @@ namespace Editor.ViewModels
             }
         }
 
+        private bool _enableErrorMsg = true;
         private Visibility _errorWindow = Visibility.Hidden;
         public Visibility ShowErrorWindow
         {
             get => _errorWindow;
-            set => SetProperty(ref _errorWindow, value);
+            set
+            {
+                if (_enableErrorMsg)
+                {
+                    SetProperty(ref _errorWindow, value);
+                }
+            }
         }
 
         private string? _errorsMessage = null;
@@ -97,6 +104,7 @@ namespace Editor.ViewModels
             CommandService.SaveAllCommand.RegisterCommand(new DelegateCommand(SaveAllFile));
             CommandService.SwitchPosCommand.RegisterCommand(new DelegateCommand(() => PreviewOnSave = !PreviewOnSave));
             CommandService.SwitchLinterCommand.RegisterCommand(new DelegateCommand(() => EnableLinting = !EnableLinting));
+            CommandService.ShowErrorsCommand.RegisterCommand(new DelegateCommand(() => _enableErrorMsg = !_enableErrorMsg));
 
             _previewCommand = new DelegateCommand(SendToPreview, () => 0 <= CurrentTabIndex && CurrentTabIndex < TabsList.Count);
             CommandService.PreviewCommand.RegisterCommand(_previewCommand);
@@ -282,6 +290,7 @@ namespace Editor.ViewModels
 
         private void SendToPreview()
         {
+            CloseErrorWindowCommand.Execute();
             Mediator.GeneratePreview.Execute(TabsList[CurrentTabIndex].Content.Text);
         }
 

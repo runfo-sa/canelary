@@ -1,6 +1,6 @@
-# Visual Ternera - W.I.P
+# Canelary - W.I.P
 
-Visual Ternera es un entorno de desarrollo integrado para etiquetas con el lenguaje ZPL.
+Canelary es un entorno de desarrollo integrado para etiquetas con el lenguaje ZPL.
 
 # ¿Como funciona?
 Sus funcionalidades están separadas en distintos módulos independientes de dos tipos, pantallas y servicios.
@@ -28,14 +28,14 @@ El sistema ademas incluye, servicios modulares y fácilmente reemplazables, que 
 ## Backend:
 Servicio encargado de proporcionar los datos necesarios para completar las variables encontradas en las etiquetas con datos reales.
 
-Visual Ternera incluye una implementación con el sistema PiQuatro de Twins Informática.
+Canelary incluye una implementación con el sistema PiQuatro de Twins Informática.
 
 ## Preview:
 Servicio responsable de generar una previsualización digital de la etiqueta seleccionada.
 
-Visual Ternera incluye una implementación con la API de Labelary.
+Canelary incluye una implementación con la API de Labelary.
 
 ## Version:
 Servicio que administra el sistema de control de versionado a utilizar. Ademas de permitir modificar la forma en la que se almacenan las etiquetas con total transparencia.
 
-Visual Ternera incluye dos implementaciones, una utilizando Git como el control de versionado y un tipo de almacenamiento por archivos tradicional. Y una utilizando una base de datos como el control de versionado y sistema de almacenamiento.
+Canelary incluye dos implementaciones, una utilizando Git como el control de versionado y un tipo de almacenamiento por archivos tradicional. Y una utilizando una base de datos como el control de versionado y sistema de almacenamiento.

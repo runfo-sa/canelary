@@ -16,5 +16,6 @@
         CompositeCommand PrintCommand { get; }
         CompositeCommand ResizeCommand { get; }
         CompositeCommand ReloadTree { get; }
+        CompositeCommand ShowErrorsCommand { get; }
     }
 }

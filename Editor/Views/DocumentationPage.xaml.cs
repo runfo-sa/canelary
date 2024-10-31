@@ -14,16 +14,14 @@ namespace Editor.Views
             DataContext = this;
 
             CommandName = command.Name;
-            LongDesc = command.LongDesc.Replace("\\r\\n", Environment.NewLine);
+            LongDesc = command.LongDesc;
             ShortDesc = command.ShortDesc;
             Category = command.Category;
 
-            var prm = new StringBuilder($"Usage: {command.Usage}\r\n");
+            var prm = new StringBuilder();
 
             foreach (var param in command.Parameters)
             {
-                prm.Append("----\r\n");
-
                 if (param is TextBox tb)
                 {
                     prm.Append($"{tb.Name} - {tb.Description}:\r\n\t{tb.AcceptedValue}\r\n");
@@ -40,6 +38,7 @@ namespace Editor.Views
                         prm.Append($"\t- {p.Value} = {p.Text}\r\n");
                     }
                 }
+                prm.AppendLine();
             }
 
             Parameters = prm.ToString();

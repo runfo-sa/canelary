@@ -22,7 +22,7 @@ namespace Publish
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - Publicar",
+                Title = $"Canelary - Publicar",
                 Content = _container?.Resolve<Views.Publish>(),
                 Height = 768,
                 Width = 1024,

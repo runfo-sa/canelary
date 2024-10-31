@@ -52,7 +52,7 @@ namespace Core.Services
         {
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Instance);
-            File.WriteAllText("Settings.yaml", $"# Visual Ternera archivo de configuración{Environment.NewLine}{yaml}");
+            File.WriteAllText("Settings.yaml", $"# Canelary archivo de configuración{Environment.NewLine}{yaml}");
         }
     }
 }

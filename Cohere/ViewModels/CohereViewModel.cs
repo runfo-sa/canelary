@@ -39,14 +39,14 @@ namespace Cohere.ViewModels
                 GenerateSampleCommand?.RaiseCanExecuteChanged();
             }));
 
-            GenerateSampleCommand = new DelegateCommand(OpenSampleDialog, () => _productsCount > 0 && ErrorCount == 0);
+            GenerateSampleCommand = new DelegateCommand(OpenSampleDialog, () => _productsCount > 0 && ErrorCount == 0 && _currentLabel != null);
         }
 
         private void OpenSampleDialog()
         {
             var param = new DialogParameters
             {
-                { "File", _currentLabel }
+                { "File", _currentLabel! }
             };
             _dialogService.Show("GenerateSample", param, _ => { });
         }

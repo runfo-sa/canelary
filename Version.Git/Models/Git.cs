@@ -33,7 +33,7 @@ namespace VersionGit.Models
 
         public static IEnumerable<LabelFile> LoadGitFiles(string tag)
         {
-            string path = Path.Combine(Path.GetTempPath(), $"Visual Ternera - {tag}");
+            string path = Path.Combine(Path.GetTempPath(), $"Canelary - {tag}");
             Directory.CreateDirectory(path);
 
             if (GitInner.RunGitCommand("tag", "--points-at HEAD", path).Message != tag)

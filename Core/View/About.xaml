@@ -30,7 +30,7 @@
             <TextBlock FontSize="26"
                        FontWeight="DemiBold"
                        HorizontalAlignment="Center"
-                       Text="Visual Ternera"
+                       Text="Canelary"
                        VerticalAlignment="Center" />
 
             <TextBlock x:Name="verionText"

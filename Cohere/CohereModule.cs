@@ -34,7 +34,7 @@ namespace Cohere
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - Verificar",
+                Title = $"Canelary - Verificar",
                 Content = _container?.Resolve<Views.Cohere>()
             }.Show();
         }

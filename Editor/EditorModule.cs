@@ -32,7 +32,7 @@ namespace Editor
         {
             new AdonisWindow
             {
-                Title = $"Visual Ternera - Editar",
+                Title = $"Canelary - Editar",
                 Content = _container?.Resolve<Views.Editor>()
             }.Show();
         }

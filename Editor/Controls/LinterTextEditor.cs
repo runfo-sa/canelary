@@ -52,19 +52,57 @@ namespace Editor.Controls
                 TextLocation logicalPosition = pos.Value.Location;
                 int offset = Document.GetOffset(logicalPosition);
 
+                var line = TextArea.Document.GetLineByOffset(offset);
+                var lineText = TextArea.Document.GetText(line.Offset, line.Length);
+                if (line.Length == 0 || offset > (line.Offset + line.Length - 1))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 var markersAtOffset = _markerService.GetMarkersAtOffset(offset);
                 var markerWithToolTip = markersAtOffset.FirstOrDefault(marker => marker.ToolTip != null);
 
-                if (markerWithToolTip is not null && _toolTip is null)
+                if (_toolTip is null)
                 {
                     _toolTip = new ToolTip();
                     _toolTip.Closed += ToolTipClosed;
                     _toolTip.PlacementTarget = this;
-                    _toolTip.Content = new TextBlock
+                    _toolTip.HasDropShadow = true;
+
+                    if (markerWithToolTip is not null)
                     {
-                        Text = (string?)markerWithToolTip.ToolTip,
-                        TextWrapping = TextWrapping.Wrap
-                    };
+                        _toolTip.Content = new TextBlock
+                        {
+                            Text = markerWithToolTip.ToolTip,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = Foreground,
+                            Background = Background
+                        };
+                    }
+                    else
+                    {
+                        var cursor = offset - line.Offset;
+                        var startCmd = int.Max(lineText.LastIndexOf('^', cursor), 0);
+                        var _endCmd = lineText.IndexOf('^', cursor);
+                        var endCmd = (_endCmd == -1) ? line.Length : _endCmd;
+
+                        var command = ZplCompletionList.List
+                            .FirstOrDefault(i => lineText[startCmd..endCmd].Contains(i.Key))
+                            .Value;
+
+                        if (command != null)
+                        {
+                            _toolTip.Content = command.Description;
+                        }
+                        else
+                        {
+                            _toolTip = null;
+                            e.Handled = true;
+                            return;
+                        }
+                    }
+
                     _toolTip.IsOpen = true;
                     e.Handled = true;
                 }
@@ -123,10 +161,8 @@ namespace Editor.Controls
 
                 _completionWindow.WindowStyle = WindowStyle.None;
                 _completionWindow.AllowsTransparency = true;
-                _completionWindow.Style = Style;
                 _completionWindow.Background = Background;
                 _completionWindow.Foreground = Foreground;
-                _completionWindow.BorderThickness = new Thickness(0.0);
                 _completionWindow.Width = 256.0;
                 _completionWindow.CloseAutomatically = false;
 

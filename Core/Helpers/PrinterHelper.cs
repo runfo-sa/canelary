@@ -48,7 +48,7 @@ namespace Core.Helpers
             DOCINFOA di = new();
             bool bSuccess = false; // Assume failure unless you specifically succeed.
 
-            di.pDocName = $"Visual Ternera - {docName}";
+            di.pDocName = $"Canelary - {docName}";
             di.pDataType = "RAW";
 
             // Open the printer.

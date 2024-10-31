@@ -4,7 +4,7 @@
                              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                              Background="{DynamicResource {x:Static adonisUi:Brushes.ErrorBrush}}"
-                             Title="Visual Ternera - Alerta de Error"
+                             Title="Canelary - Alerta de Error"
                              Height="400"
                              Width="500"
                              WindowStartupLocation="CenterScreen">
