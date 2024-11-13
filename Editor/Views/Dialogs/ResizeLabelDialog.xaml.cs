@@ -38,7 +38,8 @@ namespace Editor.Views.Dialogs
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {

@@ -19,6 +19,7 @@ namespace PreviewLabelary
             }
         }
 
-        public void RegisterTypes(IContainerRegistry containerRegistry) { }
+        public void RegisterTypes(IContainerRegistry containerRegistry)
+        { }
     }
 }

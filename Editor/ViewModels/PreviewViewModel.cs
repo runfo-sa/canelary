@@ -16,6 +16,7 @@ namespace Editor.ViewModels
         public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
 
         private int _currentLabel = 0;
+
         public int CurrentLabel
         {
             get => _currentLabel;
@@ -28,6 +29,7 @@ namespace Editor.ViewModels
         }
 
         private int _totalLabels = 0;
+
         public int TotalLabel
         {
             get => _totalLabels;
@@ -40,6 +42,7 @@ namespace Editor.ViewModels
         }
 
         private BitmapSource _previewImage = null!;
+
         public BitmapSource PreviewImage
         {
             get => _previewImage;
@@ -52,6 +55,7 @@ namespace Editor.ViewModels
         }
 
         private double _previewAngle = 0.0;
+
         public double PreviewAngle
         {
             get => _previewAngle;

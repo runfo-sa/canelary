@@ -1,4 +1,5 @@
 ﻿using Core.Services;
+using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using VersionGit.Models;
 using VersionGit.Views;
@@ -13,7 +14,14 @@ namespace VersionGit
         public void OnInitialized(IContainerProvider containerProvider)
         {
             VersionServiceProvider.Set(new Git());
-            SetRepository();
+            if (Settings.Instance.GitRepo.IsNullOrEmpty())
+            {
+                GitInner.EnableGit = false;
+            }
+            else
+            {
+                SetRepository();
+            }
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
@@ -27,16 +35,34 @@ namespace VersionGit
 
         private static void SetRepository()
         {
-            if (Path.Exists(Settings.Instance.EtiquetasDir) &&
-                GitInner.RunGitCommand("status", "", Settings.Instance.EtiquetasDir).ExitCode == 0)
+            if (Path.Exists(Settings.Instance.EtiquetasDir))
             {
-                return;
+                try
+                {
+                    var rc = GitInner.RunGitCommand("status", "", Settings.Instance.EtiquetasDir);
+                    if (rc.ExitCode == 0)
+                    {
+                        return;
+                    }
+                }
+                catch
+                {
+                    GitInner.EnableGit = false;
+                    return;
+                }
             }
 
-            Array.ForEach(Directory.GetDirectories(Settings.Instance.EtiquetasDir), Directory.Delete);
-            Array.ForEach(Directory.GetFiles(Settings.Instance.EtiquetasDir), File.Delete);
+            var parent = Directory.GetParent(Settings.Instance.EtiquetasDir);
 
-            GitInner.RunGitCommand("clone", Settings.Instance.GitRepo, Settings.Instance.EtiquetasDir);
+            if (parent != null)
+            {
+                if (Path.Exists(Settings.Instance.EtiquetasDir))
+                {
+                    Directory.Delete(Settings.Instance.EtiquetasDir, true);
+                }
+
+                GitInner.RunGitCommand("clone", Settings.Instance.GitRepo, parent.FullName);
+            }
         }
     }
 }

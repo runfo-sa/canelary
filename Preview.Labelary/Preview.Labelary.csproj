@@ -10,7 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+    <PackageReference Include="YamlDotNet" Version="16.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,9 +23,7 @@
 	  <ItemGroup>
 		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
 	  </ItemGroup>
-	  <Copy SourceFiles="@(ModFile)"
-			DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules"
-			SkipUnchangedFiles="true" />
+	  <Copy SourceFiles="@(ModFile)" DestinationFolder="$(SolutionDir)Main/bin/$(Configuration)/$(TargetFramework)/Modules" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

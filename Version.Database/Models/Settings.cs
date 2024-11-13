@@ -6,10 +6,10 @@ namespace VersionDatabase.Models
     public class Settings
     {
         [YamlMember(Description = " - Cadena de conexión con la base de datos SQL Server")]
-        public required string SqlConnection { get; set; }
+        public string SqlConnection { get; set; }
 
         [YamlMember(Description = " - Esquema default en la base de datos")]
-        public required string Schema { get; set; }
+        public string Schema { get; set; }
 
         private static readonly Lazy<Settings> Lazy =
             new(() =>

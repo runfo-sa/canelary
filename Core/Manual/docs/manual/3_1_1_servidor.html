@@ -8,19 +8,23 @@
 
 <body class="content">
     <h1>Servidor</h1>
-    <p>Una vez iniciado el servidor, se puede consultar las APIs disponibles mediante el enlace
+    <p>
+        Una vez iniciado el servidor, se puede consultar las APIs disponibles mediante el enlace
         <b>'http://{hostname}:{port}/swagger'</b>
     </p>
 
-    <p>El servidor escucha y responde a las peticiones realizada por los clientes mediante una comunicación de tipo API
+    <p>
+        El servidor escucha y responde a las peticiones realizada por los clientes mediante una comunicación de tipo API
         REST. Todo reporte de estado que es recibido por un cliente es publicado en la base de datos, en la tabla
         <b>[service].[EstadoCliente]</b> y es detallado en un archivo log.
     </p>
 
     <blockquote>
-        <p>Estos archivos logs se encuentran en la unidad principal <i>'C:\ProgramData\Canelary Server'</i>,
+        <p>
+            Estos archivos logs se encuentran en la unidad principal <i>'C:\ProgramData\Canelary Server'</i>,
             separados en
-            una carpeta por cliente, un archivo por día, subdivido por hora.</p>
+            una carpeta por cliente, un archivo por día, subdivido por hora.
+        </p>
     </blockquote>
 
     <blockquote>
@@ -29,5 +33,4 @@
 
     <p>El servidor está limitado a solamente recibir 100 peticiones cada 10 minutos.</p>
 </body>
-
 </html>

@@ -3,6 +3,7 @@
     public static class VersionServiceProvider
     {
         private static IVersion? _version;
+
         public static IVersion Version
         {
             get

@@ -11,6 +11,7 @@ namespace BackendTwins
             BackendServiceProvider.Set(new Twins());
         }
 
-        public void RegisterTypes(IContainerRegistry containerRegistry) { }
+        public void RegisterTypes(IContainerRegistry containerRegistry)
+        { }
     }
 }

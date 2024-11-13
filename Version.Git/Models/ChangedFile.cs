@@ -6,6 +6,7 @@
         public char Type => type;
 
         private bool _selected = true;
+
         public bool Selected
         {
             get => _selected;

@@ -10,6 +10,7 @@ namespace VersionGit.ViewModels
         public string GitTagUri { get; set; } = string.Empty;
 
         private bool _needsUpdate = false;
+
         public bool NeedsUpdate
         {
             get => _needsUpdate;

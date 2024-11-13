@@ -17,6 +17,7 @@ namespace Comparator.ViewModels
         private SideBySideDiffModel _diff = null!;
 
         private string _leftFilename = string.Empty;
+
         /// <summary>
         /// Nombre del archivo del lado izquierdo.
         /// </summary>
@@ -27,6 +28,7 @@ namespace Comparator.ViewModels
         }
 
         private string _rightFilename = string.Empty;
+
         /// <summary>
         /// Nombre del archivo del lado derecho.
         /// </summary>
@@ -37,6 +39,7 @@ namespace Comparator.ViewModels
         }
 
         private BitmapSource _leftImage = null!;
+
         /// <summary>
         /// Imagen a comparar del lado izquierdo, considerada como la 'imagen vieja'.
         /// </summary>
@@ -47,6 +50,7 @@ namespace Comparator.ViewModels
         }
 
         private BitmapSource _rightImage = null!;
+
         /// <summary>
         /// Imagen a comparar del lado derecho, considerada como la 'imagen nueva'.
         /// </summary>
@@ -57,6 +61,7 @@ namespace Comparator.ViewModels
         }
 
         private BitmapSource _centerImage = null!;
+
         /// <summary>
         /// Imagen del centro, solamente incluye las lineas de diferencia entre ambos lados.
         /// </summary>

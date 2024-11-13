@@ -8,6 +8,7 @@ namespace VersionGit.ViewModels
         public static string Title => "Crear nueva branch";
 
         private string _name = string.Empty;
+
         public string Name
         {
             get => _name;
@@ -26,6 +27,7 @@ namespace VersionGit.ViewModels
         private readonly IEnumerable<string> _branches;
 
         private bool _canClose = false;
+
         public bool CanClose
         {
             get => _canClose;
@@ -55,8 +57,10 @@ namespace VersionGit.ViewModels
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
-        public void OnDialogOpened(IDialogParameters parameters) { }
+        public void OnDialogOpened(IDialogParameters parameters)
+        { }
     }
 }

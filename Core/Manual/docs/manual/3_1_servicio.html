@@ -15,10 +15,14 @@
 
     <p>El servicio para validar el estado de etiquetas de todos los puestos productivos esta divido en 2 programas:</p>
     <ul>
-        <li><a href="../../index.html?page=8" target="_top">Servidor</a>, quien se comunica con las
-            maquinas en producción para analizar en qué estado están.</li>
-        <li><a href="../../index.html?page=9" target="_top">Cliente</a>, el Windows Service que estará
-            funcionando en las máquinas de producción.</li>
+        <li>
+            <a href="../../index.html?page=8" target="_top">Servidor</a>, quien se comunica con las
+            maquinas en producción para analizar en qué estado están.
+        </li>
+        <li>
+            <a href="../../index.html?page=9" target="_top">Cliente</a>, el Windows Service que estará
+            funcionando en las máquinas de producción.
+        </li>
     </ul>
 
     <p>Ejemplo:</p>
@@ -66,19 +70,22 @@
     </table>
 
     <h1 id="autenticacion">Autenticación</h1>
-    <p>La comunicación entre servidor-cliente es validada mediante un método de autenticación.</br>
+    <p>
+        La comunicación entre servidor-cliente es validada mediante un método de autenticación.</br>
         En donde, el cliente le envía al servidor una llave privada encriptada por su llave pública, y la llave pública.
         Luego el servidor valida que sean las mismas llaves que el autorizo en su archivo de configuración:
         <b><i>Server/appsettings.json</i></b>.
     </p>
 
-    <p>Para el cliente las llaves se pueden configurar en <i>'C:\ProgramData\Canelary Service\config.toml'</i>.
+    <p>
+        Para el cliente las llaves se pueden configurar en <i>'C:\ProgramData\Canelary Service\config.toml'</i>.
     </p>
 
     <blockquote>
-        <p>Para poder bajar el instalador o el cliente desde el servidor, también se necesita ingresar una clave en la
-            URI de la siguiente forma: <b>'http://{hostname}:{port}/instalador?key={clave}'</b></p>
+        <p>
+            Para poder bajar el instalador o el cliente desde el servidor, también se necesita ingresar una clave en la
+            URI de la siguiente forma: <b>'http://{hostname}:{port}/instalador?key={clave}'</b>
+        </p>
     </blockquote>
 </body>
-
 </html>

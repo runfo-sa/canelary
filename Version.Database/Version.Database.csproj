@@ -9,9 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+    <PackageReference Include="YamlDotNet" Version="16.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +30,7 @@
 		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
 		  <SetFile Include="Version.Database.Settings.yaml" />
 	  </ItemGroup>
-	  <Copy SourceFiles="@(ModFile);@(SetFile)" DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules" SkipUnchangedFiles="true" />
+	  <Copy SourceFiles="@(ModFile);@(SetFile)" DestinationFolder="$(SolutionDir)Main/bin/$(Configuration)/$(TargetFramework)/Modules" SkipUnchangedFiles="true" />
   </Target>
 	
 </Project>

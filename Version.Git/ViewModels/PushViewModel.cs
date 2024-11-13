@@ -1,6 +1,7 @@
 ﻿using Core.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using VersionGit.Models;
 
@@ -20,6 +21,7 @@ namespace VersionGit.ViewModels
         public int TotalFiles { get; set; }
 
         private string _branch = string.Empty;
+
         public string Branch
         {
             get => _branch;
@@ -31,6 +33,7 @@ namespace VersionGit.ViewModels
         }
 
         private string _tag = string.Empty;
+
         public string Tag
         {
             get => _tag;
@@ -42,6 +45,7 @@ namespace VersionGit.ViewModels
         }
 
         private string _message = string.Empty;
+
         public string Message
         {
             get => _message;
@@ -49,6 +53,7 @@ namespace VersionGit.ViewModels
         }
 
         private bool _selectAll = true;
+
         public bool SelectAll
         {
             get => _selectAll;
@@ -65,12 +70,14 @@ namespace VersionGit.ViewModels
         public PushViewModel(IDialogService dialogService)
         {
             var gitStatus = GitInner.RunGitCommand("status", "--porcelain", Settings.Instance.EtiquetasDir);
+            // TODO: Keep extension when splitting
+            Trace.WriteLine(gitStatus.Message);
             ModifiedFiles = new(gitStatus.Message
                 .ToLower()
-                .Split(SettingsService.Instance.Extension, StringSplitOptions.RemoveEmptyEntries)
+                .Split(SettingsService.Instance.Extension.ToArray(), StringSplitOptions.RemoveEmptyEntries)
                 .Select(e =>
                 {
-                    var str = e.Trim() + SettingsService.Instance.Extension;
+                    var str = e.Trim() + SettingsService.Instance.Extension[0];
                     var st = str.Split(' ', 2);
                     return new ChangedFile(st[1], (st[0] == "??") ? 'A' : st[0].ToUpper().First());
                 }));
@@ -102,9 +109,11 @@ namespace VersionGit.ViewModels
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
-        public void OnDialogOpened(IDialogParameters parameters) { }
+        public void OnDialogOpened(IDialogParameters parameters)
+        { }
 
         private void Push()
         {

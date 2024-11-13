@@ -18,6 +18,6 @@ namespace Core.Models
 
     public class SizeList
     {
-        public required LabelSize[] Items { get; set; }
+        public LabelSize[] Items { get; set; }
     }
 }

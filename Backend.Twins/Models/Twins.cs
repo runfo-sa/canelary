@@ -41,8 +41,7 @@ namespace BackendTwins.Models
         public List<KeyValuePair<string, string?>> GetValues(int id)
         {
             int cte = 2;
-            var queryBuild = new StringBuilder(
-                ";WITH cte1 AS (SELECT * FROM TwinsDBQuatro053.configuracion.Mercaderias WITH(NOLOCK) WHERE Id = @Id)");
+            var queryBuild = new StringBuilder();
 
             using var context = new TwinsDbContext();
             foreach (var val in context.Variables)
@@ -75,8 +74,7 @@ namespace BackendTwins.Models
         public List<KeyValuePair<Product, List<KeyValuePair<string, string?>>>> GetValues(List<Product> products, List<RuleAttributes> attributes)
         {
             int cte = 2;
-            var queryBuild = new StringBuilder(
-                ";WITH cte1 AS (SELECT * FROM TwinsDBQuatro053.configuracion.Mercaderias WITH(NOLOCK) WHERE Id = @Id)");
+            var queryBuild = new StringBuilder();
             using var context = new TwinsDbContext();
             foreach (var attr in attributes)
             {

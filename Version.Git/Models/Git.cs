@@ -26,9 +26,16 @@ namespace VersionGit.Models
             {
                 return LoadGitFiles(version);
             }
-            return Directory
-                .GetFiles(Settings.Instance.EtiquetasDir, $"*.{SettingsService.Instance.Extension}")
-                .Select(f => new LabelFile(f));
+
+            IEnumerable<IFile> files = [];
+            foreach (var ext in SettingsService.Instance.Extension)
+            {
+                files = files.Concat(Directory
+                    .GetFiles(Settings.Instance.EtiquetasDir, $"*.{ext}")
+                    .Select(f => new LabelFile(f)));
+            }
+
+            return files;
         }
 
         public static IEnumerable<LabelFile> LoadGitFiles(string tag)
@@ -44,9 +51,15 @@ namespace VersionGit.Models
                 GitInner.RunGitCommand("checkout", $"tags/{tag}", path);
             }
 
-            return Directory
-                .GetFiles(path, $"*.{SettingsService.Instance.Extension}")
-                .Select(f => new LabelFile(f));
+            IEnumerable<LabelFile> files = [];
+            foreach (var ext in SettingsService.Instance.Extension)
+            {
+                files = files.Concat(Directory
+                    .GetFiles(path, $"*.{ext}")
+                    .Select(f => new LabelFile(f)));
+            }
+
+            return files;
         }
 
         public bool SaveFile(string path, string content)

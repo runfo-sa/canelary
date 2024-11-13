@@ -16,18 +16,17 @@
     <PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
-    <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    <PackageReference Include="YamlDotNet" Version="16.2.0" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <ItemGroup>
-		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)"/>
+		  <ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
 	  </ItemGroup>
-	  <Copy SourceFiles="@(ModFile)"
-			DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules"
-			SkipUnchangedFiles="true"/>
+	  <Copy SourceFiles="@(ModFile)" DestinationFolder="$(SolutionDir)Main/bin/$(Configuration)/$(TargetFramework)/Modules" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

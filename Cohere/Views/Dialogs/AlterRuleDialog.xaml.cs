@@ -76,9 +76,11 @@ namespace Cohere.Views
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
-        public void OnDialogOpened(IDialogParameters parameters) { }
+        public void OnDialogOpened(IDialogParameters parameters)
+        { }
 
         private void RuleChanged(Object sender, SelectionChangedEventArgs e)
         {

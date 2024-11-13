@@ -3,6 +3,7 @@
     public static class BackendServiceProvider
     {
         private static IBackend? _backend;
+
         public static IBackend Backend
         {
             get

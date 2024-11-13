@@ -13,6 +13,7 @@ namespace Comparator.ViewModels
     public class TextModeViewModel : BindableBase
     {
         private TextDocument _leftText = null!;
+
         /// <summary>
         /// Codigo a comparar del lado izquierdo, considerado como el 'codigo viejo'.
         /// </summary>
@@ -23,6 +24,7 @@ namespace Comparator.ViewModels
         }
 
         private TextDocument _rightText = null!;
+
         /// <summary>
         /// Codigo a comparar del lado derecho, considerado como el 'codigo nuevo'.
         /// </summary>
@@ -33,6 +35,7 @@ namespace Comparator.ViewModels
         }
 
         private string _leftFilename = string.Empty;
+
         /// <summary>
         /// Nombre del archivo del lado izquierdo.
         /// </summary>
@@ -43,6 +46,7 @@ namespace Comparator.ViewModels
         }
 
         private string _rightFilename = string.Empty;
+
         /// <summary>
         /// Nombre del archivo del lado derecho.
         /// </summary>

@@ -125,7 +125,7 @@ namespace Core.Controls
             }
         }
 
-        void Child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void Child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Reset();
         }

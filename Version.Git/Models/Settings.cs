@@ -6,10 +6,10 @@ namespace VersionGit.Models
     public class Settings
     {
         [YamlMember(Description = " - Dirección de etiquetas")]
-        public required string EtiquetasDir { get; set; }
+        public string EtiquetasDir { get; set; }
 
         [YamlMember(Description = " - Repositorio donde se almacenan globalmente las etiquetas")]
-        public required string GitRepo { get; set; }
+        public string GitRepo { get; set; }
 
         private static readonly Lazy<Settings> Lazy =
             new(() =>

@@ -18,8 +18,10 @@ namespace Core.View
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
-        public void OnDialogOpened(IDialogParameters parameters) { }
+        public void OnDialogOpened(IDialogParameters parameters)
+        { }
     }
 }

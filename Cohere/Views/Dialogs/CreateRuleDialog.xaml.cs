@@ -16,6 +16,7 @@ namespace Cohere.Views
         public List<string> AttributesList { get; set; }
 
         private string _ruleName = string.Empty;
+
         public string RuleName
         {
             get => _ruleName;
@@ -102,8 +103,10 @@ namespace Cohere.Views
 
         public Boolean CanCloseDialog() => true;
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
-        public void OnDialogOpened(IDialogParameters parameters) { }
+        public void OnDialogOpened(IDialogParameters parameters)
+        { }
     }
 }

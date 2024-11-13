@@ -14,6 +14,7 @@ namespace Comparator.Views
         private readonly ComparatorViewModel _viewModel;
 
         private bool _shouldClose = false;
+
         public bool ShouldClose
         {
             get => _shouldClose;

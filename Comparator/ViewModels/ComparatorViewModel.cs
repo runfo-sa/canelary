@@ -14,6 +14,7 @@ namespace Comparator.ViewModels
         private readonly ICommandService _commandService;
 
         private bool _textMode = true;
+
         /// <summary>
         /// Indica si la ventana esta comparando codigo o no.
         /// </summary>
@@ -24,6 +25,7 @@ namespace Comparator.ViewModels
         }
 
         private bool _imageMode = false;
+
         /// <summary>
         /// Indica si la ventana esta comparando imagenes o no.
         /// </summary>

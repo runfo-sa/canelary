@@ -2,6 +2,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Win32;
 using System.ComponentModel;
+using System.Text;
 
 namespace Editor.Models
 {
@@ -18,6 +19,7 @@ namespace Editor.Models
         public TextDocument Content { get; private set; }
 
         private string? _path;
+
         public string? Path
         {
             get => _path;
@@ -25,6 +27,7 @@ namespace Editor.Models
         }
 
         private string _header = string.Empty;
+
         public string Header
         {
             get => _header;
@@ -32,6 +35,7 @@ namespace Editor.Models
         }
 
         private bool _hasUnsavedChanges = false;
+
         public bool HasUnsavedChanges
         {
             get => _hasUnsavedChanges;
@@ -39,6 +43,7 @@ namespace Editor.Models
         }
 
         private List<LintingInfo> _lintingData = [];
+
         public List<LintingInfo> LintingData
         {
             get => _lintingData;
@@ -92,10 +97,17 @@ namespace Editor.Models
                 }
                 else
                 {
-                    string extension = SettingsService.Instance.Extension;
+                    var filters = new StringBuilder();
+
+                    foreach (var ext in SettingsService.Instance.Extension)
+                    {
+                        filters.Append($"ZPL File (*.{ext})|*.{ext}|");
+                    }
+                    filters.Append("Todos los archivos (*.*)|*.*");
+
                     SaveFileDialog dialog = new()
                     {
-                        Filter = $"ZPL File (*.{extension})|*.{extension}|Todos los archivos (*.*)|*.*"
+                        Filter = filters.ToString()
                     };
 
                     if (dialog.ShowDialog() == false)

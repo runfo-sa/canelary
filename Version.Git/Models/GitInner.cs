@@ -5,8 +5,15 @@ namespace VersionGit.Models
 {
     public static class GitInner
     {
+        public static bool EnableGit { get; set; } = true;
+
         public static ProcessRecord RunGitCommand(string command, string args, string workingDirectory)
         {
+            if (!EnableGit)
+            {
+                return new ProcessRecord(0, $"No git found|{DateTime.Now}|No git found", "No git found");
+            }
+
             StringBuilder stdo = new();
             StringBuilder stde = new();
 

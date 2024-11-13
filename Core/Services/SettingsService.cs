@@ -10,7 +10,7 @@ namespace Core.Services
     public class SettingsService
     {
         [YamlMember(Description = " - Cadena de conexión con la base de datos SQL Server")]
-        public required string SqlConnection { get; set; }
+        public string SqlConnection { get; set; }
 
         [YamlMember(Description = " - Dirección a la plantilla utilizada para generar un reporte de cambios")]
         public string? ReportTemplate { get; set; }
@@ -22,10 +22,10 @@ namespace Core.Services
         public string Culture { get; set; } = "es-MX";
 
         [YamlMember(Description = " - Extensión de los archivos de etiqueta")]
-        public string Extension { get; set; } = "e01";
+        public List<string> Extension { get; set; } = ["e01", "e02"];
 
         [YamlMember(Description = " - Lista de directorios virtuales, con los cuales se generera la jerarquía de etiquetas")]
-        public required List<FilterDirectory> VirtualDirectories { get; set; }
+        public List<FilterDirectory> VirtualDirectories { get; set; }
 
         [YamlMember(Description = " - Servicio responsable de generar una previsualización digital de la etiqueta seleccionada")]
         public string Preview { get; set; } = "Labelary";
@@ -37,7 +37,7 @@ namespace Core.Services
         public string Version { get; set; } = "Git";
 
         [YamlMember(Description = " - Lista de modulos disponibles en el sistema")]
-        public required List<Module> Modules { get; set; }
+        public List<Module> Modules { get; set; }
 
         private static readonly Lazy<SettingsService> Lazy =
             new(() =>

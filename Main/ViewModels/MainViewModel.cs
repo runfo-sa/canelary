@@ -16,6 +16,7 @@ namespace Main.ViewModels
         private readonly IEventAggregator _eventAggregator;
 
         private int _lastRefreshed = 0;
+
         public int LastRefreshed
         {
             get => _lastRefreshed;

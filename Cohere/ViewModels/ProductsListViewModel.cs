@@ -20,6 +20,7 @@ namespace Cohere.ViewModels
         public ObservableCollection<Product> ProductsList { get; set; } = [];
 
         private IFile? _currentLabel;
+
         public IFile? CurrentLabel
         {
             get => _currentLabel;
@@ -31,6 +32,7 @@ namespace Cohere.ViewModels
         }
 
         private string _ruleName = string.Empty;
+
         public string RuleName
         {
             get => _ruleName;

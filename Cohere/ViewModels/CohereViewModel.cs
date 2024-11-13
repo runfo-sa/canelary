@@ -11,6 +11,7 @@ namespace Cohere.ViewModels
         private IFile? _currentLabel;
 
         private int errorCount = 0;
+
         public int ErrorCount
         {
             get => errorCount;

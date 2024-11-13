@@ -22,6 +22,7 @@ namespace Cohere.ViewModels
         public ObservableCollection<ProductoMuestra> ProductsList { get; set; } = [];
 
         private bool _selectAll;
+
         public bool SelectAll
         {
             get => _selectAll;
@@ -33,6 +34,7 @@ namespace Cohere.ViewModels
         }
 
         private bool _enableRecall = false;
+
         public bool EnableRecall
         {
             get => _enableRecall;
@@ -95,7 +97,8 @@ namespace Cohere.ViewModels
             return true;
         }
 
-        public void OnDialogClosed() { }
+        public void OnDialogClosed()
+        { }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {

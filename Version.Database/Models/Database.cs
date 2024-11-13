@@ -42,7 +42,7 @@ namespace VersionDatabase.Models
             }
             else
             {
-                var name = Path.GetFileNameWithoutExtension(path);
+                var name = Path.GetFileName(path);
                 return new VirtualFile(name, 0).Create(content);
             }
         }

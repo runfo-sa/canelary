@@ -10,8 +10,10 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Material.Icons.WPF" Version="2.1.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
 	  <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+	  <PackageReference Include="YamlDotNet" Version="16.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,12 +21,18 @@
 	  <ProjectReference Include="..\Main\Main.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Version.Git.Settings.yaml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<ModFile Include="$(TargetDir)$(TargetName)$(TargetExt)" />
 			<SetFile Include="Version.Git.Settings.yaml" />
 		</ItemGroup>
-		<Copy SourceFiles="@(ModFile);@(SetFile)" DestinationFolder="$(SolutionDir)Main/bin/Debug/net8.0-windows/Modules" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(ModFile);@(SetFile)" DestinationFolder="$(SolutionDir)Main/bin/$(Configuration)/$(TargetFramework)/Modules" SkipUnchangedFiles="true" />
 	</Target>
 	
 </Project>

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using MessageBox = AdonisUI.Controls.MessageBox;
@@ -22,6 +23,7 @@ namespace Editor.ViewModels
         public ObservableCollection<TabItem> TabsList { get; set; } = [];
 
         private int _currentTabIndex;
+
         public int CurrentTabIndex
         {
             get => _currentTabIndex;
@@ -37,6 +39,7 @@ namespace Editor.ViewModels
 
         private bool _enableErrorMsg = true;
         private Visibility _errorWindow = Visibility.Hidden;
+
         public Visibility ShowErrorWindow
         {
             get => _errorWindow;
@@ -50,6 +53,7 @@ namespace Editor.ViewModels
         }
 
         private string? _errorsMessage = null;
+
         public string? ErrorsMessage
         {
             get => _errorsMessage;
@@ -57,6 +61,7 @@ namespace Editor.ViewModels
         }
 
         private bool _previewOnSave = false;
+
         public bool PreviewOnSave
         {
             get => _previewOnSave;
@@ -64,6 +69,7 @@ namespace Editor.ViewModels
         }
 
         private bool _enableLinting = true;
+
         public bool EnableLinting
         {
             get => _enableLinting;
@@ -172,11 +178,17 @@ namespace Editor.ViewModels
 
         private void OpenFile()
         {
-            string extension = SettingsService.Instance.Extension;
+            var filters = new StringBuilder();
+
+            foreach (var ext in SettingsService.Instance.Extension)
+            {
+                filters.Append($"ZPL File (*.{ext})|*.{ext}|");
+            }
+            filters.Append("Todos los archivos (*.*)|*.*");
+
             OpenFileDialog dialog = new()
             {
-                Filter =
-                    $"ZPL File (*.{extension})|*.{extension}|Todos los archivos (*.*)|*.*"
+                Filter = filters.ToString()
             };
 
             if (dialog.ShowDialog() == true)
@@ -355,8 +367,8 @@ namespace Editor.ViewModels
 
                     AddTab(
                         label.Header.Replace(
-                            $".{SettingsService.Instance.Extension}",
-                            $"_{toDpi?.Display}.{SettingsService.Instance.Extension}",
+                            $".{SettingsService.Instance.Extension[0]}",
+                            $"_{toDpi?.Display}.{SettingsService.Instance.Extension[0]}",
                             StringComparison.CurrentCultureIgnoreCase
                         ),
                         content

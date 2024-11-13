@@ -5,6 +5,7 @@ namespace Cohere.Models
     public class ProductoMuestra : Product
     {
         private bool _printable;
+
         public bool Printable
         {
             get => _printable;

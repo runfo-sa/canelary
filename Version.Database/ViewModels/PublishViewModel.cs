@@ -1,9 +1,9 @@
 ﻿using Core.Events;
 using Core.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Forms;
 using Version.Database.Models;
 using VersionDatabase.Db;
 
@@ -15,6 +15,7 @@ namespace VersionDatabase.ViewModels
         public DelegateCommand OpenFolderCommand { get; private set; }
 
         private string? _folder;
+
         public string? FolderPath
         {
             get => _folder;
@@ -29,11 +30,11 @@ namespace VersionDatabase.ViewModels
 
             OpenFolderCommand = new(() =>
             {
-                FolderBrowserDialog dialog = new();
+                OpenFolderDialog dialog = new();
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() is true)
                 {
-                    FolderPath = dialog.SelectedPath;
+                    FolderPath = dialog.FolderName;
                 }
             });
 
@@ -75,7 +76,7 @@ namespace VersionDatabase.ViewModels
             foreach (var file in files)
             {
                 var content = file.Read();
-                var filename = Path.Combine(folder, $"{file.Name}.{SettingsService.Instance.Extension}");
+                var filename = Path.Combine(folder, file.Name);
                 await File.WriteAllTextAsync(filename, content);
             }
         }
