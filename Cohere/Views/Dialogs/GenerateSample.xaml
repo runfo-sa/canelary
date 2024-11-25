@@ -22,7 +22,7 @@
                       ItemsSource="{Binding ProductsList}"
                       Margin="5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Id}"
+                    <DataGridTextColumn Binding="{Binding Code}"
                                         Header="Codigo" />
                     <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Nombre"

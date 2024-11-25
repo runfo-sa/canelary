@@ -76,7 +76,8 @@
                     <ComboBox ItemsSource="{Binding Printers}"
                               Margin="5,0"
                               SelectedIndex="0"
-                              Style="{StaticResource {x:Type ComboBox}}" />
+                              Style="{StaticResource {x:Type ComboBox}}"
+                              IsSynchronizedWithCurrentItem="True" />
                 </ToolBar>
             </ToolBarTray>
         </DockPanel>
