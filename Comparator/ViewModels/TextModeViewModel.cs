@@ -1,10 +1,10 @@
-﻿using Comparator.Models;
+﻿using AvalonEditB.Document;
+using Comparator.Models;
 using Comparator.Services;
 using Core.FileTree;
 using Core.Models;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
-using ICSharpCode.AvalonEdit.Document;
 using System.ComponentModel;
 
 namespace Comparator.ViewModels

@@ -23,6 +23,8 @@ namespace Main.ViewModels
             set => SetProperty(ref _lastRefreshed, value);
         }
 
+        public static InterTabClient InterTabClientInstance => new();
+
         public static string Version => Assembly.GetExecutingAssembly()
             .GetCustomAttributes<AssemblyInformationalVersionAttribute>()
             .Select(x => x.InformationalVersion)

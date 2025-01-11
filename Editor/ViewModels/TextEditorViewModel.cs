@@ -11,9 +11,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using MessageBox = AdonisUI.Controls.MessageBox;
-using MessageBoxButton = AdonisUI.Controls.MessageBoxButton;
-using MessageBoxResult = AdonisUI.Controls.MessageBoxResult;
 using TabItem = Editor.Models.TabItem;
 
 namespace Editor.ViewModels

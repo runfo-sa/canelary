@@ -1,9 +1,11 @@
 ﻿<UserControl x:Class="Editor.Views.TextEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:control="clr-namespace:Editor.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:Editor.Models"
              xmlns:prism="http://prismlibrary.com/"
@@ -11,29 +13,17 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ControlTemplate x:Key="TabEditorTemplate"
-                         TargetType="{x:Type TabControl}">
-            <Grid Background="{TemplateBinding Background}"
-                  KeyboardNavigation.TabNavigation="Local"
-                  SnapsToDevicePixels="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Border Grid.Row="1"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="4">
-                    <ContentPresenter ContentSource="SelectedContent" />
-                </Border>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                              Margin="0,0,0,-7">
-                    <DockPanel IsItemsHost="True"
-                               LastChildFill="False" />
-                </ScrollViewer>
-            </Grid>
-        </ControlTemplate>
+        <Style x:Key="HoverMouse"
+               TargetType="{x:Type Button}">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+        </Style>
 
-        <DataTemplate x:Key="headerTemplate"
+        <DataTemplate x:Key="HeaderTemplate"
                       DataType="{x:Type model:TabItem}">
             <DockPanel>
                 <i:Interaction.Triggers>
@@ -43,18 +33,22 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
-                <TextBlock DockPanel.Dock="Left"
-                           Margin="5,0"
-                           Text="{Binding Header}"
-                           TextAlignment="Center"
-                           ToolTip="{Binding Path}"
-                           VerticalAlignment="Center" />
+                <Grid>
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="{Binding Header}"
+                               ToolTip="{Binding Path}"
+                               Margin="5,0"
+                               FontSize="12"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center" />
+                    <Thumb Style="{DynamicResource InvisibleThumbStyle}"
+                           dragablz:DragablzItem.IsCustomThumb="True" />
+                </Grid>
                 <Button DockPanel.Dock="Right"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
                         Command="{Binding DataContext.CommandService.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         CommandParameter="{Binding}"
-                        Content="⤫" />
+                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle,Size=14}"
+                        Style="{StaticResource HoverMouse}" />
             </DockPanel>
         </DataTemplate>
 
@@ -62,32 +56,36 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToolTip">
-                        <Border BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1HighlightBorderBrush}}"
-                                BorderThickness="2">
+                        <Border BorderThickness="2"
+                                BorderBrush="{DynamicResource SecondaryHueMidBrush}"
+                                Background="{DynamicResource PrimaryHueDarkBrush}">
                             <ContentPresenter />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource PrimaryHueDarkForegroundBrush}" />
         </Style>
     </UserControl.Resources>
 
     <Grid>
-        <TabControl BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1BackgroundBrush}}"
-                    control:TabContent.IsCached="True"
-                    ItemsSource="{Binding TabsList}"
-                    ItemTemplate="{Binding Source={StaticResource headerTemplate}}"
-                    Template="{DynamicResource TabEditorTemplate}"
-                    SelectedIndex="{Binding CurrentTabIndex}">
-            <control:TabContent.Template>
+        <dragablz:TabablzControl ItemsSource="{Binding TabsList}"
+                                 HeaderItemTemplate="{Binding Source={StaticResource HeaderTemplate}}"
+                                 SelectedIndex="{Binding CurrentTabIndex}">
+            <TabControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type model:TabItem}">
-                    <control:LinterTextEditor Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
-                                              Document="{Binding Content}"
+                    <control:LinterTextEditor Document="{Binding Content}"
+                                              Background="Transparent"
+                                              BorderBrush="{DynamicResource SecondaryHueMidBrush}"
+                                              BorderThickness="2,0,2,10"
+                                              Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                              LineNumbersForeground="{DynamicResource SecondaryHueMidBrush}"
                                               FontFamily="Cascadia Mono Regular"
                                               FontSize="14"
-                                              Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"
                                               LinterData="{Binding LintingData}"
                                               ShowLineNumbers="True"
+                                              ShowLineNumbersWithDottedMargin="False"
                                               SyntaxHighlighting="ZPL"
                                               WordWrap="True">
                         <control:LinterTextEditor.ContextMenu>
@@ -102,8 +100,8 @@
                         </control:LinterTextEditor.ContextMenu>
                     </control:LinterTextEditor>
                 </DataTemplate>
-            </control:TabContent.Template>
-        </TabControl>
+            </TabControl.ContentTemplate>
+        </dragablz:TabablzControl>
 
         <Grid Height="256"
               VerticalAlignment="Bottom"
@@ -114,8 +112,7 @@
             </Grid.RowDefinitions>
 
             <Grid.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static adonisUi:Colors.ErrorColor}}"
-                                 Opacity="0.85" />
+                <SolidColorBrush Opacity="0.85" />
             </Grid.Background>
 
             <DockPanel LastChildFill="False"

@@ -1,7 +1,7 @@
-﻿using Editor.Views;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
+﻿using AvalonEditB.CodeCompletion;
+using AvalonEditB.Document;
+using AvalonEditB.Editing;
+using Editor.Views;
 using System.Windows.Media;
 
 namespace Editor.Models

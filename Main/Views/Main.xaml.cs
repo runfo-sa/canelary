@@ -1,12 +1,11 @@
-﻿using AdonisUI.Controls;
+﻿using System.Windows;
 
-namespace Main.Views
+namespace Main.Views;
+
+public partial class Main : Window
 {
-    public partial class Main : AdonisWindow
+    public Main()
     {
-        public Main()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

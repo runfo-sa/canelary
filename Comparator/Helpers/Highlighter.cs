@@ -1,5 +1,5 @@
-﻿using DiffPlex.DiffBuilder.Model;
-using ICSharpCode.AvalonEdit.Rendering;
+﻿using AvalonEditB.Rendering;
+using DiffPlex.DiffBuilder.Model;
 using System.Windows.Media;
 
 namespace Comparator.Helpers

@@ -1,5 +1,5 @@
-﻿using Core.Services;
-using ICSharpCode.AvalonEdit.Document;
+﻿using AvalonEditB.Document;
+using Core.Services;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Text;

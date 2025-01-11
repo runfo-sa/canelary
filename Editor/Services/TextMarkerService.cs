@@ -1,6 +1,6 @@
-﻿using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
+﻿using AvalonEditB;
+using AvalonEditB.Document;
+using AvalonEditB.Rendering;
 using System.Windows;
 using System.Windows.Media;
 

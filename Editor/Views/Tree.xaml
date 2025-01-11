@@ -14,7 +14,7 @@
     </UserControl.Resources>
 
     <TreeView x:Name="treeView"
-              FontSize="14"
+              FontSize="12"
               ItemsSource="{Binding Tree}"
               ItemTemplateSelector="{StaticResource fileSelector}">
         <i:Interaction.Triggers>
@@ -34,8 +34,7 @@
         <TreeView.Resources>
             <HierarchicalDataTemplate DataType="{x:Type core:VirtualDirectory}"
                                       ItemsSource="{Binding RecursiveFiles}">
-                <TextBlock FontWeight="DemiBold"
-                           Text="{Binding Name}" />
+                <TextBlock Text="{Binding Name}" />
             </HierarchicalDataTemplate>
 
             <DataTemplate x:Key="fileTemplate">

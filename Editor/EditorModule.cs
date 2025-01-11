@@ -1,4 +1,5 @@
-﻿using AdonisUI.Controls;
+﻿using Core.Events;
+using Core.Models;
 using Core.Services;
 using Editor.Views;
 using Editor.Views.Dialogs;
@@ -6,9 +7,10 @@ using Editor.Views.Dialogs;
 namespace Editor
 {
     [Module(ModuleName = "Editar", OnDemand = true)]
-    public class EditorModule(IRegionManager regionManager) : IModule
+    public class EditorModule(IRegionManager regionManager, IEventAggregator eventAggregator) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;
+        private readonly IEventAggregator _eventAggregator = eventAggregator;
         private IContainerProvider? _container;
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -30,11 +32,7 @@ namespace Editor
 
         private void CreateWindow(string name)
         {
-            new AdonisWindow
-            {
-                Title = $"Canelary - Editar",
-                Content = _container?.Resolve<Views.Editor>()
-            }.Show();
+            _eventAggregator.GetEvent<SendModuleEvent>().Publish(new ModuleTab("Editor", _container?.Resolve<Views.Editor>()!));
         }
     }
 }

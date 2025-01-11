@@ -1,9 +1,9 @@
 ﻿using AdonisUI;
+using AvalonEditB.Highlighting;
 using Core.Logger;
 using Core.Services;
 using Core.Services.SettingsModel;
 using Core.View;
-using ICSharpCode.AvalonEdit.Highlighting;
 using Main.ViewModels;
 using System.Globalization;
 using System.Reflection;
@@ -41,7 +41,7 @@ namespace Main
             HighlightingManager.Instance.RegisterHighlighting(
                 "ZPL",
                 [],
-                ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(
+                AvalonEditB.Highlighting.Xshd.HighlightingLoader.Load(
                     reader,
                     HighlightingManager.Instance
                 )

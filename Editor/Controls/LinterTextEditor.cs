@@ -1,12 +1,12 @@
-﻿using Editor.Models;
+﻿using AvalonEditB.CodeCompletion;
+using AvalonEditB.Document;
+using AvalonEditB.Rendering;
+using Editor.Models;
 using Editor.Services;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TextEditor = ICSharpCode.AvalonEdit.TextEditor;
+using TextEditor = AvalonEditB.TextEditor;
 
 namespace Editor.Controls
 {
