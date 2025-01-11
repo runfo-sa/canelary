@@ -1,4 +1,10 @@
-# Canelary - W.I.P
+# Canelary
+
+<p align="center">
+    <img height=250 src="./Main/Resources/canelary_512px.png" alt="yama">
+    <h3 align="center"><b><i>Muuu!</i></b></h3>
+    <br/><br/>
+</p>
 
 Canelary es un entorno de desarrollo integrado para etiquetas con el lenguaje ZPL.
 
