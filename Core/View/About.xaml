@@ -6,7 +6,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d">
     <prism:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="Window"
+               BasedOn="{StaticResource MaterialDesignWindow}">
             <Setter Property="prism:Dialog.WindowStartupLocation"
                     Value="CenterScreen" />
             <Setter Property="ResizeMode"
@@ -18,39 +19,37 @@
         </Style>
     </prism:Dialog.WindowStyle>
 
-    <GroupBox>
-        <Grid Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <TextBlock FontSize="26"
-                       FontWeight="DemiBold"
-                       HorizontalAlignment="Center"
-                       Text="Canelary"
-                       VerticalAlignment="Center" />
+        <TextBlock FontSize="26"
+                   FontWeight="DemiBold"
+                   HorizontalAlignment="Center"
+                   Text="Canelary"
+                   VerticalAlignment="Center" />
 
-            <TextBlock x:Name="verionText"
-                       Grid.Row="1"
-                       FontSize="14"
-                       FontWeight="Regular"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
+        <TextBlock x:Name="verionText"
+                   Grid.Row="1"
+                   FontSize="14"
+                   FontWeight="Regular"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
 
-            <TextBlock Grid.Row="2"
-                       FontSize="12"
-                       FontWeight="Regular"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Text="Agustin Marco - &lt;agustin.marco@runfo.com.ar>" />
+        <TextBlock Grid.Row="2"
+                   FontSize="12"
+                   FontWeight="Regular"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="Agustin Marco - &lt;agustin.marco@runfo.com.ar>" />
 
-            <Button Grid.Row="3"
-                    Command="{Binding CloseDialogCommand}"
-                    Content="Okay"
-                    VerticalAlignment="Bottom" />
-        </Grid>
-    </GroupBox>
+        <Button Grid.Row="3"
+                Command="{Binding CloseDialogCommand}"
+                Content="Okay"
+                VerticalAlignment="Bottom" />
+    </Grid>
 </UserControl>

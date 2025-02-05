@@ -1,118 +1,120 @@
-﻿using Core.Database;
-using Core.Database.ServiceDbModels;
-using Core.Events;
-using Core.Services;
-using Core.Services.SettingsModel;
-using Main.Models;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows.Threading;
 
-namespace Main.ViewModels
+using Core.Database;
+using Core.Database.ServiceDbModels;
+using Core.Events;
+using Core.Services;
+using Core.Services.SettingsModel;
+
+using Main.Models;
+
+namespace Main.ViewModels;
+
+public class MainViewModel : BindableBase
 {
-    public class MainViewModel : BindableBase
+    private readonly IModuleManager _moduleManager;
+    private readonly IEventAggregator _eventAggregator;
+
+    private int _lastRefreshed = 0;
+
+    public int LastRefreshed
     {
-        private readonly IModuleManager _moduleManager;
-        private readonly IEventAggregator _eventAggregator;
+        get => _lastRefreshed;
+        set => SetProperty(ref _lastRefreshed, value);
+    }
 
-        private int _lastRefreshed = 0;
+    public static InterTabClient InterTabClientInstance => new();
+    public static InterLayoutClient InterLayoutClientInstance => new();
 
-        public int LastRefreshed
+    public static string Version => Assembly.GetExecutingAssembly()
+        .GetCustomAttributes<AssemblyInformationalVersionAttribute>()
+        .Select(x => x.InformationalVersion)
+        .First();
+
+    public ObservableCollection<Client> ClientsList { get; set; }
+    public ObservableCollection<ModuleAction> ModulesButtons { get; set; }
+
+    public DelegateCommand ChangeThemeCommand { get; private set; }
+    public DelegateCommand UpdateClientsCommand { get; private set; }
+
+    public MainViewModel(IModuleManager moduleManager, IEventAggregator eventAggregator)
+    {
+        _moduleManager = moduleManager;
+        _eventAggregator = eventAggregator;
+
+        // Reloj que refresca la lista de clientes cada 30 minutos
+        DispatcherTimer refreshTimer = new()
         {
-            get => _lastRefreshed;
-            set => SetProperty(ref _lastRefreshed, value);
+            Interval = TimeSpan.FromMinutes(30)
+        };
+        refreshTimer.Tick += RefreshTimer;
+        refreshTimer.Start();
+
+        // Reloj que actualiza el tiempo pasado desde la ultima actualizacion
+        DispatcherTimer updateTime = new()
+        {
+            Interval = TimeSpan.FromMinutes(1)
+        };
+        updateTime.Tick += UpdateTime;
+        updateTime.Start();
+
+        ChangeThemeCommand = new(SwitchTheme);
+        UpdateClientsCommand = new(UpdateClients);
+
+        ClientsList = [.. new ServiceDbContext().EstadoCliente];
+
+        _moduleManager.Run();
+        ModulesButtons =
+            [.. SettingsService.Instance.Modules
+                    .Select(m => new ModuleAction(m, new DelegateCommand<string>(LoadModule)))];
+    }
+
+    private void UpdateTime(object? sender, EventArgs args)
+    {
+        LastRefreshed++;
+    }
+
+    private void RefreshTimer(object? sender, EventArgs args)
+    {
+        UpdateClients();
+    }
+
+    private void UpdateClients()
+    {
+        LastRefreshed = 0;
+        ClientsList.Clear();
+
+        var dbContext = new ServiceDbContext();
+        foreach (var client in dbContext.EstadoCliente)
+        {
+            ClientsList.Add(client);
         }
+    }
 
-        public static InterTabClient InterTabClientInstance => new();
-
-        public static string Version => Assembly.GetExecutingAssembly()
-            .GetCustomAttributes<AssemblyInformationalVersionAttribute>()
-            .Select(x => x.InformationalVersion)
-            .First();
-
-        public ObservableCollection<Client> ClientsList { get; set; }
-        public ObservableCollection<ModuleAction> ModulesButtons { get; set; }
-
-        public DelegateCommand ChangeThemeCommand { get; private set; }
-        public DelegateCommand UpdateClientsCommand { get; private set; }
-
-        public MainViewModel(IModuleManager moduleManager, IEventAggregator eventAggregator)
+    private static void SwitchTheme()
+    {
+        SettingsService.Instance.Theme = SettingsService.Instance.Theme switch
         {
-            _moduleManager = moduleManager;
-            _eventAggregator = eventAggregator;
+            Theme.Dark => Theme.Light,
+            Theme.Light => Theme.Dark,
+            _ => throw new NotImplementedException()
+        };
 
-            // Reloj que refresca la lista de clientes cada 30 minutos
-            DispatcherTimer refreshTimer = new()
+        App.ChangeTheme(SettingsService.Instance.Theme);
+        SettingsService.Save();
+    }
+
+    private void LoadModule(string moduleName)
+    {
+        if (_moduleManager.ModuleExists(moduleName))
+        {
+            if (!_moduleManager.IsModuleInitialized(moduleName))
             {
-                Interval = TimeSpan.FromMinutes(30)
-            };
-            refreshTimer.Tick += RefreshTimer;
-            refreshTimer.Start();
-
-            // Reloj que actualiza el tiempo pasado desde la ultima actualizacion
-            DispatcherTimer updateTime = new()
-            {
-                Interval = TimeSpan.FromMinutes(1)
-            };
-            updateTime.Tick += UpdateTime;
-            updateTime.Start();
-
-            ChangeThemeCommand = new(SwitchTheme);
-            UpdateClientsCommand = new(UpdateClients);
-
-            ClientsList = [.. new ServiceDbContext().EstadoCliente];
-
-            _moduleManager.Run();
-            ModulesButtons =
-                [.. SettingsService.Instance.Modules
-                        .Select(m => new ModuleAction(m, new DelegateCommand<string>(LoadModule)))];
-        }
-
-        private void UpdateTime(object? sender, EventArgs args)
-        {
-            LastRefreshed++;
-        }
-
-        private void RefreshTimer(object? sender, EventArgs args)
-        {
-            UpdateClients();
-        }
-
-        private void UpdateClients()
-        {
-            LastRefreshed = 0;
-            ClientsList.Clear();
-
-            var dbContext = new ServiceDbContext();
-            foreach (var client in dbContext.EstadoCliente)
-            {
-                ClientsList.Add(client);
+                _moduleManager.LoadModule(moduleName);
             }
-        }
-
-        private static void SwitchTheme()
-        {
-            SettingsService.Instance.Theme = SettingsService.Instance.Theme switch
-            {
-                Theme.Dark => Theme.Light,
-                Theme.Light => Theme.Dark,
-                _ => throw new NotImplementedException()
-            };
-
-            App.ChangeTheme(SettingsService.Instance.Theme);
-            SettingsService.Save();
-        }
-
-        private void LoadModule(string moduleName)
-        {
-            if (_moduleManager.ModuleExists(moduleName))
-            {
-                if (!_moduleManager.IsModuleInitialized(moduleName))
-                {
-                    _moduleManager.LoadModule(moduleName);
-                }
-                _eventAggregator.GetEvent<LoadModuleEvent>().Publish(moduleName);
-            }
+            _eventAggregator.GetEvent<LoadModuleEvent>().Publish(moduleName);
         }
     }
 }

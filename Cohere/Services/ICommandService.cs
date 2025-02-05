@@ -7,5 +7,6 @@
         CompositeCommand RefreshErrorCount { get; }
         CompositeCommand CreateRuleCommand { get; }
         CompositeCommand RefreshListCommand { get; }
+        CompositeCommand ChangeRuleCommand { get; }
     }
 }

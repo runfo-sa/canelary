@@ -3,37 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:materialIcon="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d">
-    <GroupBox>
-        <Grid Margin="15">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window"
+               BasedOn="{StaticResource MaterialDesignWindow}">
+            <Setter Property="prism:Dialog.WindowStartupLocation"
+                    Value="CenterScreen" />
+            <Setter Property="ResizeMode"
+                    Value="NoResize" />
+            <Setter Property="SizeToContent"
+                    Value="WidthAndHeight" />
+        </Style>
+    </prism:Dialog.WindowStyle>
 
-            <Label Content="Seleccionar una regla"
-                   Margin="0,0,0,10" />
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <DockPanel Grid.Row="1">
-                <Button DockPanel.Dock="Top"
-                        Command="{Binding RemoveRuleCommand}"
-                        HorizontalContentAlignment="Stretch"
-                        Margin="0,10">
-                    <DockPanel>
-                        <materialIcon:MaterialIcon Kind="NotebookRemove"
-                                                   Width="24" />
-                        <TextBlock FontSize="14"
-                                   HorizontalAlignment="Center"
-                                   Text="Remover Regla Aplicada"
-                                   VerticalAlignment="Center" />
-                    </DockPanel>
-                </Button>
+        <Label Content="Seleccionar una regla" />
 
+        <DockPanel Grid.Row="1">
+            <Button DockPanel.Dock="Top"
+                    Command="{Binding RemoveRuleCommand}"
+                    HorizontalContentAlignment="Stretch"
+                    Margin="0,15">
+                <DockPanel>
+                    <materialIcon:MaterialIcon Kind="NotebookRemove"
+                                               Width="24" />
+                    <TextBlock FontSize="14"
+                               HorizontalAlignment="Center"
+                               Text="Remover Regla Aplicada"
+                               VerticalAlignment="Center" />
+                </DockPanel>
+            </Button>
+
+            <Border BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                    BorderThickness="2">
                 <DataGrid AutoGenerateColumns="False"
                           CanUserAddRows="False"
-                          ColumnWidth="256"
                           FontSize="14"
                           IsReadOnly="True"
                           ItemsSource="{Binding Rules}"
@@ -43,22 +56,22 @@
                                             Header="Reglas" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </DockPanel>
+            </Border>
+        </DockPanel>
 
-            <DockPanel Grid.Row="2"
-                       LastChildFill="False"
-                       Margin="0,20,0,-10">
-                <Button DockPanel.Dock="Right"
-                        Content="Cancelar"
-                        FontSize="16"
-                        IsCancel="True"
-                        Margin="5" />
-                <Button DockPanel.Dock="Right"
-                        Command="{Binding CloseDialogCommand}"
-                        Content="Aceptar"
-                        FontSize="16"
-                        Margin="5" />
-            </DockPanel>
-        </Grid>
-    </GroupBox>
+        <DockPanel Grid.Row="2"
+                   LastChildFill="False"
+                   Margin="0,25,0,-10">
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding CancelCommand}"
+                    Content="Cancelar"
+                    FontSize="16"
+                    Margin="5" />
+            <Button DockPanel.Dock="Left"
+                    Command="{Binding CloseDialogCommand}"
+                    Content="Aceptar"
+                    FontSize="16"
+                    Margin="5" />
+        </DockPanel>
+    </Grid>
 </UserControl>

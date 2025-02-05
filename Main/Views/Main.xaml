@@ -12,8 +12,7 @@
         WindowStartupLocation="CenterScreen">
 
     <Grid>
-        <controls:SplitView ItemsSource="{Binding ModulesButtons}">
-        </controls:SplitView>
+        <controls:SplitView ItemsSource="{Binding ModulesButtons}" />
 
         <!--
         <Grid Grid.Column="1"

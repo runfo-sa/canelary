@@ -1,8 +1,9 @@
-﻿using Core.Database;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
+
+using Core.Database;
 using Core.Database.IdeDbModels;
 using Core.Services;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace Cohere.Views
 {
@@ -18,6 +19,7 @@ namespace Cohere.Views
 
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
+        public DelegateCommand CancelCommand { get; private set; }
 
         private bool _changes = false;
 
@@ -31,10 +33,12 @@ namespace Cohere.Views
 
             Rule = Rules[0];
             Description = Rule.Description;
+            DescriptionLabel.Text = Description;
             Attributes = [.. context.RuleAttributes.Where(r => r.RuleId == Rule.Id)];
             AttributesList = BackendServiceProvider.Backend.GetAttributes();
 
             CloseDialogCommand = new(ClosingDialog);
+            CancelCommand = new(() => RequestClose.Invoke(ButtonResult.Cancel));
         }
 
         private void AddAttribute(Object sender, System.Windows.RoutedEventArgs e)
@@ -84,6 +88,8 @@ namespace Cohere.Views
 
         private void RuleChanged(Object sender, SelectionChangedEventArgs e)
         {
+            Description = Rule.Description;
+            DescriptionLabel.Text = Description;
             Attributes.Clear();
             using var context = new IdeDbContext();
             IEnumerable<RuleAttributes> attributes = [.. context.RuleAttributes.Where(r => r.RuleId == Rule.Id)];

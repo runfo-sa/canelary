@@ -4,6 +4,7 @@
              xmlns:core="clr-namespace:Core.FileTree;assembly=Core"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,34 +14,45 @@
         <controls:FileSelector x:Key="fileSelector" />
     </UserControl.Resources>
 
-    <TreeView x:Name="treeView"
-              FontSize="12"
-              ItemsSource="{Binding Tree}"
-              ItemTemplateSelector="{StaticResource fileSelector}">
-        <i:Interaction.Triggers>
-            <i:EventTrigger EventName="PreviewMouseDoubleClick">
-                <i:InvokeCommandAction Command="{Binding ClickSelectedCommand}" />
-            </i:EventTrigger>
-            <i:EventTrigger EventName="PreviewKeyDown">
-                <i:InvokeCommandAction Command="{Binding PressSelectedCommand}"
-                                       PassEventArgsToCommand="True" />
-            </i:EventTrigger>
-            <i:EventTrigger EventName="SelectedItemChanged">
-                <i:InvokeCommandAction Command="{Binding ChangedItemCommand}"
-                                       CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" />
-            </i:EventTrigger>
-        </i:Interaction.Triggers>
+    <DockPanel>
+        <TextBox DockPanel.Dock="Top"
+                 Margin="10,0,0,0"
+                 Text="{Binding SearchBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                 materialDesign:HintAssist.Hint="Buscar Etiqueta"
+                 materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                 materialDesign:TextFieldAssist.LeadingIcon="Search"
+                 materialDesign:TextFieldAssist.HasClearButton="True" />
+        <TreeView x:Name="treeView"
+                  DockPanel.Dock="Bottom"
+                  FontSize="12"
+                  ItemsSource="{Binding Tree}"
+                  ItemTemplateSelector="{StaticResource fileSelector}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ClickSelectedCommand}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="PreviewKeyDown">
+                    <i:InvokeCommandAction Command="{Binding PressSelectedCommand}"
+                                           PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="SelectedItemChanged">
+                    <i:InvokeCommandAction Command="{Binding ChangedItemCommand}"
+                                           CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
 
-        <TreeView.Resources>
-            <HierarchicalDataTemplate DataType="{x:Type core:VirtualDirectory}"
-                                      ItemsSource="{Binding RecursiveFiles}">
-                <TextBlock Text="{Binding Name}" />
-            </HierarchicalDataTemplate>
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type core:VirtualDirectory}"
+                                          ItemsSource="{Binding RecursiveFiles}">
+                    <TextBlock Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
 
-            <DataTemplate x:Key="fileTemplate">
-                <TextBlock HorizontalAlignment="Stretch"
-                           Text="{Binding Name}" />
-            </DataTemplate>
-        </TreeView.Resources>
-    </TreeView>
+                <DataTemplate x:Key="fileTemplate">
+                    <TextBlock HorizontalAlignment="Stretch"
+                               Text="{Binding Name}" />
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </DockPanel>
 </UserControl>

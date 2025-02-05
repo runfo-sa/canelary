@@ -1,52 +1,52 @@
-﻿using Core.Models;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Editor.Views.Dialogs
+using Core.Models;
+
+namespace Editor.Views.Dialogs;
+
+public partial class ResizeLabelDialog : UserControl, IDialogAware
 {
-    public partial class ResizeLabelDialog : UserControl, IDialogAware
+    public static string Title => "Cambiar Resolución";
+
+    public string? LabelName { get; private set; }
+
+    public ListCollectionView FromDpi { get; set; } = new(DpiConstants.All);
+    public ListCollectionView ToDpi { get; set; } = new(DpiConstants.All);
+
+    public DialogCloseListener RequestClose { get; }
+    public DelegateCommand CloseDialogCommand { get; private set; }
+
+    public ResizeLabelDialog()
     {
-        public static string Title => "Cambiar Resolución";
+        InitializeComponent();
+        DataContext = this;
 
-        public string? LabelName { get; private set; }
-
-        public ListCollectionView FromDpi { get; set; } = new(DpiConstants.All);
-        public ListCollectionView ToDpi { get; set; } = new(DpiConstants.All);
-
-        public DialogCloseListener RequestClose { get; }
-        public DelegateCommand CloseDialogCommand { get; private set; }
-
-        public ResizeLabelDialog()
+        CloseDialogCommand = new DelegateCommand(() =>
         {
-            InitializeComponent();
-            DataContext = this;
-
-            CloseDialogCommand = new DelegateCommand(() =>
+            var result = new DialogResult
             {
-                var result = new DialogResult
+                Parameters = new DialogParameters
                 {
-                    Parameters = new DialogParameters
-                    {
-                        { "FromDpi", (LabelDpi)FromDpi.CurrentItem },
-                        { "ToDpi", (LabelDpi)ToDpi.CurrentItem }
-                    },
-                    Result = ButtonResult.OK
-                };
-                RequestClose.Invoke(result);
-            });
-        }
+                    { "FromDpi", (LabelDpi)FromDpi.CurrentItem },
+                    { "ToDpi", (LabelDpi)ToDpi.CurrentItem }
+                },
+                Result = ButtonResult.OK
+            };
+            RequestClose.Invoke(result);
+        });
+    }
 
-        public Boolean CanCloseDialog() => true;
+    public bool CanCloseDialog() => true;
 
-        public void OnDialogClosed()
-        { }
+    public void OnDialogClosed()
+    { }
 
-        public void OnDialogOpened(IDialogParameters parameters)
+    public void OnDialogOpened(IDialogParameters parameters)
+    {
+        if (parameters.TryGetValue("LabelName", out string? labelName) && labelName is not null)
         {
-            if (parameters.TryGetValue("LabelName", out string? labelName) && labelName is not null)
-            {
-                LabelName = labelName;
-            }
+            LabelName = labelName;
         }
     }
 }

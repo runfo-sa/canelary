@@ -1,8 +1,10 @@
-﻿using Cohere.Models;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
+
+using Cohere.Models;
+
 using Core.Database;
 using Core.Database.IdeDbModels;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace Cohere.Views
 {
@@ -15,6 +17,7 @@ namespace Cohere.Views
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
         public DelegateCommand RemoveRuleCommand { get; private set; }
+        public DelegateCommand CancelCommand { get; private set; }
 
         public SelectRuleDialog()
         {
@@ -27,6 +30,7 @@ namespace Cohere.Views
 
             CloseDialogCommand = new(() => ClosingDialog());
             RemoveRuleCommand = new(() => ClosingDialog(true));
+            CancelCommand = new(() => RequestClose.Invoke(ButtonResult.Cancel));
         }
 
         private void ClosingDialog(bool removeRule = false)

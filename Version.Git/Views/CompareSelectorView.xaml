@@ -1,6 +1,5 @@
 ﻿<UserControl x:Class="VersionGit.Views.CompareSelectorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -59,7 +58,6 @@
 
         <Border Grid.Row="1"
                 Background="Transparent"
-                BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
                 BorderThickness="1" />
 
         <StackPanel Grid.Row="2"

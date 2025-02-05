@@ -1,13 +1,10 @@
-﻿<adonisControls:AdonisWindow x:Class="Core.View.ExceptionPopUp"
-                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                             xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
-                             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
-                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                             Background="{DynamicResource {x:Static adonisUi:Brushes.ErrorBrush}}"
-                             Title="Canelary - Alerta de Error"
-                             Height="400"
-                             Width="500"
-                             WindowStartupLocation="CenterScreen">
+﻿<Window x:Class="Core.View.ExceptionPopUp"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Canelary - Alerta de Error"
+        Height="400"
+        Width="500"
+        WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -35,4 +32,4 @@
                 FontSize="16"
                 Margin="5" />
     </Grid>
-</adonisControls:AdonisWindow>
+</Window>

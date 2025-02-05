@@ -50,7 +50,7 @@
             </Grid.ColumnDefinitions>
 
             <ContentControl prism:RegionManager.RegionName="Editor#TreeRegion"
-                            Margin="0,26,10,0" />
+                            Margin="0,14,10,0" />
             <GridSplitter Grid.Column="1"
                           Background="Transparent"
                           HorizontalAlignment="Stretch" />

@@ -1,17 +1,20 @@
-﻿using Cohere.Services;
+﻿using System.Diagnostics;
+
+using Cohere.Services;
+
+using Core;
 using Core.Database;
+
 using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 
 namespace Cohere.ViewModels
 {
     public class MenuViewModel(IDialogService dialogService, ICommandService commandService) : BindableBase
     {
-        public DelegateCommand HelpCommand => new(() => Process.Start(new ProcessStartInfo(".\\Manual\\index.html") { UseShellExecute = true }));
+        public ICommandService CommandService => commandService;
+        public DelegateCommand HelpCommand => new(() => Process.Start(new ProcessStartInfo(Globals.DOCS_URL) { UseShellExecute = true }));
 
         public DelegateCommand AboutCommand => new(() => dialogService.Show("About"));
-
-        public DelegateCommand CreateRuleCommand => new(() => dialogService.Show("CreateRuleDialog"));
 
         public DelegateCommand AlterRuleCommand => new(() => dialogService.Show("AlterRuleDialog", r =>
         {

@@ -1,14 +1,16 @@
-﻿using AdonisUI;
+﻿using System.Globalization;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Markup;
+
 using AvalonEditB.Highlighting;
+
 using Core.Logger;
 using Core.Services;
 using Core.Services.SettingsModel;
 using Core.View;
+
 using Main.ViewModels;
-using System.Globalization;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Markup;
 
 namespace Main
 {
@@ -79,8 +81,7 @@ namespace Main
 
         public static void ChangeTheme(Theme theme)
         {
-            ResourceLocator.SetColorScheme(Current.Resources,
-                theme == Theme.Dark ? ResourceLocator.DarkColorScheme : ResourceLocator.LightColorScheme);
+            ///TODO!
         }
     }
 }

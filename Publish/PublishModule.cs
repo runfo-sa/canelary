@@ -1,5 +1,4 @@
-﻿using AdonisUI.Controls;
-using Core.Services;
+﻿using Core.Services;
 
 namespace Publish
 {
@@ -20,13 +19,13 @@ namespace Publish
 
         private void CreateWindow(string name)
         {
-            new AdonisWindow
+            /*new AdonisWindow
             {
                 Title = $"Canelary - Publicar",
                 Content = _container?.Resolve<Views.Publish>(),
                 Height = 768,
                 Width = 1024,
-            }.Show();
+            }.Show();*/
         }
     }
 }

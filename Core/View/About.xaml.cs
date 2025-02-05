@@ -13,7 +13,13 @@ namespace Core.View
         {
             InitializeComponent();
             DataContext = this;
-            verionText.Text = $"Version {Assembly.GetExecutingAssembly().GetName().Version}";
+
+            var version = Assembly.GetExecutingAssembly()
+                .GetCustomAttributes<AssemblyInformationalVersionAttribute>()
+                .Select(x => x.InformationalVersion)
+                .First();
+
+            verionText.Text = $"Versión: {version}";
         }
 
         public Boolean CanCloseDialog() => true;

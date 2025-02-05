@@ -1,46 +1,97 @@
-﻿using Core.FileTree;
-using Editor.Services;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Editor.ViewModels
+using Core.FileTree;
+
+using Editor.Services;
+
+namespace Editor.ViewModels;
+
+public class TreeViewModel : BindableBase
 {
-    public class TreeViewModel : BindableBase
+    public ObservableCollection<object> Tree { get; set; }
+    public DelegateCommand ClickSelectedCommand { get; private set; }
+    public DelegateCommand<KeyEventArgs> PressSelectedCommand { get; private set; }
+    public DelegateCommand<object?> ChangedItemCommand { get; private set; }
+
+    private string? _searchBox;
+
+    public string? SearchBox
     {
-        public ObservableCollection<object> Tree { get; set; }
-        public DelegateCommand ClickSelectedCommand { get; private set; }
-        public DelegateCommand<KeyEventArgs> PressSelectedCommand { get; private set; }
-        public DelegateCommand<object?> ChangedItemCommand { get; private set; }
-
-        private readonly ICommandService _commandService;
-        private readonly TreeGenerator _tree = new();
-        private object? _currentItem;
-
-        public TreeViewModel(ICommandService commandService)
+        get => _searchBox;
+        set
         {
-            Tree = _tree.InitTree();
-            _commandService = commandService;
-            PressSelectedCommand = new(PressSelected);
-            ChangedItemCommand = new((obj) => _currentItem = obj);
-            ClickSelectedCommand = new(() => commandService.OpenItemCommand.Execute(_currentItem));
-            _commandService.ReloadTree.RegisterCommand(new DelegateCommand(() =>
-            {
-                _tree.ClearCache();
-                var tree = _tree.InitTree();
-
-                Tree.Clear();
-                foreach (var item in tree)
-                {
-                    Tree.Add(item);
-                }
-            }));
+            SetProperty(ref _searchBox, value);
+            Find(value);
         }
+    }
 
-        private void PressSelected(KeyEventArgs args)
+    private readonly ICommandService _commandService;
+    private readonly TreeGenerator _tree = new();
+    private object? _currentItem;
+
+    public TreeViewModel(ICommandService commandService)
+    {
+        Tree = _tree.InitTree();
+        _commandService = commandService;
+        PressSelectedCommand = new(PressSelected);
+        ChangedItemCommand = new((obj) => _currentItem = obj);
+        ClickSelectedCommand = new(() => commandService.OpenItemCommand.Execute(_currentItem));
+        _commandService.ReloadTree.RegisterCommand(new DelegateCommand(() =>
         {
-            if (args.Key == Key.Enter)
+            _tree.ClearCache();
+            var tree = _tree.InitTree();
+
+            Tree.Clear();
+            foreach (var item in tree)
             {
-                _commandService.OpenItemCommand.Execute(_currentItem);
+                Tree.Add(item);
+            }
+        }));
+    }
+
+    private void PressSelected(KeyEventArgs args)
+    {
+        if (args.Key == Key.Enter)
+        {
+            _commandService.OpenItemCommand.Execute(_currentItem);
+        }
+    }
+
+    private void Find(string? search)
+    {
+        _tree.ClearCache();
+        var tree = _tree.InitTree();
+
+        if (search != null && search != "")
+        {
+            var dirs = new List<VirtualDirectory>();
+            foreach (var obj in tree)
+            {
+                if (obj is VirtualDirectory dir)
+                {
+                    var filter = dir.Files.Where(f => f.Name.Contains(search!, StringComparison.CurrentCultureIgnoreCase));
+                    var new_dir = new VirtualDirectory(dir.Name);
+                    foreach (var f in filter)
+                    {
+                        new_dir.Files.Add(f);
+                    }
+                    dirs.Add(new_dir);
+                }
+            }
+
+            Tree.Clear();
+            foreach (var d in dirs)
+            {
+                Tree.Add(d);
+            }
+        }
+        else
+        {
+            Tree.Clear();
+            foreach (var t in tree)
+            {
+                Tree.Add(t);
             }
         }
     }

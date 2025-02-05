@@ -9,7 +9,7 @@
     <Grid>
         <Menu>
             <MenuItem Header="Reglas">
-                <MenuItem Command="{Binding CreateRuleCommand}"
+                <MenuItem Command="{Binding CommandService.CreateRuleCommand}"
                           Header="Crear Regla" />
                 <MenuItem Command="{Binding AlterRuleCommand}"
                           Header="Modificar Regla" />

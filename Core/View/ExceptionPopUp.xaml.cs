@@ -1,8 +1,8 @@
-﻿using AdonisUI.Controls;
+﻿using System.Windows;
 
 namespace Core.View
 {
-    public partial class ExceptionPopUp : AdonisWindow
+    public partial class ExceptionPopUp : Window
     {
         public ExceptionPopUp(string exceptionMessage)
         {

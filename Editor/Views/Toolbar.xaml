@@ -72,7 +72,7 @@
             </Button>
             <ComboBox ItemsSource="{Binding Printers}"
                       Margin="5,0"
-                      SelectedIndex="0"
+                      SelectedItem="{Binding Printer}"
                       Style="{StaticResource {x:Type ComboBox}}"
                       IsSynchronizedWithCurrentItem="True" />
         </ToolBar>

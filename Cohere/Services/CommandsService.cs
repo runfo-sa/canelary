@@ -16,5 +16,8 @@
 
         private readonly CompositeCommand _refreshList = new();
         public CompositeCommand RefreshListCommand => _refreshList;
+
+        private readonly CompositeCommand _changeRule = new();
+        public CompositeCommand ChangeRuleCommand => _changeRule;
     }
 }

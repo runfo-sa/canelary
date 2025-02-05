@@ -1,15 +1,18 @@
-﻿using Cohere.Models;
+﻿using System.Collections.ObjectModel;
+using System.IO;
+using System.Text.RegularExpressions;
+
+using Cohere.Models;
 using Cohere.Services;
+
 using Core.Database;
 using Core.Database.IdeDbModels;
 using Core.FileTree;
 using Core.Models;
 using Core.Services;
 using Core.Services.BackendModel;
+
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Cohere.ViewModels
 {
@@ -27,7 +30,7 @@ namespace Cohere.ViewModels
             set
             {
                 SetProperty(ref _currentLabel, value);
-                ChangeRuleCommand.RaiseCanExecuteChanged();
+                _changeRuleCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -41,7 +44,7 @@ namespace Cohere.ViewModels
 
         public ICommandService CommandService { get; }
 
-        public DelegateCommand ChangeRuleCommand { get; private set; }
+        private readonly DelegateCommand _changeRuleCommand;
 
         public ProductsListViewModel(ICommandService commandService, IDialogService dialogService)
         {
@@ -56,7 +59,8 @@ namespace Cohere.ViewModels
                 }
             }));
 
-            ChangeRuleCommand = new(() => ChangeRule(CurrentLabel!), () => CurrentLabel != null);
+            _changeRuleCommand = new DelegateCommand(() => ChangeRule(CurrentLabel!), () => CurrentLabel != null);
+            CommandService.ChangeRuleCommand.RegisterCommand(_changeRuleCommand);
         }
 
         private void OpenItem(object? item)
@@ -125,7 +129,7 @@ namespace Cohere.ViewModels
                 }
 
                 var errorCount = ProductsList.Count(p => p.Error != ProductError.None);
-                CommandService.RefreshErrorCount.Execute(new ErrorCounter(errorCount, ProductsList.Count));
+                CommandService.RefreshErrorCount.Execute(new ErrorCounter(errorCount, ProductsList));
             }
         }
 

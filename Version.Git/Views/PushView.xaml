@@ -1,6 +1,5 @@
 ﻿<UserControl x:Class="VersionGit.Views.PushView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:converter="clr-namespace:Version.Git.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
@@ -30,8 +29,7 @@
                            FontWeight="DemiBold"
                            Margin="0,5"
                            Text="{Binding TotalFiles, StringFormat='Archivos Modificados (\{0\})'}" />
-                <Border BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1BorderBrush}}"
-                        BorderThickness="2">
+                <Border BorderThickness="2">
                     <DataGrid AutoGenerateColumns="False"
                               FontSize="14"
                               IsReadOnly="True"
@@ -110,7 +108,6 @@
             </DockPanel>
 
             <Border Grid.Row="4"
-                    BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer1BorderBrush}}"
                     BorderThickness="0,2,0,0">
                 <DockPanel LastChildFill="False"
                            Margin="5,0">

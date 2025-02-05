@@ -72,7 +72,17 @@
 
         <Grid x:Name="MainPane"
               Grid.Column="1">
-            <dockablz:Layout>
+            <StackPanel x:Name="BackgroundLogo"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Image Source="../Resources/canelary_grey_512px.png"
+                       Height="200" />
+                <Label Content="Canelary"
+                       HorizontalAlignment="Center"
+                       Foreground="#6a6a6a"
+                       FontSize="28" />
+            </StackPanel>
+            <dockablz:Layout InterLayoutClient="{Binding InterLayoutClientInstance}">
                 <dragablz:TabablzControl x:Name="Tabs"
                                          Visibility="Hidden"
                                          ShowDefaultCloseButton="True">

@@ -1,12 +1,15 @@
-﻿using BackendTwins.Database;
+﻿using System.Globalization;
+using System.Text;
+
+using BackendTwins.Database;
+
 using Core.Database.IdeDbModels;
 using Core.Services;
 using Core.Services.BackendModel;
+
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
-using System.Text;
 
 namespace BackendTwins.Models
 {
@@ -73,6 +76,11 @@ namespace BackendTwins.Models
 
         public List<KeyValuePair<Product, List<KeyValuePair<string, string?>>>> GetValues(List<Product> products, List<RuleAttributes> attributes)
         {
+            if (attributes.IsNullOrEmpty())
+            {
+                return [];
+            }
+
             int cte = 2;
             var queryBuild = new StringBuilder();
             using var context = new TwinsDbContext();
@@ -143,6 +151,11 @@ namespace BackendTwins.Models
                                 .ToString(func[2..]);
                             break;
 
+                        case "FL":
+                            Decimal d1 = 0.0022046244201837774916665197M * Convert.ToDecimal((double)Convert.ToInt32(parts[0]));
+                            parts[0] = d1.ToString(func[2..]);
+                            break;
+
                         case "FF":
                             parts[0] = DateTime
                                 .ParseExact(parts[0], "yyyyMMdd", CultureInfo.InvariantCulture)
@@ -159,11 +172,11 @@ namespace BackendTwins.Models
                             break;
 
                         case "FC":
-                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(",", "") : parts[0].Replace(".", ",");
+                            parts[0] = (func[2..4] != "SI") ? parts[0].Replace(",", "") : parts[0].Replace(".", ",");
                             break;
 
                         case "FP":
-                            parts[0] = (func[2..4] == "SI") ? parts[0].Replace(".", "") : parts[0].Replace(",", ".");
+                            parts[0] = (func[2..4] != "SI") ? parts[0].Replace(".", "") : parts[0].Replace(",", ".");
                             break;
 
                         case "FI":

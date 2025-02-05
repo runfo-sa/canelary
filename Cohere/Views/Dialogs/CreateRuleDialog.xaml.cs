@@ -1,9 +1,11 @@
-﻿using Core.Database;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
+
+using Core.Database;
 using Core.Database.IdeDbModels;
 using Core.Services;
+
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace Cohere.Views
 {
@@ -33,6 +35,7 @@ namespace Cohere.Views
 
         public DialogCloseListener RequestClose { get; }
         public DelegateCommand CloseDialogCommand { get; private set; }
+        public DelegateCommand CancelCommand { get; private set; }
 
         public CreateRuleDialog()
         {
@@ -44,6 +47,7 @@ namespace Cohere.Views
             AttributesList = BackendServiceProvider.Backend.GetAttributes();
 
             CloseDialogCommand = new(ClosingDialog, () => !RuleName.IsNullOrEmpty());
+            CancelCommand = new(() => RequestClose.Invoke(ButtonResult.Cancel));
         }
 
         private void AddAttribute(Object sender, System.Windows.RoutedEventArgs e)

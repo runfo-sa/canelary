@@ -16,41 +16,44 @@
         <Label DockPanel.Dock="Top"
                Content="Valores"
                FontSize="18"
-               FontWeight="DemiBold"
                Margin="10" />
         <Border DockPanel.Dock="Top"
-                BorderBrush="AliceBlue"
+                BorderBrush="{DynamicResource SecondaryHueMidBrush}"
                 BorderThickness="1" />
         <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding SelectedValues}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type core:ProductReport}">
-                        <Label FontSize="16"
-                               FontWeight="Regular"
-                               Margin="10,10,10,0">
-                            <Label.Style>
-                                <Style BasedOn="{StaticResource {x:Type Label}}"
-                                       TargetType="{x:Type Label}">
-                                    <Setter Property="Foreground"
-                                            Value="{Binding Error, Converter={StaticResource PrdouctErrorForegroundColorConverter}}" />
-                                </Style>
-                            </Label.Style>
+                        <DockPanel>
+                            <Label DockPanel.Dock="Top"
+                                   FontSize="14"
+                                   Margin="5">
+                                <Label.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignLabel}"
+                                           TargetType="{x:Type Label}">
+                                        <Setter Property="Foreground"
+                                                Value="{Binding Error, Converter={StaticResource PrdouctErrorForegroundColorConverter}}" />
+                                    </Style>
+                                </Label.Style>
 
-                            <Label.Content>
-                                <TextBlock TextWrapping="Wrap">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}: {1}">
-                                            <Binding Path="Attribute" />
-                                            <Binding Path="Value" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Comments}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </Label.Content>
-                        </Label>
+                                <Label.Content>
+                                    <TextBlock TextWrapping="Wrap">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0}: {1}">
+                                                <Binding Path="Attribute" />
+                                                <Binding Path="Value" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Comments}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                            <Separator DockPanel.Dock="Bottom"
+                                       Background="{DynamicResource PrimaryHueMidBrush}" />
+                        </DockPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

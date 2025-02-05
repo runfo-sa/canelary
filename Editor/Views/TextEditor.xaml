@@ -13,16 +13,6 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="HoverMouse"
-               TargetType="{x:Type Button}">
-            <Setter Property="Foreground"
-                    Value="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-        </Style>
-
         <DataTemplate x:Key="HeaderTemplate"
                       DataType="{x:Type model:TabItem}">
             <DockPanel>
@@ -48,7 +38,7 @@
                         Command="{Binding DataContext.CommandService.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         CommandParameter="{Binding}"
                         Content="{materialIcons:MaterialIconExt Kind=CloseCircle,Size=14}"
-                        Style="{StaticResource HoverMouse}" />
+                        Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}" />
             </DockPanel>
         </DataTemplate>
 
@@ -76,12 +66,12 @@
             <TabControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type model:TabItem}">
                     <control:LinterTextEditor Document="{Binding Content}"
-                                              Background="Transparent"
-                                              BorderBrush="{DynamicResource SecondaryHueMidBrush}"
+                                              Background="{DynamicResource MaterialDesignDarkSeparatorBackground}"
+                                              BorderBrush="{DynamicResource PrimaryHueMidBrush}"
                                               BorderThickness="2,0,2,10"
                                               Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                                               LineNumbersForeground="{DynamicResource SecondaryHueMidBrush}"
-                                              FontFamily="Cascadia Mono Regular"
+                                              FontFamily="/Canelary;Component/Resources/#JetBrains Mono"
                                               FontSize="14"
                                               LinterData="{Binding LintingData}"
                                               ShowLineNumbers="True"
@@ -112,28 +102,27 @@
             </Grid.RowDefinitions>
 
             <Grid.Background>
-                <SolidColorBrush Opacity="0.85" />
+                <SolidColorBrush Color="#7a2222"
+                                 Opacity="0.85" />
             </Grid.Background>
 
             <DockPanel LastChildFill="False"
                        Margin="15,5">
                 <TextBlock FontSize="16"
-                           FontWeight="DemiBold"
+                           Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                            Text="Errores encontrados:" />
                 <Button DockPanel.Dock="Right"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
+                        Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}"
                         Command="{Binding CloseErrorWindowCommand}"
-                        Content="⤫"
+                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle,Size=14}"
                         FontSize="16"
-                        FontWeight="DemiBold"
                         VerticalAlignment="Top" />
             </DockPanel>
 
             <ScrollViewer Grid.Row="1"
                           Margin="15,0,22,20">
-                <TextBlock FontWeight="Normal"
-                           FontSize="12"
+                <TextBlock Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                           FontSize="14"
                            Text="{Binding ErrorsMessage}" />
             </ScrollViewer>
         </Grid>

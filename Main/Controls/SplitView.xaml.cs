@@ -58,6 +58,7 @@ public partial class SplitView : UserControl
                 if (Tabs.Items.IsEmpty)
                 {
                     Tabs.Visibility = Visibility.Visible;
+                    BackgroundLogo.Visibility = Visibility.Collapsed;
                 }
 
                 _contentControls.Add(c);
@@ -130,17 +131,17 @@ public partial class SplitView : UserControl
         _isPaneOpen = !_isPaneOpen;
         if (!_isPaneOpen)
         {
-            _closeAnim.Begin(CompactPane);
             DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronRight };
             Title.Visibility = Visibility.Collapsed;
             VersionLabel.Visibility = Visibility.Hidden;
+            _closeAnim.Begin(CompactPane);
         }
         else
         {
-            _openAnim.Begin(CompactPane);
             DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronLeft };
             Title.Visibility = Visibility.Visible;
             VersionLabel.Visibility = Visibility.Visible;
+            _openAnim.Begin(CompactPane);
         }
 
         foreach (var (mod, btn) in _mods)
@@ -155,7 +156,7 @@ public partial class SplitView : UserControl
         {
             From = new GridLength(from, GridUnitType.Pixel),
             To = new GridLength(to, GridUnitType.Pixel),
-            Duration = new Duration(TimeSpan.FromMilliseconds(256))
+            Duration = new Duration(TimeSpan.FromMilliseconds(200))
         };
 
         Storyboard.SetTargetName(anim, name);
@@ -171,6 +172,7 @@ public partial class SplitView : UserControl
         if (Tabs.Items.Count <= 1)
         {
             Tabs.Visibility = Visibility.Hidden;
+            BackgroundLogo.Visibility = Visibility.Visible;
         }
     }
 }

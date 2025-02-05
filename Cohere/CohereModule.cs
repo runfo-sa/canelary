@@ -1,13 +1,16 @@
-﻿using AdonisUI.Controls;
-using Cohere.Views;
+﻿using Cohere.Views;
+
+using Core.Events;
+using Core.Models;
 using Core.Services;
 
 namespace Cohere
 {
     [Module(ModuleName = "Verificar", OnDemand = true)]
-    public class CohereModule(IRegionManager regionManager) : IModule
+    public class CohereModule(IRegionManager regionManager, IEventAggregator eventAggregator) : IModule
     {
         private readonly IRegionManager _regionManager = regionManager;
+        private readonly IEventAggregator _eventAggregator = eventAggregator;
         private IContainerProvider? _container;
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -27,16 +30,12 @@ namespace Cohere
             _regionManager.RegisterViewWithRegion("Cohere#MenuRegion", typeof(Menu));
             _regionManager.RegisterViewWithRegion("Cohere#TreeRegion", typeof(Tree));
             _regionManager.RegisterViewWithRegion("Cohere#ProductListRegion", typeof(ProductsList));
-            _regionManager.RegisterViewWithRegion("Cohere#ProductReportRegion", typeof(ProductReport));
+            _regionManager.RegisterViewWithRegion("Cohere#ProductReportRegion", typeof(Views.ProductReport));
         }
 
         private void CreateWindow(string name)
         {
-            new AdonisWindow
-            {
-                Title = $"Canelary - Verificar",
-                Content = _container?.Resolve<Views.Cohere>()
-            }.Show();
+            _eventAggregator.GetEvent<SendModuleEvent>().Publish(new ModuleTab("Verificador", _container?.Resolve<Views.Cohere>()!));
         }
     }
 }

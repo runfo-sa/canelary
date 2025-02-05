@@ -1,69 +1,80 @@
 ﻿<UserControl x:Class="Editor.Views.Dialogs.ResizeLabelDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d">
-    <GroupBox>
-        <Grid Margin="15">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window"
+               BasedOn="{StaticResource MaterialDesignWindow}">
+            <Setter Property="prism:Dialog.WindowStartupLocation"
+                    Value="CenterScreen" />
+            <Setter Property="ResizeMode"
+                    Value="NoResize" />
+            <Setter Property="SizeToContent"
+                    Value="WidthAndHeight" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <TextBlock FontSize="16"
+        <TextBlock FontSize="16"
+                   FontWeight="DemiBold"
+                   HorizontalAlignment="Center"
+                   Text="{Binding LabelName}" />
+
+        <DockPanel Grid.Row="1"
+                   LastChildFill="False"
+                   Margin="0,15">
+            <TextBlock FontSize="14"
                        FontWeight="DemiBold"
-                       HorizontalAlignment="Center"
-                       Text="{Binding LabelName}" />
+                       Text="De:"
+                       VerticalAlignment="Center" />
+            <Separator Opacity="0"
+                       Width="10" />
+            <ComboBox DisplayMemberPath="Display"
+                      ItemsSource="{Binding FromDpi}"
+                      FontSize="13"
+                      SelectedIndex="1"
+                      SelectedValuePath="Value" />
+            <Separator Opacity="0"
+                       Width="25" />
+            <ComboBox DockPanel.Dock="Right"
+                      DisplayMemberPath="Display"
+                      ItemsSource="{Binding ToDpi}"
+                      FontSize="13"
+                      SelectedIndex="2"
+                      SelectedValuePath="Value" />
+            <Separator DockPanel.Dock="Right"
+                       Opacity="0"
+                       Width="10" />
+            <TextBlock DockPanel.Dock="Right"
+                       FontSize="14"
+                       FontWeight="DemiBold"
+                       Text="A:"
+                       VerticalAlignment="Center" />
+        </DockPanel>
 
-            <DockPanel Grid.Row="1"
-                       LastChildFill="False"
-                       Margin="0,15">
-                <TextBlock FontSize="14"
-                           FontWeight="DemiBold"
-                           Text="De:"
-                           VerticalAlignment="Center" />
-                <Separator Opacity="0"
-                           Width="10" />
-                <ComboBox DisplayMemberPath="Display"
-                          ItemsSource="{Binding FromDpi}"
-                          FontSize="13"
-                          SelectedIndex="1"
-                          SelectedValuePath="Value" />
-                <Separator Opacity="0"
-                           Width="25" />
-                <ComboBox DockPanel.Dock="Right"
-                          DisplayMemberPath="Display"
-                          ItemsSource="{Binding ToDpi}"
-                          FontSize="13"
-                          SelectedIndex="2"
-                          SelectedValuePath="Value" />
-                <Separator DockPanel.Dock="Right"
-                           Opacity="0"
-                           Width="10" />
-                <TextBlock DockPanel.Dock="Right"
-                           FontSize="14"
-                           FontWeight="DemiBold"
-                           Text="A:"
-                           VerticalAlignment="Center" />
-            </DockPanel>
-
-            <DockPanel Grid.Row="2"
-                       LastChildFill="False"
-                       VerticalAlignment="Bottom">
-                <Button DockPanel.Dock="Right"
-                        Content="Cancelar"
-                        FontSize="16"
-                        IsCancel="True"
-                        Margin="0,5" />
-                <Button Command="{Binding CloseDialogCommand}"
-                        Content="Aceptar"
-                        FontSize="16"
-                        Margin="0,5" />
-            </DockPanel>
-        </Grid>
-    </GroupBox>
+        <DockPanel Grid.Row="2"
+                   LastChildFill="False"
+                   VerticalAlignment="Bottom">
+            <Button DockPanel.Dock="Right"
+                    Content="Cancelar"
+                    FontSize="16"
+                    IsCancel="True"
+                    Margin="0,5" />
+            <Button Command="{Binding CloseDialogCommand}"
+                    Content="Aceptar"
+                    FontSize="16"
+                    Margin="0,5" />
+        </DockPanel>
+    </Grid>
 </UserControl>
