@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Comparator.Views
+namespace Comparator.Views;
+
+public partial class ImageMode : UserControl
 {
-    public partial class ImageMode : UserControl
+    public ImageMode()
     {
-        public ImageMode()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

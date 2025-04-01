@@ -1,71 +1,71 @@
-﻿using Core.FileTree;
+﻿using System.IO;
+
+using Core.FileTree;
 using Core.Services;
-using System.IO;
 
-namespace VersionGit.Models
+namespace VersionGit.Models;
+
+public class Git : IVersion
 {
-    public class Git : IVersion
+    public string? FolderPath { get; set; }
+
+    public IEnumerable<string> ListVersions(IFile? file = null)
     {
-        public string? FolderPath { get; set; }
+        return GitInner.RunGitCommand(
+             "for-each-ref",
+             "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
+             Settings.Instance.EtiquetasDir)
+         .Message
+         .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
+         .Select(s => GitTag.Parse(s).Tag)
+         .Prepend("Local");
+    }
 
-        public IEnumerable<string> ListVersions(IFile? file = null)
+    public IEnumerable<IFile> ListFiles(string version = "Local")
+    {
+        if (version != "Local")
         {
-            return GitInner.RunGitCommand(
-                 "for-each-ref",
-                 "--format=\"%(refname:short)|%(creatordate:format:%Y/%m/%d %I:%M)|%(subject)\\n\" \"refs/tags/*\"",
-                 Settings.Instance.EtiquetasDir)
-             .Message
-             .Split("\\n", StringSplitOptions.RemoveEmptyEntries)
-             .Select(s => GitTag.Parse(s).Tag)
-             .Prepend("Local");
+            return LoadGitFiles(version);
         }
 
-        public IEnumerable<IFile> ListFiles(string version = "Local")
+        IEnumerable<IFile> files = [];
+        foreach (var ext in SettingsService.Instance.Extension)
         {
-            if (version != "Local")
-            {
-                return LoadGitFiles(version);
-            }
-
-            IEnumerable<IFile> files = [];
-            foreach (var ext in SettingsService.Instance.Extension)
-            {
-                files = files.Concat(Directory
-                    .GetFiles(Settings.Instance.EtiquetasDir, $"*.{ext}")
-                    .Select(f => new LabelFile(f)));
-            }
-
-            return files;
+            files = files.Concat(Directory
+                .GetFiles(Settings.Instance.EtiquetasDir, $"*.{ext}")
+                .Select(f => new LabelFile(f)));
         }
 
-        public static IEnumerable<LabelFile> LoadGitFiles(string tag)
+        return files;
+    }
+
+    public static IEnumerable<LabelFile> LoadGitFiles(string tag)
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"Canelary - {tag}");
+        Directory.CreateDirectory(path);
+
+        if (GitInner.RunGitCommand("tag", "--points-at HEAD", path).Message != tag)
         {
-            string path = Path.Combine(Path.GetTempPath(), $"Canelary - {tag}");
-            Directory.CreateDirectory(path);
-
-            if (GitInner.RunGitCommand("tag", "--points-at HEAD", path).Message != tag)
-            {
-                GitInner.RunGitCommand("init", "", path);
-                GitInner.RunGitCommand("remote add origin", Settings.Instance.GitRepo, path);
-                GitInner.RunGitCommand("fetch", "--all --tags --prune", path);
-                GitInner.RunGitCommand("checkout", $"tags/{tag}", path);
-            }
-
-            IEnumerable<LabelFile> files = [];
-            foreach (var ext in SettingsService.Instance.Extension)
-            {
-                files = files.Concat(Directory
-                    .GetFiles(path, $"*.{ext}")
-                    .Select(f => new LabelFile(f)));
-            }
-
-            return files;
+            GitInner.RunGitCommand("init", "", path);
+            GitInner.RunGitCommand("remote add origin", Settings.Instance.GitRepo, path);
+            GitInner.RunGitCommand("fetch", "--all --tags --prune", path);
+            GitInner.RunGitCommand("checkout", $"tags/{tag}", path);
         }
 
-        public bool SaveFile(string path, string content)
+        IEnumerable<LabelFile> files = [];
+        foreach (var ext in SettingsService.Instance.Extension)
         {
-            new LabelFile(path).Write(content);
-            return true;
+            files = files.Concat(Directory
+                .GetFiles(path, $"*.{ext}")
+                .Select(f => new LabelFile(f)));
         }
+
+        return files;
+    }
+
+    public bool SaveFile(string path, string content)
+    {
+        new LabelFile(path).Write(content);
+        return true;
     }
 }

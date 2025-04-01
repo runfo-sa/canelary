@@ -1,9 +1,8 @@
-﻿namespace Core.Models
+﻿namespace Core.Models;
+
+public enum ProductError
 {
-    public enum ProductError
-    {
-        None,
-        Incoherent,
-        Incomplete
-    }
+    None,
+    Incoherent,
+    Incomplete
 }

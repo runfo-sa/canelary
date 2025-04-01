@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Editor.Views
+namespace Editor.Views;
+
+public partial class Editor : UserControl
 {
-    public partial class Editor : UserControl
+    public Editor()
     {
-        public Editor()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

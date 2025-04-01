@@ -1,72 +1,64 @@
-﻿using Comparator.Models;
-using Core.Events;
-using Core.Models;
-using Core.Services.VersionModel;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Comparator.Views
+using Comparator.Models;
+
+using Core.Events;
+using Core.Models;
+using Core.Services.VersionModel;
+
+using MaterialDesignThemes.Wpf;
+
+namespace Comparator.Views;
+
+public partial class SelectLabelsDialog : UserControl
 {
-    public partial class SelectLabelsDialog : UserControl, IDialogAware
+    public static string Title => "Seleccionar Etiquetas";
+
+    public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
+    public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
+
+    public DelegateCommand CloseDialogCommand { get; private set; }
+
+    private static readonly Lazy<IEventAggregator> LazyEventAggregator =
+        new(() => ContainerLocator.Container.Resolve<IEventAggregator>());
+
+    private readonly string _dialogIdentifier;
+
+    private static IEventAggregator EventAggregator => LazyEventAggregator.Value;
+
+    public SelectLabelsDialog(string dialogIdentifier)
     {
-        public static string Title => "Seleccionar Etiquetas";
+        InitializeComponent();
+        DataContext = this;
 
-        public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
-        public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
+        _dialogIdentifier = dialogIdentifier;
+        CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
 
-        public DialogCloseListener RequestClose { get; }
-        public DelegateCommand CloseDialogCommand { get; private set; }
+        EventAggregator
+         .GetEvent<RecvFilesEvent>()
+         .Subscribe(RecvFiles, files => files.Id == dialogIdentifier);
+    }
 
-        private static readonly Lazy<IEventAggregator> _lazyEventAggregator =
-            new(() => ContainerLocator.Container.Resolve<IEventAggregator>());
+    private void ClosingDialog()
+    {
+        ContentGrid.Visibility = System.Windows.Visibility.Collapsed;
+        LoadingBar.Visibility = System.Windows.Visibility.Visible;
+        EventAggregator
+            .GetEvent<SendFilesEvent>()
+            .Publish(_dialogIdentifier);
+    }
 
-        private static IEventAggregator EventAggregator => _lazyEventAggregator.Value;
+    private void RecvFiles(ComparasionFiles files)
+    {
+        var selection = new SelectionResult(
+            files.Left,
+            files.Right,
+            (LabelDpi)DpiList.CurrentItem,
+            (LabelSize)SizeList.CurrentItem
+        );
 
-        public SelectLabelsDialog()
-        {
-            InitializeComponent();
-            DataContext = this;
-
-            CloseDialogCommand = new(ClosingDialog, () => acceptButton.IsEnabled);
-
-            EventAggregator
-             .GetEvent<RecvFilesEvent>()
-             .Subscribe(RecvFiles);
-        }
-
-        private static void ClosingDialog()
-        {
-            EventAggregator.GetEvent<SendFilesEvent>().Publish();
-        }
-
-        private void RecvFiles(ComparasionFiles files)
-        {
-            var sr = new SelectionResult(
-                files.Left,
-                files.Right,
-                (LabelDpi)DpiList.CurrentItem,
-                (LabelSize)SizeList.CurrentItem
-            );
-
-            var result = new DialogResult
-            {
-                Parameters = new DialogParameters { { "SelectionResult", sr } },
-                Result = ButtonResult.OK
-            };
-
-            RequestClose.Invoke(result);
-        }
-
-        public Boolean CanCloseDialog()
-        {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        { }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        { }
+        DialogHost.CloseDialogCommand.Execute(selection, null);
     }
 }

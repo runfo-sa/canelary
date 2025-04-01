@@ -1,9 +1,8 @@
-﻿namespace Comparator.Services
+﻿namespace Comparator.Services;
+
+public interface ICommandService
 {
-    public interface ICommandService
-    {
-        CompositeCommand GenerateDiff { get; }
-        CompositeCommand ChangeFiles { get; }
-        CompositeCommand Refresh { get; }
-    }
+    CompositeCommand GenerateDiff { get; }
+    CompositeCommand ChangeFiles { get; }
+    CompositeCommand Refresh { get; }
 }

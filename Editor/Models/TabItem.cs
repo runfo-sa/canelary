@@ -1,139 +1,141 @@
-﻿using AvalonEditB.Document;
-using Core.Services;
-using Microsoft.Win32;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text;
 
-namespace Editor.Models
+using AvalonEditB.Document;
+
+using Core.Services;
+
+using Microsoft.Win32;
+
+namespace Editor.Models;
+
+/// <summary>
+/// Clase que modela el contendio de una pestaña en el editor de texto.
+/// Contiene toda la informacion necesaria para renderizar un editor de texto.
+/// </summary>
+public class TabItem : BindableBase
 {
-    /// <summary>
-    /// Clase que modela el contendio de una pestaña en el editor de texto.
-    /// Contiene toda la informacion necesaria para renderizar un editor de texto.
-    /// </summary>
-    public class TabItem : BindableBase
+    public delegate void TabItemHandler(TabItem item);
+
+    public event TabItemHandler? WasModified;
+
+    public TextDocument Content { get; private set; }
+
+    private string? _path;
+
+    public string? Path
     {
-        public delegate void TabItemHandler(TabItem item);
+        get => _path;
+        set => SetProperty(ref _path, value);
+    }
 
-        public event TabItemHandler? WasModified;
+    private string _header = string.Empty;
 
-        public TextDocument Content { get; private set; }
+    public string Header
+    {
+        get => _header;
+        private set => SetProperty(ref _header, value);
+    }
 
-        private string? _path;
+    private bool _hasUnsavedChanges = false;
 
-        public string? Path
+    public bool HasUnsavedChanges
+    {
+        get => _hasUnsavedChanges;
+        private set => SetProperty(ref _hasUnsavedChanges, value);
+    }
+
+    private List<LintingInfo> _lintingData = [];
+
+    public List<LintingInfo> LintingData
+    {
+        get => _lintingData;
+        set => SetProperty(ref _lintingData, value);
+    }
+
+    public TabItem(string header, string content, string? path = null)
+    {
+        Path = path;
+        Header = header;
+        Content = new TextDocument(content);
+        Content.TextChanged += SetUnsavedChanges;
+        Content.UndoStack.PropertyChanged += ResetChanges;
+    }
+
+    public void SetAsUnsaved()
+    {
+        SetUnsavedChanges(null, EventArgs.Empty);
+    }
+
+    private void SetUnsavedChanges(object? sender, EventArgs e)
+    {
+        Header += '*';
+        HasUnsavedChanges = true;
+        Content.TextChanged -= SetUnsavedChanges;
+        WasModified?.Invoke(this);
+    }
+
+    private void ResetChanges(object? sender, PropertyChangedEventArgs e)
+    {
+        if (Content.UndoStack.IsOriginalFile && HasUnsavedChanges)
         {
-            get => _path;
-            set => SetProperty(ref _path, value);
-        }
-
-        private string _header = string.Empty;
-
-        public string Header
-        {
-            get => _header;
-            private set => SetProperty(ref _header, value);
-        }
-
-        private bool _hasUnsavedChanges = false;
-
-        public bool HasUnsavedChanges
-        {
-            get => _hasUnsavedChanges;
-            private set => SetProperty(ref _hasUnsavedChanges, value);
-        }
-
-        private List<LintingInfo> _lintingData = [];
-
-        public List<LintingInfo> LintingData
-        {
-            get => _lintingData;
-            set => SetProperty(ref _lintingData, value);
-        }
-
-        public TabItem(string header, string content, string? path = null)
-        {
-            Path = path;
-            Header = header;
-            Content = new TextDocument(content);
+            HasUnsavedChanges = false;
+            Header = Header[..(Header.Length - 1)];
             Content.TextChanged += SetUnsavedChanges;
-            Content.UndoStack.PropertyChanged += ResetChanges;
-        }
-
-        public void SetAsUnsaved()
-        {
-            SetUnsavedChanges(null, EventArgs.Empty);
-        }
-
-        private void SetUnsavedChanges(object? sender, EventArgs e)
-        {
-            Header += '*';
-            HasUnsavedChanges = true;
-            Content.TextChanged -= SetUnsavedChanges;
             WasModified?.Invoke(this);
         }
+    }
 
-        private void ResetChanges(object? sender, PropertyChangedEventArgs e)
+    public bool SaveItem()
+    {
+        if (HasUnsavedChanges)
         {
-            if (Content.UndoStack.IsOriginalFile && HasUnsavedChanges)
+            if (Path is not null)
             {
-                HasUnsavedChanges = false;
+                if (!VersionServiceProvider.Version.SaveFile(Path, Content.Text))
+                {
+                    return false;
+                }
                 Header = Header[..(Header.Length - 1)];
-                Content.TextChanged += SetUnsavedChanges;
-                WasModified?.Invoke(this);
             }
-        }
-
-        public bool SaveItem()
-        {
-            if (HasUnsavedChanges)
+            else
             {
-                if (Path is not null)
+                var filters = new StringBuilder();
+
+                foreach (var ext in SettingsService.Instance.Extension)
                 {
-                    if (!VersionServiceProvider.Version.SaveFile(Path, Content.Text))
-                    {
-                        return false;
-                    }
-                    Header = Header[..(Header.Length - 1)];
+                    filters.Append($"ZPL File (*.{ext})|*.{ext}|");
                 }
-                else
+                filters.Append("Todos los archivos (*.*)|*.*");
+
+                SaveFileDialog dialog = new()
                 {
-                    var filters = new StringBuilder();
+                    Filter = filters.ToString()
+                };
 
-                    foreach (var ext in SettingsService.Instance.Extension)
-                    {
-                        filters.Append($"ZPL File (*.{ext})|*.{ext}|");
-                    }
-                    filters.Append("Todos los archivos (*.*)|*.*");
-
-                    SaveFileDialog dialog = new()
-                    {
-                        Filter = filters.ToString()
-                    };
-
-                    if (dialog.ShowDialog() == false)
-                    {
-                        return false;
-                    }
-
-                    if (!VersionServiceProvider.Version.SaveFile(dialog.FileName, Content.Text))
-                    {
-                        return false;
-                    }
-                    Path = dialog.FileName;
-                    Header = dialog.SafeFileName;
+                if (dialog.ShowDialog() == false)
+                {
+                    return false;
                 }
 
-                HasUnsavedChanges = false;
-                Content.TextChanged += SetUnsavedChanges;
-                Content.UndoStack.MarkAsOriginalFile();
+                if (!VersionServiceProvider.Version.SaveFile(dialog.FileName, Content.Text))
+                {
+                    return false;
+                }
+                Path = dialog.FileName;
+                Header = dialog.SafeFileName;
             }
 
-            return true;
+            HasUnsavedChanges = false;
+            Content.TextChanged += SetUnsavedChanges;
+            Content.UndoStack.MarkAsOriginalFile();
         }
 
-        public void ClearLinting()
-        {
-            LintingData = [];
-        }
+        return true;
+    }
+
+    public void ClearLinting()
+    {
+        LintingData = [];
     }
 }

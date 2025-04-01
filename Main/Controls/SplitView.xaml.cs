@@ -1,14 +1,18 @@
-﻿using Core.Events;
-using Core.Models;
-using Dragablz;
-using Main.Models;
-using Material.Icons;
-using Material.Icons.WPF;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+
+using Core.Events;
+using Core.Models;
+
+using Dragablz;
+
+using Main.Models;
+
+using Material.Icons;
+using Material.Icons.WPF;
 
 namespace Main.Controls;
 

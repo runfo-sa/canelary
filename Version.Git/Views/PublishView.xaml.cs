@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace VersionGit.Views
+namespace VersionGit.Views;
+
+public partial class PublishView : UserControl
 {
-    public partial class PublishView : UserControl
+    public PublishView()
     {
-        public PublishView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

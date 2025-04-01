@@ -1,4 +1,3 @@
-﻿namespace Core.Services.SettingsModel
-{
-    public record struct FilterDirectory(string Name, string Filter);
-}
+﻿namespace Core.Services.SettingsModel;
+
+public record struct FilterDirectory(string Name, string Filter);

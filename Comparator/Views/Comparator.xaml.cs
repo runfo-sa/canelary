@@ -1,52 +1,71 @@
-using Comparator.Models;
-using Comparator.Services;
-using Comparator.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Comparator.Views
+using Comparator.Models;
+using Comparator.Services;
+using Comparator.ViewModels;
+
+using MaterialDesignThemes.Wpf;
+
+namespace Comparator.Views;
+
+public partial class Comparator : UserControl
 {
-    public partial class Comparator : UserControl
+    private IRegion _region = null!;
+    private TextMode _textView = null!;
+    private ImageMode _imageView = null!;
+    private readonly ComparatorViewModel _viewModel;
+    private readonly IContainerProvider _container;
+    private bool _first = false;
+
+    public Comparator(IContainerProvider container)
     {
-        private IRegion _region = null!;
-        private TextMode _textView = null!;
-        private ImageMode _imageView = null!;
-        private readonly ComparatorViewModel _viewModel;
+        InitializeComponent();
 
-        private bool _shouldClose = false;
+        _container = container;
+        _viewModel = (ComparatorViewModel)DataContext;
+        dialog.Loaded += OpenDialog;
+    }
 
-        public bool ShouldClose
+    private void SwitchToImageMode(Object sender, RoutedEventArgs e)
+    {
+        _region.Activate(_imageView);
+        _viewModel.TextMode = false;
+        _viewModel.ImageMode = true;
+    }
+
+    private void SwitchToTextMode(Object sender, RoutedEventArgs e)
+    {
+        _region.Activate(_textView);
+        _viewModel.TextMode = true;
+        _viewModel.ImageMode = false;
+    }
+
+    private async void OpenDialog(object sender, RoutedEventArgs e)
+    {
+        if (_first)
         {
-            get => _shouldClose;
-            private set => _shouldClose = value;
+            return;
         }
 
-        public Comparator(IContainerProvider container, IDialogService dialogService)
+        _first = true;
+        await DialogHost.Show(new SelectLabelsDialog(_viewModel.DialogIdentifier), _viewModel.DialogIdentifier, delegate (object sender, DialogClosingEventArgs args)
         {
-            InitializeComponent();
-
-            dialogService.ShowDialog("SelectLabelsDialog", result =>
+            if (args.Parameter is SelectionResult result)
             {
-                if (result.Result != ButtonResult.OK)
-                {
-                    ShouldClose = true;
-                    return;
-                }
-
-                var sr = result.Parameters["SelectionResult"] as SelectionResult;
-                var commandService = container.Resolve<ICommandService>();
+                var commandService = _container.Resolve<ICommandService>();
 
                 var regionManager = new RegionManager();
                 RegionManager.SetRegionManager(this, regionManager);
                 _region = regionManager.Regions["ContentRegion"];
 
-                var textVM = new TextModeViewModel(commandService, sr!.LeftFile, sr.RightFile);
+                var textVM = new TextModeViewModel(commandService, result.LeftFile, result.RightFile);
                 _textView = new TextMode(commandService)
                 {
                     DataContext = textVM
                 };
 
-                var imageVM = new ImageModeViewModel(commandService, sr.Dpi, sr.Size);
+                var imageVM = new ImageModeViewModel(commandService, result.Dpi, result.Size, result.LeftFile.Name, result.RightFile.Name);
                 _imageView = new ImageMode()
                 {
                     DataContext = imageVM
@@ -56,32 +75,7 @@ namespace Comparator.Views
                 _region.Add(_imageView);
 
                 _region.Activate(_textView);
-            });
-
-            _viewModel = (ComparatorViewModel)DataContext;
-            Loaded += ShouldCloseWindow;
-        }
-
-        private void SwitchToImageMode(Object sender, RoutedEventArgs e)
-        {
-            _region.Activate(_imageView);
-            _viewModel.TextMode = false;
-            _viewModel.ImageMode = true;
-        }
-
-        private void SwitchToTextMode(Object sender, RoutedEventArgs e)
-        {
-            _region.Activate(_textView);
-            _viewModel.TextMode = true;
-            _viewModel.ImageMode = false;
-        }
-
-        private void ShouldCloseWindow(Object sender, RoutedEventArgs e)
-        {
-            if (ShouldClose)
-            {
-                Window.GetWindow(this).Close();
             }
-        }
+        });
     }
 }

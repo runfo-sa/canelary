@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Publish.Views
+namespace Publish.Views;
+
+public partial class Publish : UserControl
 {
-    public partial class Publish : UserControl
+    public Publish()
     {
-        public Publish()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

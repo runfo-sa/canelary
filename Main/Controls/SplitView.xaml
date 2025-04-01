@@ -9,6 +9,7 @@
              xmlns:models="clr-namespace:Core.Models;assembly=Core"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
              d:Height="690"
              d:Width="1024">
@@ -81,6 +82,7 @@
                        HorizontalAlignment="Center"
                        Foreground="#6a6a6a"
                        FontSize="28" />
+                <ContentControl prism:RegionManager.RegionName="Main#VersionRegion"/>
             </StackPanel>
             <dockablz:Layout InterLayoutClient="{Binding InterLayoutClientInstance}">
                 <dragablz:TabablzControl x:Name="Tabs"

@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Editor.Views
+namespace Editor.Views;
+
+public partial class Toolbar : UserControl
 {
-    public partial class Toolbar : UserControl
+    public Toolbar()
     {
-        public Toolbar()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,31 +1,27 @@
-﻿using Core.Services;
+﻿using Core.Events;
+using Core.Models;
+using Core.Services;
 
-namespace Publish
+namespace Publish;
+
+[Module(ModuleName = "Publicar", OnDemand = true)]
+public class PublishModule(IEventAggregator eventAggregator) : IModule
 {
-    [Module(ModuleName = "Publicar", OnDemand = true)]
-    public class PublishModule : IModule
+    private readonly IEventAggregator _eventAggregator = eventAggregator;
+    private IContainerProvider? _container;
+
+    public void OnInitialized(IContainerProvider containerProvider)
     {
-        private IContainerProvider? _container;
+        _container = containerProvider;
+    }
 
-        public void OnInitialized(IContainerProvider containerProvider)
-        {
-            _container = containerProvider;
-        }
+    public void RegisterTypes(IContainerRegistry containerRegistry)
+    {
+        containerRegistry.RegisterInstance(new ModuleLoaderService("Publicar", CreateWindow));
+    }
 
-        public void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            containerRegistry.RegisterInstance(new ModuleLoaderService("Publicar", CreateWindow));
-        }
-
-        private void CreateWindow(string name)
-        {
-            /*new AdonisWindow
-            {
-                Title = $"Canelary - Publicar",
-                Content = _container?.Resolve<Views.Publish>(),
-                Height = 768,
-                Width = 1024,
-            }.Show();*/
-        }
+    private void CreateWindow(string name)
+    {
+        _eventAggregator.GetEvent<SendModuleEvent>().Publish(new ModuleTab("Publicar", _container?.Resolve<Views.Publish>()!));
     }
 }

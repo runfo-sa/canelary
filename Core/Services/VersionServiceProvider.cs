@@ -1,36 +1,35 @@
-﻿namespace Core.Services
+﻿namespace Core.Services;
+
+public static class VersionServiceProvider
 {
-    public static class VersionServiceProvider
+    private static IVersion? _version;
+
+    public static IVersion Version
     {
-        private static IVersion? _version;
-
-        public static IVersion Version
+        get
         {
-            get
+            if (_version == null)
             {
-                if (_version == null)
-                {
-                    throw new NoServiceException("No hay servicio de versionado definido!");
-                }
-                return _version;
+                throw new NoServiceException("No hay servicio de versionado definido!");
             }
-            private set => _version = value;
+            return _version;
         }
+        private set => _version = value;
+    }
 
-        public static void Set(IVersion version)
+    public static void Set(IVersion version)
+    {
+        if (version.GetType().Name == SettingsService.Instance.Version)
         {
-            if (version.GetType().Name == SettingsService.Instance.Version)
-            {
-                Version = version;
-            }
+            Version = version;
         }
+    }
 
-        public static void SetView(string versionName, string region, Type viewType, IRegionManager regionManager)
+    public static void SetView(string versionName, string region, Type viewType, IRegionManager regionManager)
+    {
+        if (versionName == SettingsService.Instance.Version)
         {
-            if (versionName == SettingsService.Instance.Version)
-            {
-                regionManager.RegisterViewWithRegion(region, viewType);
-            }
+            regionManager.RegisterViewWithRegion(region, viewType);
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Cohere.Views
+namespace Cohere.Views;
+
+public partial class GenerateSample : UserControl
 {
-    public partial class GenerateSample : UserControl
+    public GenerateSample()
     {
-        public GenerateSample()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

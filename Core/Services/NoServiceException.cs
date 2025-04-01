@@ -1,16 +1,15 @@
-﻿namespace Core.Services
+﻿namespace Core.Services;
+
+public class NoServiceException : Exception
 {
-    public class NoServiceException : Exception
+    public NoServiceException()
+    { }
+
+    public NoServiceException(string msg) : base(msg)
     {
-        public NoServiceException()
-        { }
+    }
 
-        public NoServiceException(string msg) : base(msg)
-        {
-        }
-
-        public NoServiceException(string msg, Exception inner) : base(msg, inner)
-        {
-        }
+    public NoServiceException(string msg, Exception inner) : base(msg, inner)
+    {
     }
 }

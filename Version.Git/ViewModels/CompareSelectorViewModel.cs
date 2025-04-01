@@ -1,70 +1,70 @@
-﻿using Core.Events;
+﻿using System.Collections.ObjectModel;
+
+using Core.Events;
 using Core.FileTree;
 using Core.Services;
 using Core.Services.VersionModel;
-using System.Collections.ObjectModel;
 
-namespace VersionGit.ViewModels
+namespace VersionGit.ViewModels;
+
+public class CompareSelectorViewModel : BindableBase
 {
-    public class CompareSelectorViewModel : BindableBase
+    private readonly IEventAggregator _eventAggregator;
+
+    public ObservableCollection<IFile> LeftFiles { get; set; }
+    public ObservableCollection<IFile> RightFiles { get; set; }
+    public ObservableCollection<string> LeftVersion { get; set; }
+    public ObservableCollection<string> RightVersion { get; set; }
+
+    public IFile? LeftFile { get; set; } = null!;
+    public IFile? RightFile { get; set; } = null!;
+    public string? LeftVer { get; set; } = null!;
+    public string? RightVer { get; set; } = null!;
+
+    public DelegateCommand<bool?> VersionChanged { get; private set; }
+
+    public CompareSelectorViewModel(IEventAggregator eventAggregator)
     {
-        private readonly IEventAggregator _eventAggregator;
+        _eventAggregator = eventAggregator;
+        _eventAggregator
+         .GetEvent<SendFilesEvent>()
+         .Subscribe(SendFiles);
 
-        public ObservableCollection<IFile> LeftFiles { get; set; }
-        public ObservableCollection<IFile> RightFiles { get; set; }
-        public ObservableCollection<string> LeftVersion { get; set; }
-        public ObservableCollection<string> RightVersion { get; set; }
+        var files = VersionServiceProvider.Version.ListFiles();
+        LeftFiles = [.. files];
+        RightFiles = [.. files];
 
-        public IFile? LeftFile { get; set; } = null!;
-        public IFile? RightFile { get; set; } = null!;
-        public string? LeftVer { get; set; } = null!;
-        public string? RightVer { get; set; } = null!;
+        var versions = VersionServiceProvider.Version.ListVersions();
+        LeftVersion = [.. versions];
+        RightVersion = [.. versions];
 
-        public DelegateCommand<bool?> VersionChanged { get; private set; }
+        VersionChanged = new(ChangeFile);
+    }
 
-        public CompareSelectorViewModel(IEventAggregator eventAggregator)
+    private void ChangeFile(bool? isLeftFile)
+    {
+        if (isLeftFile is true)
         {
-            _eventAggregator = eventAggregator;
-            _eventAggregator
-             .GetEvent<SendFilesEvent>()
-             .Subscribe(SendFiles);
-
-            var files = VersionServiceProvider.Version.ListFiles();
-            LeftFiles = new(files);
-            RightFiles = new(files);
-
-            var versions = VersionServiceProvider.Version.ListVersions();
-            LeftVersion = new(versions);
-            RightVersion = new(versions);
-
-            VersionChanged = new(ChangeFile);
-        }
-
-        private void ChangeFile(bool? isLeftFile)
-        {
-            if (isLeftFile is true)
+            var files = VersionServiceProvider.Version.ListFiles(LeftVer);
+            LeftFiles.Clear();
+            foreach (var file in files)
             {
-                var files = VersionServiceProvider.Version.ListFiles(LeftVer);
-                LeftFiles.Clear();
-                foreach (var file in files)
-                {
-                    LeftFiles.Add(file);
-                }
-            }
-            else
-            {
-                var files = VersionServiceProvider.Version.ListFiles(RightVer);
-                RightFiles.Clear();
-                foreach (var file in files)
-                {
-                    RightFiles.Add(file);
-                }
+                LeftFiles.Add(file);
             }
         }
-
-        private void SendFiles()
+        else
         {
-            _eventAggregator.GetEvent<RecvFilesEvent>().Publish(new ComparasionFiles(LeftFile!, RightFile!));
+            var files = VersionServiceProvider.Version.ListFiles(RightVer);
+            RightFiles.Clear();
+            foreach (var file in files)
+            {
+                RightFiles.Add(file);
+            }
         }
+    }
+
+    private void SendFiles(string id)
+    {
+        _eventAggregator.GetEvent<RecvFilesEvent>().Publish(new ComparasionFiles(LeftFile!, RightFile!, id));
     }
 }

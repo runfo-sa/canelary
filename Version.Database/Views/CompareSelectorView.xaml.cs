@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace VersionDatabase.Views
+namespace VersionDatabase.Views;
+
+public partial class CompareSelectorView : UserControl
 {
-    public partial class CompareSelectorView : UserControl
+    public CompareSelectorView()
     {
-        public CompareSelectorView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

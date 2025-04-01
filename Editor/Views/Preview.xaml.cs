@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Editor.Views
+namespace Editor.Views;
+
+public partial class Preview : UserControl
 {
-    public partial class Preview : UserControl
+    public Preview()
     {
-        public Preview()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

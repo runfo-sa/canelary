@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Editor.Views
+namespace Editor.Views;
+
+public partial class TextEditor : UserControl
 {
-    public partial class TextEditor : UserControl
+    public TextEditor()
     {
-        public TextEditor()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

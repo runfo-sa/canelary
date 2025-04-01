@@ -1,28 +1,29 @@
-﻿using Cohere.Services;
+﻿using System.Collections.ObjectModel;
+
+using Cohere.Services;
+
 using Core.Models;
 using Core.Services.BackendModel;
-using System.Collections.ObjectModel;
 
-namespace Cohere.ViewModels
+namespace Cohere.ViewModels;
+
+public class ProductReportViewModel : BindableBase
 {
-    public class ProductReportViewModel : BindableBase
+    public ObservableCollection<ProductReport> SelectedValues { get; set; } = [];
+
+    public ProductReportViewModel(ICommandService commandService)
     {
-        public ObservableCollection<ProductReport> SelectedValues { get; set; } = [];
+        commandService.LoadProductCommand.RegisterCommand(new DelegateCommand<object?>(ProcessProduct));
+    }
 
-        public ProductReportViewModel(ICommandService commandService)
+    private void ProcessProduct(object? item)
+    {
+        if (item is Product prod)
         {
-            commandService.LoadProductCommand.RegisterCommand(new DelegateCommand<object?>(ProcessProduct));
-        }
-
-        private void ProcessProduct(object? item)
-        {
-            if (item is Product prod)
+            SelectedValues.Clear();
+            foreach (var value in prod.Attributes)
             {
-                SelectedValues.Clear();
-                foreach (var value in prod.Attributes)
-                {
-                    SelectedValues.Add(value);
-                }
+                SelectedValues.Add(value);
             }
         }
     }

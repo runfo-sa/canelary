@@ -23,6 +23,16 @@
                                     Header="Nombre"
                                     IsReadOnly="True"
                                     Width="3*" />
+                <DataGridTemplateColumn Header="Extensión"
+                                        IsReadOnly="False"
+                                        Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Extensions}"
+                                      SelectedItem="{Binding SelectedExtension, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding CurrentVersion}"
                                     Header="Version Actual"
                                     IsReadOnly="True"

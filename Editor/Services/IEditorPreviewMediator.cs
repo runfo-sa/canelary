@@ -1,10 +1,9 @@
-﻿namespace Editor.Services
+﻿namespace Editor.Services;
+
+public interface IEditorPreviewMediator
 {
-    public interface IEditorPreviewMediator
-    {
-        CompositeCommand GeneratePreview { get; }
-        CompositeCommand SendErrors { get; }
-        CompositeCommand GenerateLinter { get; }
-        CompositeCommand SendData { get; }
-    }
+    CompositeCommand GeneratePreview { get; }
+    CompositeCommand SendErrors { get; }
+    CompositeCommand GenerateLinter { get; }
+    CompositeCommand SendData { get; }
 }

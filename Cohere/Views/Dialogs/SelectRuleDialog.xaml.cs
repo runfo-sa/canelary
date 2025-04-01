@@ -6,50 +6,49 @@ using Cohere.Models;
 using Core.Database;
 using Core.Database.IdeDbModels;
 
-namespace Cohere.Views
+namespace Cohere.Views;
+
+public partial class SelectRuleDialog : UserControl, IDialogAware
 {
-    public partial class SelectRuleDialog : UserControl, IDialogAware
+    public static string Title => "Seleccionar Regla";
+
+    public ObservableCollection<Rule> Rules { get; set; }
+    public Rule? SelectedRule { get; set; }
+    public DialogCloseListener RequestClose { get; }
+    public DelegateCommand CloseDialogCommand { get; private set; }
+    public DelegateCommand RemoveRuleCommand { get; private set; }
+    public DelegateCommand CancelCommand { get; private set; }
+
+    public SelectRuleDialog()
     {
-        public static string Title => "Seleccionar Regla";
-
-        public ObservableCollection<Rule> Rules { get; set; }
-        public Rule? SelectedRule { get; set; }
-        public DialogCloseListener RequestClose { get; }
-        public DelegateCommand CloseDialogCommand { get; private set; }
-        public DelegateCommand RemoveRuleCommand { get; private set; }
-        public DelegateCommand CancelCommand { get; private set; }
-
-        public SelectRuleDialog()
+        InitializeComponent();
+        DataContext = this;
+        using (var context = new IdeDbContext())
         {
-            InitializeComponent();
-            DataContext = this;
-            using (var context = new IdeDbContext())
-            {
-                Rules = [.. context.Rule];
-            }
-
-            CloseDialogCommand = new(() => ClosingDialog());
-            RemoveRuleCommand = new(() => ClosingDialog(true));
-            CancelCommand = new(() => RequestClose.Invoke(ButtonResult.Cancel));
+            Rules = [.. context.Rule];
         }
 
-        private void ClosingDialog(bool removeRule = false)
-        {
-            var rc = new ChangeRuleResult(removeRule, SelectedRule?.Id);
-            var result = new DialogResult
-            {
-                Parameters = new DialogParameters { { "Result", rc } },
-                Result = ButtonResult.OK
-            };
-            RequestClose.Invoke(result);
-        }
-
-        public Boolean CanCloseDialog() => true;
-
-        public void OnDialogClosed()
-        { }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        { }
+        CloseDialogCommand = new(() => ClosingDialog());
+        RemoveRuleCommand = new(() => ClosingDialog(true));
+        CancelCommand = new(() => RequestClose.Invoke(ButtonResult.Cancel));
     }
+
+    private void ClosingDialog(bool removeRule = false)
+    {
+        var rc = new ChangeRuleResult(removeRule, SelectedRule?.Id);
+        var result = new DialogResult
+        {
+            Parameters = new DialogParameters { { "Result", rc } },
+            Result = ButtonResult.OK
+        };
+        RequestClose.Invoke(result);
+    }
+
+    public Boolean CanCloseDialog() => true;
+
+    public void OnDialogClosed()
+    { }
+
+    public void OnDialogOpened(IDialogParameters parameters)
+    { }
 }

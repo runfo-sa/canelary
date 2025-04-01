@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Cohere.Views
+namespace Cohere.Views;
+
+public partial class Tree : UserControl
 {
-    public partial class Tree : UserControl
+    public Tree()
     {
-        public Tree()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

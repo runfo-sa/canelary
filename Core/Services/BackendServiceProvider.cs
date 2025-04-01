@@ -1,28 +1,27 @@
-﻿namespace Core.Services
+﻿namespace Core.Services;
+
+public static class BackendServiceProvider
 {
-    public static class BackendServiceProvider
+    private static IBackend? _backend;
+
+    public static IBackend Backend
     {
-        private static IBackend? _backend;
-
-        public static IBackend Backend
+        get
         {
-            get
+            if (_backend == null)
             {
-                if (_backend == null)
-                {
-                    throw new NoServiceException("No hay servicio de backend definido!");
-                }
-                return _backend;
+                throw new NoServiceException("No hay servicio de backend definido!");
             }
-            private set => _backend = value;
+            return _backend;
         }
+        private set => _backend = value;
+    }
 
-        public static void Set(IBackend backend)
+    public static void Set(IBackend backend)
+    {
+        if (backend.GetType().Name == SettingsService.Instance.Backend)
         {
-            if (backend.GetType().Name == SettingsService.Instance.Backend)
-            {
-                Backend = backend;
-            }
+            Backend = backend;
         }
     }
 }

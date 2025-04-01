@@ -1,18 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Core.Database.IdeDbModels
+using Microsoft.EntityFrameworkCore;
+
+namespace Core.Database.IdeDbModels;
+
+[PrimaryKey(nameof(Id))]
+public class RuleLabel
 {
-    [PrimaryKey(nameof(Id))]
-    public class RuleLabel
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column(Order = 1)]
-        public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column(Order = 1)]
+    public int Id { get; set; }
 
-        [ForeignKey(nameof(RuleId))]
-        public int RuleId { get; set; }
+    [ForeignKey(nameof(RuleId))]
+    public int RuleId { get; set; }
 
-        public string LabelName { get; set; } = string.Empty;
-    }
+    public string LabelName { get; set; } = string.Empty;
 }

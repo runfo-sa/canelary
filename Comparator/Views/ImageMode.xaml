@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Comparator.Views.ImageMode"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:core="clr-namespace:Core.Controls;assembly=Core"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,69 +13,126 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid>
+        <Grid Margin="0,0,15,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock FontSize="14"
-                       FontWeight="Regular"
-                       HorizontalAlignment="Left"
-                       Margin="5"
-                       Text="{Binding LeftFilename}" />
-            <core:ZoomBorder Grid.Row="1"
-                             Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
-                             BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
-                             BorderThickness="2"
-                             ClipToBounds="True"
-                             Margin="5">
-                <Image SnapsToDevicePixels="True"
-                       Source="{Binding LeftImage}" />
-            </core:ZoomBorder>
-        </Grid>
 
-        <GroupBox Grid.Column="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <Border Background="{DynamicResource PrimaryHueMidBrush}">
                 <TextBlock FontSize="14"
                            FontWeight="Regular"
                            HorizontalAlignment="Left"
                            Margin="5"
-                           Text="Diferencia" />
-                <core:ZoomBorder Grid.Row="1"
-                                 Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
-                                 BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
-                                 BorderThickness="2"
-                                 ClipToBounds="True"
-                                 Margin="5">
-                    <Image SnapsToDevicePixels="True"
-                           Source="{Binding CenterImage}" />
-                </core:ZoomBorder>
+                           Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                           Text="{Binding LeftFilename}" />
+            </Border>
+            <Grid Grid.Row="1">
+                <ProgressBar Grid.RowSpan="3"
+                             Visibility="{Binding LeftLoading}"
+                             IsIndeterminate="True"
+                             Width="50"
+                             Height="50"
+                             Style="{StaticResource MaterialDesignCircularProgressBar}"
+                             Value="0">
+                    <ProgressBar.LayoutTransform>
+                        <ScaleTransform CenterX="0.5"
+                                        CenterY="0.5"
+                                        ScaleX="2"
+                                        ScaleY="2" />
+                    </ProgressBar.LayoutTransform>
+                </ProgressBar>
+                <Border BorderThickness="5,0,5,5"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <core:ZoomBorder Margin="5"
+                                     Visibility="{Binding LeftVisibility}"
+                                     ClipToBounds="True">
+                        <Image SnapsToDevicePixels="True"
+                               Source="{Binding LeftImage}" />
+                    </core:ZoomBorder>
+                </Border>
             </Grid>
-        </GroupBox>
+        </Grid>
 
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock FontSize="14"
-                       FontWeight="Regular"
-                       HorizontalAlignment="Left"
-                       Margin="5"
-                       Text="{Binding RightFilename}" />
-            <core:ZoomBorder Grid.Row="1"
-                             Background="{DynamicResource {x:Static adonisUi:Brushes.Layer4BackgroundBrush}}"
-                             BorderBrush="{DynamicResource {x:Static adonisUi:Brushes.Layer4BorderBrush}}"
-                             BorderThickness="2"
-                             ClipToBounds="True"
-                             Margin="5">
-                <Image SnapsToDevicePixels="True"
-                       Source="{Binding RightImage}" />
-            </core:ZoomBorder>
+
+            <Border Background="{DynamicResource SecondaryHueMidBrush}">
+                <TextBlock FontSize="14"
+                           HorizontalAlignment="Left"
+                           Margin="5"
+                           Text="Diferencia" />
+            </Border>
+            <Grid Grid.Row="1">
+                <ProgressBar Grid.RowSpan="3"
+                             Visibility="{Binding DiffLoading}"
+                             IsIndeterminate="True"
+                             Width="50"
+                             Height="50"
+                             Style="{StaticResource MaterialDesignCircularProgressBar}"
+                             Value="0">
+                    <ProgressBar.LayoutTransform>
+                        <ScaleTransform CenterX="0.5"
+                                        CenterY="0.5"
+                                        ScaleX="2"
+                                        ScaleY="2" />
+                    </ProgressBar.LayoutTransform>
+                </ProgressBar>
+                <Border BorderThickness="5,0,5,5"
+                        BorderBrush="{DynamicResource SecondaryHueMidBrush}">
+                    <core:ZoomBorder Visibility="{Binding DiffVisibility}"
+                                     Margin="5"
+                                     ClipToBounds="True">
+                        <Image SnapsToDevicePixels="True"
+                               Source="{Binding CenterImage}" />
+                    </core:ZoomBorder>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="2"
+              Margin="15,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Background="{DynamicResource PrimaryHueMidBrush}">
+                <TextBlock FontSize="14"
+                           FontWeight="Regular"
+                           HorizontalAlignment="Left"
+                           Margin="5"
+                           Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                           Text="{Binding RightFilename}" />
+            </Border>
+            <Grid Grid.Row="1">
+                <ProgressBar Grid.RowSpan="3"
+                             Visibility="{Binding RightLoading}"
+                             IsIndeterminate="True"
+                             Width="50"
+                             Height="50"
+                             Style="{StaticResource MaterialDesignCircularProgressBar}"
+                             Value="0">
+                    <ProgressBar.LayoutTransform>
+                        <ScaleTransform CenterX="0.5"
+                                        CenterY="0.5"
+                                        ScaleX="2"
+                                        ScaleY="2" />
+                    </ProgressBar.LayoutTransform>
+                </ProgressBar>
+                <Border BorderThickness="5,0,5,5"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <core:ZoomBorder Visibility="{Binding RightVisibility}"
+                                     Margin="5"
+                                     ClipToBounds="True">
+                        <Image SnapsToDevicePixels="True"
+                               Source="{Binding RightImage}" />
+                    </core:ZoomBorder>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

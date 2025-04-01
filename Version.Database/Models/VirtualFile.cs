@@ -1,5 +1,5 @@
 ﻿using Core.FileTree;
-using Core.View;
+using Core.Views;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

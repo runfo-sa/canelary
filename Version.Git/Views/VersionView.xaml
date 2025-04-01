@@ -8,7 +8,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <DockPanel LastChildFill="False">
-        <TextBlock DockPanel.Dock="Left"
+        <TextBlock DockPanel.Dock="Top"
                    FontWeight="DemiBold"
                    Text="{Binding GitTag.Tag, StringFormat='Versión: \{0\}'}"
                    VerticalAlignment="Center" />

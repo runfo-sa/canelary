@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Cohere.Views
+namespace Cohere.Views;
+
+public partial class ProductReport : UserControl
 {
-    public partial class ProductReport : UserControl
+    public ProductReport()
     {
-        public ProductReport()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

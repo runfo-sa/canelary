@@ -1,8 +1,7 @@
-﻿namespace Core.Services.SettingsModel
+﻿namespace Core.Services.SettingsModel;
+
+public enum Theme
 {
-    public enum Theme
-    {
-        Dark,
-        Light
-    }
+    Dark,
+    Light
 }

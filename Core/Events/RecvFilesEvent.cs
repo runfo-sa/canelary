@@ -1,7 +1,6 @@
 ﻿using Core.Services.VersionModel;
 
-namespace Core.Events
-{
-    public class RecvFilesEvent : PubSubEvent<ComparasionFiles>
-    { }
-}
+namespace Core.Events;
+
+public class RecvFilesEvent : PubSubEvent<ComparasionFiles>
+{ }
