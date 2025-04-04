@@ -3,6 +3,7 @@
         xmlns:controls="clr-namespace:Main.Controls"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
         Title="Canelary"
         Height="690"
@@ -11,10 +12,18 @@
         FontFamily="../Resources/#Kumbh Sans Light"
         WindowStartupLocation="CenterScreen">
 
-    <Grid>
-        <controls:SplitView ItemsSource="{Binding ModulesButtons}" />
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding CheckUpdatesCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
-        <!--
+    <materialDesign:DialogHost Identifier="UpdateDialog"
+                               CloseOnClickAway="False">
+        <Grid>
+            <controls:SplitView ItemsSource="{Binding ModulesButtons}" />
+
+            <!--
         <Grid Grid.Column="1"
               Margin="15">
             <Grid.RowDefinitions>
@@ -76,5 +85,6 @@
                             Grid.Row="2" />
         </Grid>
         -->
-    </Grid>
+        </Grid>
+    </materialDesign:DialogHost>
 </Window>

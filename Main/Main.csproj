@@ -9,7 +9,7 @@
         <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
         <SignAssembly>False</SignAssembly>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
-        <Version>1.0.0-beta.3</Version>
+        <Version>1.0.0-beta</Version>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <ApplicationIcon>Resources\canelary.ico</ApplicationIcon>
         <AssemblyName>Canelary</AssemblyName>
@@ -36,7 +36,7 @@
 	</ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoRenovatio" Version="1.0.0" />
+        <PackageReference Include="AutoRenovatio" Version="1.0.1" />
         <PackageReference Include="AvalonEditB" Version="2.4.0" />
         <PackageReference Include="DiffPlex" Version="1.7.2" />
         <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
@@ -44,6 +44,7 @@
         <PackageReference Include="Material.Icons.WPF" Version="2.3.1" />
         <PackageReference Include="MaterialDesignThemes" Version="5.2.2-ci942" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
         <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
         <PackageReference Include="Prism.Wpf" Version="9.0.537" />
         <PackageReference Include="System.Drawing.Common" Version="9.0.3" />

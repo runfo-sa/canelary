@@ -2,13 +2,20 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows.Threading;
 
+using AutoRenovatioNS;
+using AutoRenovatioNS.Models;
+
 using Core.Database;
 using Core.Database.ServiceDbModels;
 using Core.Events;
 using Core.Services;
-using Core.Services.SettingsModel;
 
 using Main.Models;
+using Main.Views;
+
+using MaterialDesignThemes.Wpf;
+
+using Theme = Core.Services.SettingsModel.Theme;
 
 namespace Main.ViewModels;
 
@@ -38,6 +45,7 @@ public class MainViewModel : BindableBase
 
     public DelegateCommand ChangeThemeCommand { get; private set; }
     public DelegateCommand UpdateClientsCommand { get; private set; }
+    public AsyncDelegateCommand CheckUpdatesCommand { get; private set; }
 
     public MainViewModel(IModuleManager moduleManager, IEventAggregator eventAggregator)
     {
@@ -62,6 +70,7 @@ public class MainViewModel : BindableBase
 
         ChangeThemeCommand = new(SwitchTheme);
         UpdateClientsCommand = new(UpdateClients);
+        CheckUpdatesCommand = new(CheckUpdates);
 
         ClientsList = [.. new ServiceDbContext().EstadoCliente];
 
@@ -115,6 +124,26 @@ public class MainViewModel : BindableBase
                 _moduleManager.LoadModule(moduleName);
             }
             _eventAggregator.GetEvent<LoadModuleEvent>().Publish(moduleName);
+        }
+    }
+
+    private async Task CheckUpdates()
+    {
+        var updater = new AutoRenovatio(
+            new ApplicationInfo("Canelary"),
+            new DefaultUpdate(Version),
+            SettingsService.Instance.UpdateUrl
+        );
+
+        var info = await updater.CheckForUpdatesAsync();
+        if (info != null)
+        {
+            var view = new UpdateDialog()
+            {
+                DataContext = new UpdateDialogViewModel(updater, info, Version)
+            };
+
+            await DialogHost.Show(view, "UpdateDialog");
         }
     }
 }

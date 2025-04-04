@@ -41,6 +41,9 @@ public class SettingsService
     [YamlMember(Description = " - Lista de modulos disponibles en el sistema")]
     public List<Module> Modules { get; set; }
 
+    [YamlMember(Description = " - UpdateInfo URL")]
+    public required string UpdateUrl { get; set; }
+
     private static readonly Lazy<SettingsService> Lazy =
         new(() =>
         {
