@@ -39,5 +39,7 @@ public interface IBackend
     /// <summary>
     /// Devuelve el codigo ZPL con las variables reemplazadas. Ademas de reportar los errores encontrados.
     /// </summary>
+    public string LoadVariables<T>(string content, int id, ref StringBuilder error, T? extraData = null) where T : class;
+
     public string LoadVariables(string content, int id, ref StringBuilder error);
 }

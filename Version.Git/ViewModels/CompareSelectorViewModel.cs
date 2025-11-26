@@ -45,7 +45,7 @@ public class CompareSelectorViewModel : BindableBase
     {
         if (isLeftFile is true)
         {
-            var files = VersionServiceProvider.Version.ListFiles(LeftVer);
+            var files = VersionServiceProvider.Version.ListFiles(LeftVer!);
             LeftFiles.Clear();
             foreach (var file in files)
             {
@@ -54,7 +54,7 @@ public class CompareSelectorViewModel : BindableBase
         }
         else
         {
-            var files = VersionServiceProvider.Version.ListFiles(RightVer);
+            var files = VersionServiceProvider.Version.ListFiles(RightVer!);
             RightFiles.Clear();
             foreach (var file in files)
             {

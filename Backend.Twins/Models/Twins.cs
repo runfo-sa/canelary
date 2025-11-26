@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 using BackendTwins.Database;
@@ -15,6 +16,8 @@ namespace BackendTwins.Models;
 
 public class Twins : IBackend
 {
+    private string? _fecha;
+
     public List<String> GetAttributes()
     {
         using var context = new TwinsDbContext();
@@ -61,6 +64,11 @@ public class Twins : IBackend
         }
 
         queryBuild.Append(" for xml path(''), type) as T1(X) CROSS APPLY T1.X.nodes('/*') as T2(N)");
+        if (_fecha != null)
+        {
+            Trace.WriteLine(_fecha);
+            queryBuild.Replace("GETDATE()", $"'{_fecha}'");
+        }
 
         var query = queryBuild.ToString();
         var idParam = new SqlParameter("@Id", id);
@@ -189,8 +197,10 @@ public class Twins : IBackend
         return parts[0];
     }
 
-    public string LoadVariables(string content, Int32 id, ref StringBuilder error)
+    public string LoadVariables<T>(string content, Int32 id, ref StringBuilder error, T? extraData = null) where T : class
     {
+        _fecha = extraData as string;
+
         var dictionary = GetValues(id);
 
         int startIdx;
@@ -218,5 +228,10 @@ public class Twins : IBackend
         }
 
         return content;
+    }
+
+    public string LoadVariables(string content, Int32 id, ref StringBuilder error)
+    {
+        return LoadVariables<object>(content, id, ref error, null);
     }
 }

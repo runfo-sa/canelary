@@ -30,6 +30,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <DataGrid AutoGenerateColumns="False"
@@ -95,6 +96,21 @@
                 <ComboBox ItemsSource="{Binding Printers}"
                           SelectedItem="{Binding Printer}" />
             </StackPanel>
+            <DatePicker materialDesign:HintAssist.Hint="Fecha"
+                        SelectedDate="{Binding Fecha}"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="100"
+                        Margin="0" />
+        </DockPanel>
+
+        <DockPanel Grid.Row="2"
+                   Margin="10,5"
+                   LastChildFill="True">
+            <Label DockPanel.Dock="Left">CMD:</Label>
+            <TextBox DockPanel.Dock="Right"
+                     Text="{Binding AfterCommand}" />
         </DockPanel>
     </Grid>
 </UserControl>

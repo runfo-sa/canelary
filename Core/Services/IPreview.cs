@@ -26,6 +26,8 @@ public interface IPreview
     /// Completa las variables de una etiqueta con los datos de un producto especificado.
     /// </summary>
     /// <returns>A si mismo, para concatenar metodos</returns>
+    public IPreview LoadVariables<T>(int? id = null, T? extraData = null) where T : class;
+
     public IPreview LoadVariables(int? id = null);
 
     /// <summary>

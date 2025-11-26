@@ -22,7 +22,7 @@ public partial class DocumentationPage : UserControl
 
         var prm = new StringBuilder();
 
-        foreach (var param in command.Parameters)
+        foreach (var param in command.Parameters ?? [])
         {
             if (param is TextBox tb)
             {

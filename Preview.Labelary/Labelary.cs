@@ -3,8 +3,11 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Core.Database.ServiceDbModels;
 using Core.Logger;
 using Core.Services;
+
+using Microsoft.IdentityModel.Tokens;
 
 using PreviewLabelary.Models;
 
@@ -19,19 +22,25 @@ namespace PreviewLabelary;
 public partial class Labelary(string content) : IPreview
 {
     private const string START_METADATA = "^FX Start Metadata#Labelary";
+    private const int MAX_RETRIES = 5;
 
-    private string _content = content;
-    public string Content => _content;
+    public string Content { get; private set; } = content;
 
     private StringBuilder _error = new();
     public string Error => _error.ToString();
 
     private Metadata? _metadata;
+    private readonly HttpClient _httpClient = new();
+
+    public IPreview LoadVariables<T>(int? id = null, T? extraData = null) where T : class
+    {
+        Content = BackendServiceProvider.Backend.LoadVariables(Content, id ?? _metadata?.ProductId ?? 0, ref _error, extraData);
+        return this;
+    }
 
     public IPreview LoadVariables(int? id = null)
     {
-        _content = BackendServiceProvider.Backend.LoadVariables(_content, id ?? _metadata?.ProductId ?? 0, ref _error);
-        return this;
+        return LoadVariables<object>(id, null);
     }
 
     public IPreview ParseMetadata()
@@ -41,12 +50,12 @@ public partial class Labelary(string content) : IPreview
             return this;
         }
 
-        var startIdx = _content.IndexOf(START_METADATA);
-        var endIdx = _content.IndexOf("^FX End Metadata", startIdx);
+        var startIdx = Content.IndexOf(START_METADATA);
+        var endIdx = Content.IndexOf("^FX End Metadata", startIdx);
 
         if (endIdx > startIdx)
         {
-            var rawMetadata = _content[(startIdx + START_METADATA.Length)..endIdx]
+            var rawMetadata = Content[(startIdx + START_METADATA.Length)..endIdx]
                 .Trim()
                 .Replace("^FX ", "");
 
@@ -59,7 +68,7 @@ public partial class Labelary(string content) : IPreview
                 {
                     foreach (var language in _metadata.Languages)
                     {
-                        _content = language.ParseContent(_content);
+                        Content = language.ParseContent(Content);
                     }
                 }
             }
@@ -82,43 +91,63 @@ public partial class Labelary(string content) : IPreview
 
     public bool HasMetadata()
     {
-        return _content.Contains(START_METADATA);
+        return Content.Contains(START_METADATA);
     }
 
     public async Task<List<byte[]?>?> Build(string dpi, string size)
     {
-        int labelsCount = RegexLabel().Matches(_content).Count;
+        int labelsCount = RegexLabel().Count(Content);
         List<byte[]?> labels = [];
+        using StringContent body = new(
+            Content,
+            Encoding.ASCII,
+            "application/x-www-form-urlencoded"
+        );
 
-        try
+        for (int i = 0; i < labelsCount; i++)
         {
-            using HttpClient client = new()
+            int retryCount = 0;
+            while (true)
             {
-                Timeout = TimeSpan.FromSeconds(10.0)
-            };
+                try
+                {
+                    string uri = $"http://api.labelary.com/v1/printers/{dpi}dpmm/labels/{size}/{i}/";
+                    using HttpResponseMessage response = await _httpClient.PostAsync(uri, body);
 
-            using StringContent body = new(
-                @_content,
-                Encoding.ASCII,
-                "application/x-www-form-urlencoded"
-            );
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var label = await response.Content.ReadAsByteArrayAsync();
+                        labels.Add(label);
+                        break;
+                    }
+                    else if (retryCount < MAX_RETRIES)
+                    {
+                        retryCount++;
 
-            for (int i = 0; i < labelsCount; i++)
-            {
-                string uri = $"http://api.labelary.com/v1/printers/{dpi}dpmm/labels/{size}/{i}/";
-                using HttpResponseMessage response = await client.PostAsync(uri, body);
-                response.EnsureSuccessStatusCode();
-                var label = await response.Content.ReadAsByteArrayAsync();
-                labels.Add(label);
+                        TimeSpan delay = TimeSpan.FromSeconds(Math.Pow(2, retryCount));
+                        if (response.Headers.RetryAfter?.Delta.HasValue == true)
+                        {
+                            delay = response.Headers.RetryAfter.Delta.Value;
+                        }
+
+                        Trace.TraceWarning($"Request failed with status code {response.StatusCode}. Retrying in {delay.TotalSeconds} seconds...");
+                        await Task.Delay(delay);
+                        continue;
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (HttpRequestException ex) when (retryCount < MAX_RETRIES)
+                {
+                    retryCount++;
+                    var delay = TimeSpan.FromSeconds(Math.Pow(2, retryCount));
+                    Trace.TraceWarning($"Request failed: {ex.Message}. Retrying in {delay.TotalSeconds} seconds...");
+                    await Task.Delay(delay);
+                }
             }
-            return labels;
-        }
-        catch (Exception err)
-        {
-            Trace.TraceError(err.Message);
         }
 
-        return null;
+        return labels.IsNullOrEmpty() ? null : labels;
     }
 
     public async Task<string[]?> Linting(string codigo, string dpi, string size)

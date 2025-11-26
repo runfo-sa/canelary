@@ -12,7 +12,7 @@ namespace Core.Services;
 public class SettingsService
 {
     [YamlMember(Description = " - Cadena de conexión con la base de datos SQL Server")]
-    public string SqlConnection { get; set; }
+    public required string SqlConnection { get; set; }
 
     [YamlMember(Description = " - Dirección a la plantilla utilizada para generar un reporte de cambios")]
     public string? ReportTemplate { get; set; }
@@ -27,7 +27,7 @@ public class SettingsService
     public List<string> Extension { get; set; } = ["e01", "e02"];
 
     [YamlMember(Description = " - Lista de directorios virtuales, con los cuales se generera la jerarquía de etiquetas")]
-    public List<FilterDirectory> VirtualDirectories { get; set; }
+    public required List<FilterDirectory> VirtualDirectories { get; set; }
 
     [YamlMember(Description = " - Servicio responsable de generar una previsualización digital de la etiqueta seleccionada")]
     public string Preview { get; set; } = "Labelary";
@@ -39,7 +39,7 @@ public class SettingsService
     public string Version { get; set; } = "Git";
 
     [YamlMember(Description = " - Lista de modulos disponibles en el sistema")]
-    public List<Module> Modules { get; set; }
+    public required List<Module> Modules { get; set; }
 
     [YamlMember(Description = " - UpdateInfo URL")]
     public required string UpdateUrl { get; set; }

@@ -16,5 +16,8 @@ public record struct LabelSize(string Display, string Value)
 
 public class SizeList
 {
-    public LabelSize[] Items { get; set; }
+    public LabelSize[] Items { get; set; } = [
+            new LabelSize("Primaria - [10x8cm]", "4x3"),
+            new LabelSize("Caja - [10x15cm]", "4x6"),
+        ];
 }

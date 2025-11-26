@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SizeList>
-	<Items>
-		<LabelSize>
-			<Display>Primaria - [10x8cm]</Display>
-			<Value>4x3</Value>
-		</LabelSize>
-		<LabelSize>
-			<Display>Caja - [10x15cm]</Display>
-			<Value>4x6</Value>
-		</LabelSize>
-	</Items>
+  <Items>
+    <LabelSize>
+      <Display>Primaria - [10x8cm]</Display>
+      <Value>4x3</Value>
+    </LabelSize>
+    <LabelSize>
+      <Display>Caja - [10x15cm]</Display>
+      <Value>4x6</Value>
+    </LabelSize>
+    <LabelSize>
+      <Display>Israel - [10x14cm]</Display>
+      <Value>3.950x5.570</Value>
+    </LabelSize>
+  </Items>
 </SizeList>
