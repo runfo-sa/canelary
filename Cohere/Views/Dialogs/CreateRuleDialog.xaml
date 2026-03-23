@@ -77,7 +77,7 @@
                                         BorderBrush="Transparent"
                                         Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                                         Command="Delete"
-                                        Content="{materialIcons:MaterialIconExt Kind=Delete, Size=24}" />
+                                        Content="{materialIcons:MaterialIconExt Kind=Delete, IconSize=24}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

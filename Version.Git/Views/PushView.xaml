@@ -82,7 +82,7 @@
                           SelectedIndex="0" />
                 <Button DockPanel.Dock="Right"
                         Command="{Binding CreateBranch}"
-                        Content="{materialIcons:MaterialIconExt Kind=Plus, Size=24}" />
+                        Content="{materialIcons:MaterialIconExt Kind=Plus, IconSize=24}" />
             </DockPanel>
 
             <DockPanel Grid.Row="2"

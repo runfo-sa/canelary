@@ -37,7 +37,7 @@
                 <Button DockPanel.Dock="Right"
                         Command="{Binding DataContext.CommandService.CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         CommandParameter="{Binding}"
-                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle,Size=14}"
+                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle, IconSize=14}"
                         Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}" />
             </DockPanel>
         </DataTemplate>
@@ -114,7 +114,7 @@
                 <Button DockPanel.Dock="Right"
                         Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}"
                         Command="{Binding CloseErrorWindowCommand}"
-                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle,Size=14}"
+                        Content="{materialIcons:MaterialIconExt Kind=CloseCircle, IconSize=14}"
                         FontSize="16"
                         VerticalAlignment="Top" />
             </DockPanel>

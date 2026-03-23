@@ -80,6 +80,7 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
         _dialogService = dialogService;
         CloseDialogCommand = new(async () => await ClosingDialog());
         LoadCachedAfterCommand();
+        AfterCommand = _cachedAfterCommand ?? string.Empty;
     }
 
     private void SelectedAll()
@@ -108,8 +109,9 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
             {
                 var label = PreviewServiceProvider
                     .ProvideService(_labelFile.Read())
+                    .ParseMetadata()
                     .LoadVariables(prod.Id, Fecha.ToString("yyyyMMdd"));
-                var safeName = new string([.. prod.Name.Select(c => invalidChars.Contains(c) ? '_' : c)]);
+                var safeSenasa = new string([.. prod.Senasa.Select(c => invalidChars.Contains(c) ? '_' : c)]);
                 var printer = Printers.CurrentItem.ToString()!;
                 if (printer == TO_PNG)
                 {
@@ -120,12 +122,12 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
                         Directory.CreateDirectory(outputPath);
                     }
 
-                    var images = await label.Build("12", "3.950x5.570"); // TODO!: Let the user set this parameters
-                    GenerateImage(images, $"{outputPath}\\{_labelFile.Name} - {safeName}");
+                    var images = await label.Build("12", "3.950x5.950"); // TODO!: Let the user set this parameters
+                    GenerateImage(images, $"{outputPath}\\{safeSenasa} - {prod.Id}");
                 }
                 else
                 {
-                    PrinterHelper.SendStringToPrinter(printer, label.Content, $"{_labelFile.Name} - {safeName}");
+                    PrinterHelper.SendStringToPrinter(printer, label.Content, $"{_labelFile.Name} - {prod.Id}");
                 }
             }
         });

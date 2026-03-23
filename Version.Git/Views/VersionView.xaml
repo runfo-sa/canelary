@@ -16,7 +16,7 @@
                 Background="Transparent"
                 BorderBrush="Transparent"
                 Command="{Binding UpdateCommand}"
-                Content="{materialIcons:MaterialIconExt Kind=Update, Size=24}"
+                Content="{materialIcons:MaterialIconExt Kind=Update, IconSize=24}"
                 IsEnabled="{Binding NeedsUpdate}"
                 ToolTip="Actualizacón pendiente" />
         <TextBlock DockPanel.Dock="Right"

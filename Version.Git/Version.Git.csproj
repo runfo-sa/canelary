@@ -9,12 +9,11 @@
   </PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Material.Icons.WPF" Version="2.4.1" />
-	  <PackageReference Include="MaterialDesignThemes" Version="5.3.1-ci1190" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+	  <PackageReference Include="Material.Icons.WPF" Version="3.0.0" />
+	  <PackageReference Include="MaterialDesignThemes" Version="5.3.1" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
+	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
 	  <PackageReference Include="Prism.Wpf" Version="9.0.537" />
-	  <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
 	  <PackageReference Include="YamlDotNet" Version="16.3.0" />
 	</ItemGroup>
 

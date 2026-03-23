@@ -108,7 +108,7 @@ public partial class SplitView : UserControl
         var c1 = new ColumnDefinition() { Width = new GridLength(25, GridUnitType.Star) };
         grid.ColumnDefinitions.Add(c1);
 
-        var icon = new MaterialIcon() { Kind = ic };
+        var icon = new MaterialIcon() { Kind = ic, IconSize = 24 };
         Grid.SetColumn(icon, 0);
         grid.Children.Add(icon);
 

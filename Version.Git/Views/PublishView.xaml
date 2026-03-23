@@ -59,7 +59,7 @@
             <DockPanel Margin="0,15">
                 <Button DockPanel.Dock="Right"
                         Command="{Binding OpenFolderCommand}"
-                        Content="{materialIcons:MaterialIconExt Kind=Folder, Size=24}" />
+                        Content="{materialIcons:MaterialIconExt Kind=Folder, IconSize=24}" />
                 <TextBox Text="{Binding FolderPath}"
                          FontSize="16"
                          Margin="0,0,10,0" />
