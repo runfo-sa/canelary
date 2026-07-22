@@ -70,7 +70,8 @@
                 Margin="10,0,10,10"
                 BorderThickness="5"
                 BorderBrush="{DynamicResource PrimaryHueMidBrush}">
-            <coreControls:ZoomBorder ClipToBounds="True"
+            <coreControls:ZoomBorder x:Name="PreviewZoomBorder"
+                                     ClipToBounds="True"
                                      Margin="5">
                 <Image SnapsToDevicePixels="True"
                        Source="{Binding PreviewImage}" />

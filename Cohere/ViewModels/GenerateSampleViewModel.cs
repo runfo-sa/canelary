@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
+using System.Text.Json;
 using System.Windows.Data;
 
 using Cohere.Models;
@@ -23,10 +24,10 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
 
     private const string CACHE_FILE = "after_command.cache";
     private const string TO_PNG = "To PNG";
+    private const int MAX_HISTORY = 10;
 
     private readonly IDialogService _dialogService;
     private IFile _labelFile = null!;
-    private string? _cachedAfterCommand = null;
 
     public ListCollectionView Printers { get; } = new(
         PrinterSettings.InstalledPrinters
@@ -47,17 +48,19 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
         }
     }
 
-    public bool EnableRecall
-    {
-        get;
-        set => SetProperty(ref field, value);
-    } = false;
-
     public string Printer
     {
         get;
-        set => SetProperty(ref field, value);
+        set
+        {
+            SetProperty(ref field, value);
+            RaisePropertyChanged(nameof(IsCmdVisible));
+        }
     } = new PrinterSettings().PrinterName;
+
+    public bool IsCmdVisible => Printer == TO_PNG;
+
+    public ObservableCollection<string> AfterCommandHistory { get; } = [];
 
     public DateTime Fecha
     {
@@ -79,8 +82,8 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
     {
         _dialogService = dialogService;
         CloseDialogCommand = new(async () => await ClosingDialog());
-        LoadCachedAfterCommand();
-        AfterCommand = _cachedAfterCommand ?? string.Empty;
+        LoadCachedAfterCommandHistory();
+        AfterCommand = AfterCommandHistory.FirstOrDefault() ?? string.Empty;
     }
 
     private void SelectedAll()
@@ -132,7 +135,7 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
             }
         });
 
-        if (!AfterCommand.IsNullOrEmpty())
+        if (IsCmdVisible && !AfterCommand.IsNullOrEmpty())
         {
             RunAfterCommand();
         }
@@ -189,34 +192,52 @@ public class GenerateSampleViewModel : BindableBase, IDialogAware
         }
     }
 
-    private void LoadCachedAfterCommand()
+    private void LoadCachedAfterCommandHistory()
     {
-        _cachedAfterCommand = File.Exists(CACHE_FILE) ? File.ReadAllText(CACHE_FILE) : null;
+        AfterCommandHistory.Clear();
+
+        if (!File.Exists(CACHE_FILE))
+        {
+            return;
+        }
+
+        try
+        {
+            var history = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(CACHE_FILE));
+            if (history is not null)
+            {
+                foreach (var command in history)
+                {
+                    AfterCommandHistory.Add(command);
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // Old plain-text cache format or corrupt file: treat as no history.
+        }
     }
 
     private void SaveCachedAfterCommand()
     {
-        if (!string.IsNullOrEmpty(AfterCommand) && _cachedAfterCommand != AfterCommand)
+        if (string.IsNullOrEmpty(AfterCommand))
         {
-            File.WriteAllText(CACHE_FILE, AfterCommand);
+            return;
         }
-    }
 
-    private void GenerateRecall(IEnumerable<ProductoMuestra> products)
-    {
-        var param = new DialogParameters
+        AfterCommandHistory.Remove(AfterCommand);
+        AfterCommandHistory.Insert(0, AfterCommand);
+
+        while (AfterCommandHistory.Count > MAX_HISTORY)
         {
-            { "Products", products }
-        };
-        _dialogService.ShowDialog("GenerateRecallDialog", param);
+            AfterCommandHistory.RemoveAt(AfterCommandHistory.Count - 1);
+        }
+
+        File.WriteAllText(CACHE_FILE, JsonSerializer.Serialize(AfterCommandHistory));
     }
 
     private async Task ClosingDialog()
     {
-        if (EnableRecall)
-        {
-            GenerateRecall(ProductsList.Where(p => p.Printable));
-        }
         await PrintLabelsAsync(ProductsList);
         RequestClose.Invoke();
     }

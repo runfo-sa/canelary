@@ -1,19 +1,21 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+using Core.Controls;
 using Core.Models;
 using Core.Services;
 
+using Editor.Models;
 using Editor.Services;
 
 namespace Editor.ViewModels;
 
 public class PreviewViewModel : BindableBase
 {
-    private List<byte[]>? _labelsRawData;
+    private TabItem? _activeTab;
 
     public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
 
@@ -81,6 +83,8 @@ public class PreviewViewModel : BindableBase
 
     public IEditorPreviewMediator Mediator { get; }
 
+    public event Action<ZoomState?>? ApplyZoomState;
+
     public PreviewViewModel(IEditorPreviewMediator mediator)
     {
         Mediator = mediator;
@@ -90,8 +94,9 @@ public class PreviewViewModel : BindableBase
             var list = LabelSize.GetList(xml);
             Application.Current.Dispatcher.Invoke(() => SizeList = new ListCollectionView(list));
         });
-        Mediator.GeneratePreview.RegisterCommand(new DelegateCommand<string>(GeneratePreview));
+        Mediator.GeneratePreview.RegisterCommand(new DelegateCommand<TabItem>(GeneratePreview));
         Mediator.SendData.RegisterCommand(new DelegateCommand(SendData));
+        Mediator.TabSelected.RegisterCommand(new DelegateCommand<TabItem>(OnTabSelected));
 
         RotateRightCommand = new(() =>
         {
@@ -100,6 +105,10 @@ public class PreviewViewModel : BindableBase
             PreviewImage = rotated;
             var angle = PreviewAngle + 90.0;
             PreviewAngle = angle >= 360.0 ? 0.0 : angle;
+            if (_activeTab?.Preview is { } preview)
+            {
+                preview.PreviewAngle = PreviewAngle;
+            }
         }, () => PreviewImage != null);
 
         RotateLeftCommand = new(() =>
@@ -109,6 +118,10 @@ public class PreviewViewModel : BindableBase
             PreviewImage = rotated;
             var angle = PreviewAngle - 90.0;
             PreviewAngle = angle < 0.0 ? 270.0 : angle;
+            if (_activeTab?.Preview is { } preview)
+            {
+                preview.PreviewAngle = PreviewAngle;
+            }
         }, () => PreviewImage != null);
 
         UpSizeCommand = new(() =>
@@ -133,28 +146,28 @@ public class PreviewViewModel : BindableBase
 
         PreviousLabel = new(() =>
         {
-            if (_labelsRawData != null)
+            if (_activeTab?.Preview is { } preview)
             {
-                using MemoryStream stream = new(_labelsRawData[--CurrentLabel]);
-                PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                preview.CurrentLabel = --CurrentLabel;
+                DisplayLabel(preview, preview.CurrentLabel);
             }
-        }, () => _labelsRawData?.Count > 0 && CurrentLabel > 0);
+        }, () => _activeTab?.Preview?.RawLabelsData.Count > 0 && CurrentLabel > 0);
 
         NextLabel = new(() =>
         {
-            if (_labelsRawData != null)
+            if (_activeTab?.Preview is { } preview)
             {
-                using MemoryStream stream = new(_labelsRawData[++CurrentLabel]);
-                PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                preview.CurrentLabel = ++CurrentLabel;
+                DisplayLabel(preview, preview.CurrentLabel);
             }
-        }, () => _labelsRawData?.Count > 0 && CurrentLabel < _labelsRawData.Count - 1);
+        }, () => _activeTab?.Preview?.RawLabelsData.Count > 0 && CurrentLabel < _activeTab.Preview.RawLabelsData.Count - 1);
     }
 
-    public async void GeneratePreview(string content)
+    public async void GeneratePreview(TabItem tab)
     {
         try
         {
-            _labelsRawData = null;
+            var content = tab.Content.Text;
 
             var preview = PreviewServiceProvider
                 .ProvideService(content)
@@ -164,22 +177,77 @@ public class PreviewViewModel : BindableBase
             var labels = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);
             if (labels is not null)
             {
-                _labelsRawData = labels
+                var rawLabelsData = labels
                     .Where(b => b != null)
                     .Select(b => b!)
                     .ToList();
-                CurrentLabel = 0;
-                using MemoryStream stream = new(_labelsRawData[CurrentLabel]);
-                PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+
+                var state = tab.Preview ??= new PreviewState { RawLabelsData = rawLabelsData };
+                state.RawLabelsData = rawLabelsData;
+                state.CurrentLabel = 0;
+                tab.Preview = state;
+
+                if (_activeTab == tab)
+                {
+                    CurrentLabel = 0;
+                    TotalLabel = rawLabelsData.Count - 1;
+                    PreviewAngle = state.PreviewAngle;
+                    DisplayLabel(state, state.CurrentLabel);
+                    ApplyZoomState?.Invoke(state.Zoom);
+                }
             }
 
-            TotalLabel = _labelsRawData?.Count - 1 ?? 0;
             Mediator.SendErrors.Execute(preview.Error);
         }
         catch (Exception ex)
         {
             Mediator.SendErrors.Execute(ex.Message);
         }
+    }
+
+    private void OnTabSelected(TabItem? tab)
+    {
+        _activeTab = tab;
+
+        if (tab?.Preview is { } state)
+        {
+            CurrentLabel = state.CurrentLabel;
+            TotalLabel = state.RawLabelsData.Count - 1;
+            PreviewAngle = state.PreviewAngle;
+            DisplayLabel(state, state.CurrentLabel);
+            ApplyZoomState?.Invoke(state.Zoom);
+        }
+        else
+        {
+            PreviewImage = null!;
+            CurrentLabel = 0;
+            TotalLabel = 0;
+            PreviewAngle = 0.0;
+            ApplyZoomState?.Invoke(null);
+        }
+    }
+
+    public void SaveZoomState(ZoomState state)
+    {
+        if (_activeTab?.Preview is { } preview)
+        {
+            preview.Zoom = state;
+        }
+    }
+
+    private void DisplayLabel(PreviewState state, int index)
+    {
+        using MemoryStream stream = new(state.RawLabelsData[index]);
+        BitmapSource image = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+
+        if (state.PreviewAngle != 0.0)
+        {
+            var rotated = new TransformedBitmap(image, new RotateTransform(state.PreviewAngle));
+            rotated.Freeze();
+            image = rotated;
+        }
+
+        PreviewImage = image;
     }
 
     private void SendData()

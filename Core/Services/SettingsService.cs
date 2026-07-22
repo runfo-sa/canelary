@@ -14,9 +14,6 @@ public class SettingsService
     [YamlMember(Description = " - Cadena de conexión con la base de datos SQL Server")]
     public required string SqlConnection { get; set; }
 
-    [YamlMember(Description = " - Dirección a la plantilla utilizada para generar un reporte de cambios")]
-    public string? ReportTemplate { get; set; }
-
     [YamlMember(Description = " - Tema del editor, posibles modos: Dark, Light")]
     public Theme Theme { get; set; } = Theme.Dark;
 

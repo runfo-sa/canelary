@@ -24,6 +24,7 @@
 
     <UserControl.Resources>
         <converters:ProductErrorToForegroundBrushConverter x:Key="ProductErrorColorConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -76,26 +77,10 @@
         <DockPanel Grid.Row="1"
                    Margin="10,5"
                    LastChildFill="False">
-            <CheckBox DockPanel.Dock="Left"
-                      Content="Generar RE-CAL-22"
-                      IsChecked="{Binding EnableRecall}" />
-            <Button DockPanel.Dock="Right"
-                    Content="Cancelar"
-                    IsCancel="True"
-                    Margin="10" />
             <Button DockPanel.Dock="Right"
                     Command="{Binding CloseDialogCommand}"
-                    Content="Aceptar"
-                    Margin="25,0" />
-            <StackPanel DockPanel.Dock="Left"
-                        Margin="25,0"
-                        Orientation="Horizontal">
-                <TextBlock Margin="5,0"
-                           Text="Impresora: "
-                           VerticalAlignment="Center" />
-                <ComboBox ItemsSource="{Binding Printers}"
-                          SelectedItem="{Binding Printer}" />
-            </StackPanel>
+                    Content="Imprimir"
+                    Margin="0,0,0,0" />
             <DatePicker materialDesign:HintAssist.Hint="Fecha"
                         SelectedDate="{Binding Fecha}"
                         Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
@@ -103,14 +88,26 @@
                         HorizontalAlignment="Center"
                         Width="100"
                         Margin="0" />
+            <StackPanel DockPanel.Dock="Left"
+                        Margin="15,0"
+                        Orientation="Horizontal">
+                <TextBlock Margin="5,0"
+                           Text="Impresora: "
+                           VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding Printers}"
+                          SelectedItem="{Binding Printer}" />
+            </StackPanel>
         </DockPanel>
 
         <DockPanel Grid.Row="2"
                    Margin="10,5"
-                   LastChildFill="True">
+                   LastChildFill="True"
+                   Visibility="{Binding IsCmdVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Label DockPanel.Dock="Left">CMD:</Label>
-            <TextBox DockPanel.Dock="Right"
-                     Text="{Binding AfterCommand}" />
+            <ComboBox DockPanel.Dock="Right"
+                      IsEditable="True"
+                      ItemsSource="{Binding AfterCommandHistory}"
+                      Text="{Binding AfterCommand, UpdateSourceTrigger=PropertyChanged}" />
         </DockPanel>
     </Grid>
 </UserControl>

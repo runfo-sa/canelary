@@ -35,6 +35,7 @@ public class TextEditorViewModel : BindableBase
             _printCommand.RaiseCanExecuteChanged();
             _resizeCommand.RaiseCanExecuteChanged();
             _closeAllCommand.RaiseCanExecuteChanged();
+            Mediator.TabSelected.Execute(0 <= value && value < TabsList.Count ? TabsList[value] : null);
         }
     }
 
@@ -308,7 +309,7 @@ public class TextEditorViewModel : BindableBase
     private void SendToPreview()
     {
         CloseErrorWindowCommand.Execute();
-        Mediator.GeneratePreview.Execute(TabsList[CurrentTabIndex].Content.Text);
+        Mediator.GeneratePreview.Execute(TabsList[CurrentTabIndex]);
     }
 
     private void ShowErrors(string errors)

@@ -5,6 +5,11 @@ using System.Windows.Media;
 
 namespace Core.Controls;
 
+public record struct ZoomState(double ScaleX, double ScaleY, double TranslateX, double TranslateY)
+{
+    public static ZoomState Identity => new(1.0, 1.0, 0.0, 0.0);
+}
+
 /// <summary>
 /// Permite modificar el zoom y desplazamiento de las imagenes
 /// <br/>
@@ -63,6 +68,33 @@ public class ZoomBorder : Border
             MouseMove += Child_MouseMove;
             PreviewMouseRightButtonDown += Child_PreviewMouseRightButtonDown;
         }
+    }
+
+    public ZoomState GetState()
+    {
+        if (_child == null)
+        {
+            return ZoomState.Identity;
+        }
+
+        var st = GetScaleTransform(_child);
+        var tt = GetTranslateTransform(_child);
+        return new ZoomState(st.ScaleX, st.ScaleY, tt.X, tt.Y);
+    }
+
+    public void ApplyState(ZoomState state)
+    {
+        if (_child == null)
+        {
+            return;
+        }
+
+        var st = GetScaleTransform(_child);
+        var tt = GetTranslateTransform(_child);
+        st.ScaleX = state.ScaleX;
+        st.ScaleY = state.ScaleY;
+        tt.X = state.TranslateX;
+        tt.Y = state.TranslateY;
     }
 
     public void Reset()

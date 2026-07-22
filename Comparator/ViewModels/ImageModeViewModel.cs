@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -161,9 +162,9 @@ public class ImageModeViewModel : BindableBase
         ResetLoading();
         _diff = diff;
 
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
-            var leftImg = GenerateImage(string.Join(Environment.NewLine, diff.OldText.Lines.Select(l => l.Text)));
+            var leftImg = await GenerateImage(string.Join(Environment.NewLine, diff.OldText.Lines.Select(l => l.Text)));
             if (leftImg is not null)
             {
                 LeftImage = leftImg;
@@ -171,7 +172,7 @@ public class ImageModeViewModel : BindableBase
                 LeftVisibility = Visibility.Visible;
             }
 
-            var rightImg = GenerateImage(string.Join(Environment.NewLine, diff.NewText.Lines.Select(l => l.Text)));
+            var rightImg = await GenerateImage(string.Join(Environment.NewLine, diff.NewText.Lines.Select(l => l.Text)));
             if (rightImg is not null)
             {
                 RightImage = rightImg;
@@ -190,10 +191,10 @@ public class ImageModeViewModel : BindableBase
 
             if (!centerText.EndsWith("^XZ"))
             {
-                centerText += "^XZ";
+                centerText += "^FD^FS^XZ";
             }
 
-            var centerImg = GenerateImage(centerText);
+            var centerImg = await GenerateImage(centerText);
             if (centerImg is not null)
             {
                 CenterImage = centerImg;
@@ -203,7 +204,7 @@ public class ImageModeViewModel : BindableBase
         });
     }
 
-    private BitmapFrame? GenerateImage(string content)
+    private async Task<BitmapFrame?> GenerateImage(string content)
     {
         var dpiValue = _dpi.Value;
         var sizeValue = _size.Value;
@@ -212,10 +213,8 @@ public class ImageModeViewModel : BindableBase
             .ParseMetadata()
             .LoadVariables();
 
-        using var task = Task.Run(() => preview.Build(dpiValue, sizeValue));
-        task.Wait();
-
-        var labels = task.Result;
+        using var task = Task.Run(async () => await preview.Build(dpiValue, sizeValue));
+        var labels = await task;
         if (labels is not null)
         {
             foreach (var label in labels)

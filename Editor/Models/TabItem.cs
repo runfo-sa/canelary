@@ -53,6 +53,8 @@ public class TabItem : BindableBase
         set => SetProperty(ref _lintingData, value);
     }
 
+    public PreviewState? Preview { get; set; }
+
     public TabItem(string header, string content, string? path = null)
     {
         Path = path;

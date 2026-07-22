@@ -25,7 +25,6 @@ public class CohereModule(IRegionManager regionManager, IEventAggregator eventAg
         containerRegistry.RegisterDialog<AlterRuleDialog>();
         containerRegistry.RegisterDialog<SelectRuleDialog>();
         containerRegistry.RegisterDialog<GenerateSample>();
-        containerRegistry.RegisterDialog<GenerateRecallDialog>();
 
         _regionManager.RegisterViewWithRegion("Cohere#MenuRegion", typeof(Menu));
         _regionManager.RegisterViewWithRegion("Cohere#TreeRegion", typeof(Tree));

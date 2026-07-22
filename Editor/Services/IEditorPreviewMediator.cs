@@ -6,4 +6,5 @@ public interface IEditorPreviewMediator
     CompositeCommand SendErrors { get; }
     CompositeCommand GenerateLinter { get; }
     CompositeCommand SendData { get; }
+    CompositeCommand TabSelected { get; }
 }

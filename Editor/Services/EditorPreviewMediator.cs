@@ -13,4 +13,7 @@ public class EditorPreviewMediator : IEditorPreviewMediator
 
     private readonly CompositeCommand _sendData = new();
     public CompositeCommand SendData => _sendData;
+
+    private readonly CompositeCommand _tabSelected = new();
+    public CompositeCommand TabSelected => _tabSelected;
 }
