@@ -59,7 +59,8 @@
                         BorderBrush="Transparent"
                         Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}">
                     <materialIcons:MaterialIcon Kind="CogOutline"
-                                                Width="Auto" />
+                                                Width="Auto"
+                                                IconSize="20" />
                 </Button>
                 <Label x:Name="VersionLabel"
                        DockPanel.Dock="Right"
@@ -82,7 +83,7 @@
                        HorizontalAlignment="Center"
                        Foreground="#6a6a6a"
                        FontSize="28" />
-                <ContentControl prism:RegionManager.RegionName="Main#VersionRegion"/>
+                <ContentControl prism:RegionManager.RegionName="Main#VersionRegion" />
             </StackPanel>
             <dockablz:Layout InterLayoutClient="{Binding InterLayoutClientInstance}">
                 <dragablz:TabablzControl x:Name="Tabs"

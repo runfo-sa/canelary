@@ -1,8 +1,11 @@
-﻿namespace Core.Services;
+﻿using YamlDotNet.Core.Tokens;
+
+namespace Core.Services;
 
 public static class VersionServiceProvider
 {
     private static IVersion? _version;
+    private static readonly Lock _lock = new();
 
     public static IVersion Version
     {
@@ -14,14 +17,16 @@ public static class VersionServiceProvider
             }
             return _version;
         }
-        private set => _version = value;
     }
 
     public static void Set(IVersion version)
     {
         if (version.GetType().Name == SettingsService.Instance.Version)
         {
-            Version = version;
+            lock (_lock)
+            {
+                _version = version;
+            }
         }
     }
 

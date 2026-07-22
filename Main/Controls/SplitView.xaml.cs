@@ -135,14 +135,14 @@ public partial class SplitView : UserControl
         _isPaneOpen = !_isPaneOpen;
         if (!_isPaneOpen)
         {
-            DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronRight };
+            DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronRight, IconSize = 20 };
             Title.Visibility = Visibility.Collapsed;
             VersionLabel.Visibility = Visibility.Hidden;
             _closeAnim.Begin(CompactPane);
         }
         else
         {
-            DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronLeft };
+            DisplayPaneBtn.Content = new MaterialIcon() { Kind = MaterialIconKind.ChevronLeft, IconSize = 20 };
             Title.Visibility = Visibility.Visible;
             VersionLabel.Visibility = Visibility.Visible;
             _openAnim.Begin(CompactPane);

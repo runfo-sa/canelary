@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,7 +16,14 @@ public class PreviewViewModel : BindableBase
     private List<byte[]>? _labelsRawData;
 
     public ListCollectionView DpiList { get; set; } = new(DpiConstants.All);
-    public ListCollectionView SizeList { get; set; } = new(LabelSize.GetList(File.ReadAllText("SizeList.xml")));
+
+    private ListCollectionView _sizeList = new(new List<LabelSize>());
+
+    public ListCollectionView SizeList
+    {
+        get => _sizeList;
+        private set => SetProperty(ref _sizeList, value);
+    }
 
     private int _currentLabel = 0;
 
@@ -76,19 +84,29 @@ public class PreviewViewModel : BindableBase
     public PreviewViewModel(IEditorPreviewMediator mediator)
     {
         Mediator = mediator;
+        _ = Task.Run(async () =>
+        {
+            var xml = await File.ReadAllTextAsync("SizeList.xml");
+            var list = LabelSize.GetList(xml);
+            Application.Current.Dispatcher.Invoke(() => SizeList = new ListCollectionView(list));
+        });
         Mediator.GeneratePreview.RegisterCommand(new DelegateCommand<string>(GeneratePreview));
         Mediator.SendData.RegisterCommand(new DelegateCommand(SendData));
 
         RotateRightCommand = new(() =>
         {
-            PreviewImage = new TransformedBitmap(PreviewImage, new RotateTransform(90.0));
+            var rotated = new TransformedBitmap(PreviewImage, new RotateTransform(90.0));
+            rotated.Freeze();
+            PreviewImage = rotated;
             var angle = PreviewAngle + 90.0;
             PreviewAngle = angle >= 360.0 ? 0.0 : angle;
         }, () => PreviewImage != null);
 
         RotateLeftCommand = new(() =>
         {
-            PreviewImage = new TransformedBitmap(PreviewImage, new RotateTransform(-90.0));
+            var rotated = new TransformedBitmap(PreviewImage, new RotateTransform(-90.0));
+            rotated.Freeze();
+            PreviewImage = rotated;
             var angle = PreviewAngle - 90.0;
             PreviewAngle = angle < 0.0 ? 270.0 : angle;
         }, () => PreviewImage != null);
@@ -134,27 +152,34 @@ public class PreviewViewModel : BindableBase
 
     public async void GeneratePreview(string content)
     {
-        _labelsRawData = null;
-
-        var preview = PreviewServiceProvider
-            .ProvideService(content)
-            .ParseMetadata()
-            .LoadVariables();
-
-        var labels = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);
-        if (labels is not null)
+        try
         {
-            _labelsRawData = labels
-                .Where(b => b != null)
-                .Select(b => b!)
-                .ToList();
-            CurrentLabel = 0;
-            using MemoryStream stream = new(_labelsRawData[CurrentLabel]);
-            PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-        }
+            _labelsRawData = null;
 
-        TotalLabel = _labelsRawData?.Count - 1 ?? 0;
-        Mediator.SendErrors.Execute(preview.Error);
+            var preview = PreviewServiceProvider
+                .ProvideService(content)
+                .ParseMetadata()
+                .LoadVariables();
+
+            var labels = await preview.Build(((LabelDpi)DpiList.CurrentItem).Value, ((LabelSize)SizeList.CurrentItem).Value);
+            if (labels is not null)
+            {
+                _labelsRawData = labels
+                    .Where(b => b != null)
+                    .Select(b => b!)
+                    .ToList();
+                CurrentLabel = 0;
+                using MemoryStream stream = new(_labelsRawData[CurrentLabel]);
+                PreviewImage = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            }
+
+            TotalLabel = _labelsRawData?.Count - 1 ?? 0;
+            Mediator.SendErrors.Execute(preview.Error);
+        }
+        catch (Exception ex)
+        {
+            Mediator.SendErrors.Execute(ex.Message);
+        }
     }
 
     private void SendData()

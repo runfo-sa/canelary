@@ -11,6 +11,30 @@ public class TextMarkerService(TextEditor textEditor) : IBackgroundRenderer, IVi
 {
     private readonly TextEditor _textEditor = textEditor;
     private readonly TextSegmentCollection<TextMarker> markers = new(textEditor.Document);
+    private static readonly Dictionary<Color, SolidColorBrush> _brushCache = [];
+    private static readonly Dictionary<Color, Pen> _penCache = [];
+
+    private static SolidColorBrush GetBrush(Color color)
+    {
+        if (!_brushCache.TryGetValue(color, out var brush))
+        {
+            brush = new SolidColorBrush(color);
+            brush.Freeze();
+            _brushCache[color] = brush;
+        }
+        return brush;
+    }
+
+    private static Pen GetPen(Color color)
+    {
+        if (!_penCache.TryGetValue(color, out var pen))
+        {
+            pen = new Pen(GetBrush(color), 1);
+            pen.Freeze();
+            _penCache[color] = pen;
+        }
+        return pen;
+    }
 
     public sealed class TextMarker : TextSegment
     {
@@ -47,10 +71,7 @@ public class TextMarkerService(TextEditor textEditor) : IBackgroundRenderer, IVi
                 Geometry geometry = geoBuilder.CreateGeometry();
                 if (geometry != null)
                 {
-                    Color color = marker.BackgroundColor.Value;
-                    var brush = new SolidColorBrush(color);
-                    brush.Freeze();
-                    drawingContext.DrawGeometry(brush, null, geometry);
+                    drawingContext.DrawGeometry(GetBrush(marker.BackgroundColor.Value), null, geometry);
                 }
             }
             foreach (Rect r in BackgroundGeometryBuilder.GetRectsForSegment(textView, marker))
@@ -58,8 +79,7 @@ public class TextMarkerService(TextEditor textEditor) : IBackgroundRenderer, IVi
                 Point startPoint = r.BottomLeft;
                 Point endPoint = r.BottomRight;
 
-                var usedPen = new Pen(new SolidColorBrush(marker.MarkerColor), 1);
-                usedPen.Freeze();
+                var usedPen = GetPen(marker.MarkerColor);
                 const double offset = 2.5;
 
                 int count = Math.Max((int)((endPoint.X - startPoint.X) / offset) + 1, 4);

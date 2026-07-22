@@ -22,7 +22,7 @@
 
             <Button DockPanel.Dock="Right"
                     Command="{Binding RotateRightCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=RotateRight}"
+                    Content="{materialIcons:MaterialIconExt Kind=RotateRight, IconSize=20}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
                     VerticalAlignment="Center" />
             <Separator DockPanel.Dock="Right"
@@ -30,7 +30,7 @@
                        Width="10" />
             <Button DockPanel.Dock="Right"
                     Command="{Binding RotateLeftCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=RotateLeft}"
+                    Content="{materialIcons:MaterialIconExt Kind=RotateLeft, IconSize=20}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
                     VerticalAlignment="Center" />
 
@@ -42,7 +42,7 @@
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Command="{Binding NextLabel}"
-                    Content="{materialIcons:MaterialIconExt Kind=ArrowRightDropCircle}"
+                    Content="{materialIcons:MaterialIconExt Kind=ArrowRightDropCircle, IconSize=20}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
                     VerticalAlignment="Center" />
             <TextBlock DockPanel.Dock="Right"
@@ -61,7 +61,7 @@
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Command="{Binding PreviousLabel}"
-                    Content="{materialIcons:MaterialIconExt Kind=ArrowLeftDropCircle}"
+                    Content="{materialIcons:MaterialIconExt Kind=ArrowLeftDropCircle, IconSize=20}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
                     VerticalAlignment="Center" />
         </DockPanel>

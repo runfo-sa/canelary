@@ -45,6 +45,20 @@ public class LinterTextEditor : TextEditor
         textView.VisualLinesChanged += VisualLinesChanged;
 
         TextArea.TextEntered += LoadIntellisense;
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        TextView textView = TextArea.TextView;
+        textView.MouseHover -= ShowTooltip;
+        textView.MouseHoverStopped -= HideTooltip;
+        textView.VisualLinesChanged -= VisualLinesChanged;
+        TextArea.TextEntered -= LoadIntellisense;
+        Unloaded -= OnUnloaded;
+
+        _completionWindow?.Close();
+        _completionWindow = null;
     }
 
     private void ShowTooltip(object sender, MouseEventArgs e)
@@ -147,10 +161,20 @@ public class LinterTextEditor : TextEditor
         }
     }
 
+    private void OnCompletionWindowClosed(object? sender, EventArgs e)
+    {
+        if (_completionWindow != null)
+        {
+            _completionWindow.Closed -= OnCompletionWindowClosed;
+            _completionWindow = null;
+        }
+    }
+
     private void LoadIntellisense(object sender, TextCompositionEventArgs e)
     {
         if (e.Text == "^" || e.Text == "~")
         {
+            _completionWindow?.Close();
             _completionWindow = new CompletionWindow(TextArea);
             var data = _completionWindow.CompletionList.CompletionData;
 
@@ -170,10 +194,7 @@ public class LinterTextEditor : TextEditor
             _completionWindow.CloseAutomatically = false;
 
             _completionWindow.Show();
-            _completionWindow.Closed += delegate
-            {
-                _completionWindow = null;
-            };
+            _completionWindow.Closed += OnCompletionWindowClosed;
         }
         else if (_completionWindow != null)
         {

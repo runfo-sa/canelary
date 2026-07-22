@@ -4,11 +4,21 @@ using Editor.Services;
 
 namespace Editor.ViewModels;
 
-public class MenuViewModel(ICommandService commandService, IDialogService dialogService) : BindableBase
+public class MenuViewModel : BindableBase
 {
-    public ICommandService CommandService => commandService;
+    public ICommandService CommandService { get; }
+    public DelegateCommand OpenSettingsCommand { get; }
+    public DelegateCommand HelpCommand { get; }
+    public DelegateCommand AboutCommand { get; }
 
-    public DelegateCommand OpenSettingsCommand => new(() => dialogService.Show("Settings"));
-    public DelegateCommand HelpCommand => new(() => Process.Start(new ProcessStartInfo(".\\Manual\\index.html") { UseShellExecute = true }));
-    public DelegateCommand AboutCommand => new(() => dialogService.Show("About"));
+    public MenuViewModel(ICommandService commandService, IDialogService dialogService)
+    {
+        CommandService = commandService;
+        OpenSettingsCommand = new(() => dialogService.Show("Settings"));
+        HelpCommand = new(() =>
+        {
+            using var proc = Process.Start(new ProcessStartInfo(".\\Manual\\index.html") { UseShellExecute = true });
+        });
+        AboutCommand = new(() => dialogService.Show("About"));
+    }
 }

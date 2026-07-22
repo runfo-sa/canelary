@@ -75,10 +75,8 @@ public class PrinterHelper
 
     public static bool SendFileToPrinter(string szPrinterName, string szFileName, string docName)
     {
-        // Open the file.
-        FileStream fs = new(szFileName, FileMode.Open);
-        // Create a BinaryReader on the file.
-        BinaryReader br = new(fs);
+        using FileStream fs = new(szFileName, FileMode.Open);
+        using BinaryReader br = new(fs);
         // Dim an array of bytes big enough to hold the file's contents.
         Byte[] bytes;
         bool bSuccess;

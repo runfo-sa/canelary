@@ -95,6 +95,7 @@ public class TextEditorViewModel : BindableBase
     private readonly DelegateCommand _resizeCommand;
     private readonly DelegateCommand _closeAllCommand;
     private readonly IDialogService _dialogService;
+    private CancellationTokenSource? _linterCts;
 
     public TextEditorViewModel(ICommandService commandService, IEditorPreviewMediator mediator, IDialogService dialogService)
     {
@@ -106,7 +107,7 @@ public class TextEditorViewModel : BindableBase
         CommandService.OpenItemCommand.RegisterCommand(new DelegateCommand<object?>(OpenCurrentItem));
         CommandService.NewCommand.RegisterCommand(new DelegateCommand(() => AddTab($"new {NextNewItem()}", "^XA\r\n\r\n^XZ")));
         CommandService.CloseCommand.RegisterCommand(new DelegateCommand<TabItem>(CloseItem));
-        CommandService.OpenCommand.RegisterCommand(new DelegateCommand(OpenFile));
+        CommandService.OpenCommand.RegisterCommand(new DelegateCommand(async () => await OpenFileAsync()));
         CommandService.SaveAsCommand.RegisterCommand(new DelegateCommand(SaveAsFile));
         CommandService.SaveAllCommand.RegisterCommand(new DelegateCommand(SaveAllFile));
         CommandService.SwitchPosCommand.RegisterCommand(new DelegateCommand(() => PreviewOnSave = !PreviewOnSave));
@@ -177,7 +178,7 @@ public class TextEditorViewModel : BindableBase
         return 1;
     }
 
-    private void OpenFile()
+    private async Task OpenFileAsync()
     {
         var filters = new StringBuilder();
 
@@ -194,7 +195,7 @@ public class TextEditorViewModel : BindableBase
 
         if (dialog.ShowDialog() == true)
         {
-            var content = File.ReadAllText(dialog.FileName);
+            var content = await File.ReadAllTextAsync(dialog.FileName);
             AddTab(dialog.SafeFileName, content, dialog.FileName);
         }
     }
@@ -275,11 +276,13 @@ public class TextEditorViewModel : BindableBase
                 case MessageBoxResult.Yes:
                     if (item.SaveItem())
                     {
+                        item.WasModified -= UpdateItemSaveState;
                         TabsList.Remove(item);
                     }
                     break;
 
                 case MessageBoxResult.No:
+                    item.WasModified -= UpdateItemSaveState;
                     TabsList.Remove(item);
                     break;
 
@@ -289,6 +292,7 @@ public class TextEditorViewModel : BindableBase
         }
         else
         {
+            item.WasModified -= UpdateItemSaveState;
             TabsList.Remove(item);
         }
     }
@@ -334,18 +338,26 @@ public class TextEditorViewModel : BindableBase
 
     private async Task UpdateLinter(string data)
     {
-        var tab = TabsList[CurrentTabIndex];
-        var content = TabsList[CurrentTabIndex].Content.Text;
+        _linterCts?.Cancel();
+        _linterCts = new CancellationTokenSource();
+        var token = _linterCts.Token;
 
-        var values = data.Split(';');
-        var lintings = await PreviewServiceProvider
-            .ProvideService(content)
-            .Linting(content, values[0], values[1]);
-
-        if (lintings is not null)
+        try
         {
-            tab.LintingData = lintings.Select(LintingInfo.Parse).ToList();
+            var tab = TabsList[CurrentTabIndex];
+            var content = tab.Content.Text;
+
+            var values = data.Split(';');
+            var lintings = await PreviewServiceProvider
+                .ProvideService(content)
+                .Linting(content, values[0], values[1]);
+
+            if (!token.IsCancellationRequested && lintings is not null)
+            {
+                tab.LintingData = lintings.Select(LintingInfo.Parse).ToList();
+            }
         }
+        catch (OperationCanceledException) { }
     }
 
     private void ResizeFile()

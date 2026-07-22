@@ -4,6 +4,8 @@ namespace Core.Logger;
 
 public static class Logger
 {
+    private static readonly object _lock = new();
+
     /// <summary>
     /// Registra el contenido pasado a un archivo .log.
     /// <br/>
@@ -20,8 +22,11 @@ public static class Logger
         Directory.CreateDirectory(path);
 
         string separator = new('-', 128);
-        File.AppendAllText(file,
-            $"[Error] - [{date:HH:mm:ss}]{Environment.NewLine}{content}{Environment.NewLine}{separator}{Environment.NewLine}");
+        lock (_lock)
+        {
+            File.AppendAllText(file,
+                $"[Error] - [{date:HH:mm:ss}]{Environment.NewLine}{content}{Environment.NewLine}{separator}{Environment.NewLine}");
+        }
 
         return file;
     }

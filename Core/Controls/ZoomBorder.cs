@@ -41,6 +41,12 @@ public class ZoomBorder : Border
 
     public void Initialize(UIElement element)
     {
+        MouseWheel -= Child_MouseWheel;
+        MouseLeftButtonDown -= Child_MouseLeftButtonDown;
+        MouseLeftButtonUp -= Child_MouseLeftButtonUp;
+        MouseMove -= Child_MouseMove;
+        PreviewMouseRightButtonDown -= Child_PreviewMouseRightButtonDown;
+
         _child = element;
         if (_child != null)
         {
@@ -55,8 +61,7 @@ public class ZoomBorder : Border
             MouseLeftButtonDown += Child_MouseLeftButtonDown;
             MouseLeftButtonUp += Child_MouseLeftButtonUp;
             MouseMove += Child_MouseMove;
-            PreviewMouseRightButtonDown += new MouseButtonEventHandler(
-              Child_PreviewMouseRightButtonDown);
+            PreviewMouseRightButtonDown += Child_PreviewMouseRightButtonDown;
         }
     }
 

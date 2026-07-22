@@ -33,13 +33,15 @@ public class TreeGenerator()
             dirs.Add(new VirtualDirectory(dir.Name));
         }
 
+        var dirsByName = dirs.ToDictionary(d => d.Name);
+
         foreach (var file in files)
         {
             foreach (var dir in _settings.VirtualDirectories)
             {
                 if (file.Name.Contains(dir.Filter, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    dirs.First(d => d.Name == dir.Name).Files.Add(file);
+                    dirsByName[dir.Name].Files.Add(file);
                     goto OuterLoop; // Despues de agregar el archivo al directorio virtual saltamos al final del loop.
                 }
             }

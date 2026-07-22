@@ -122,14 +122,14 @@ public class PushViewModel : BindableBase, IDialogAware
     {
         var files = ModifiedFiles
             .Where(f => f.Selected)
-            .Aggregate(new StringBuilder(), (sb, f) => sb.Append(f.Name + ' '))
+            .Aggregate(new StringBuilder(), (sb, f) => sb.Append($"\"{f.Name}\" "))
             .ToString();
         var msg = Message.IsNullOrEmpty() ? Tag : Message;
 
         GitInner.RunGitCommand("add", files, Settings.Instance.EtiquetasDir);
-        GitInner.RunGitCommand("commit", $"-m {msg}", Settings.Instance.EtiquetasDir);
-        GitInner.RunGitCommand("tag", $"-a {Tag} -m {msg}", Settings.Instance.EtiquetasDir);
-        GitInner.RunGitCommand("push", $"origin -u {Branch}", Settings.Instance.EtiquetasDir);
+        GitInner.RunGitCommand("commit", $"-m \"{msg}\"", Settings.Instance.EtiquetasDir);
+        GitInner.RunGitCommand("tag", $"-a \"{Tag}\" -m \"{msg}\"", Settings.Instance.EtiquetasDir);
+        GitInner.RunGitCommand("push", $"origin -u \"{Branch}\"", Settings.Instance.EtiquetasDir);
         GitInner.RunGitCommand("push", "origin --tags", Settings.Instance.EtiquetasDir);
     }
 }

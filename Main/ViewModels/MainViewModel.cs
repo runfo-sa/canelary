@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Threading;
 
 using AutoRenovatioNS;
@@ -72,7 +73,15 @@ public class MainViewModel : BindableBase
         UpdateClientsCommand = new(UpdateClients);
         CheckUpdatesCommand = new(CheckUpdates);
 
-        ClientsList = [.. new ServiceDbContext().EstadoCliente];
+        ClientsList = [];
+        _ = Task.Run(() =>
+        {
+            var clients = new ServiceDbContext().EstadoCliente.ToList();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var c in clients) ClientsList.Add(c);
+            });
+        });
 
         _moduleManager.Run();
         ModulesButtons =

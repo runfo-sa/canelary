@@ -3,6 +3,7 @@
 public static class BackendServiceProvider
 {
     private static IBackend? _backend;
+    private static readonly Lock _lock = new();
 
     public static IBackend Backend
     {
@@ -14,14 +15,16 @@ public static class BackendServiceProvider
             }
             return _backend;
         }
-        private set => _backend = value;
     }
 
     public static void Set(IBackend backend)
     {
         if (backend.GetType().Name == SettingsService.Instance.Backend)
         {
-            Backend = backend;
+            lock (_lock)
+            {
+                _backend = backend;
+            }
         }
     }
 }

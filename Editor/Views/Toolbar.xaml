@@ -17,25 +17,25 @@
             <Button x:Name="newButton"
                     Background="{x:Null}"
                     Command="{Binding CommandService.NewCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=FileOutline}"
+                    Content="{materialIcons:MaterialIconExt Kind=FileOutline, IconSize=20}"
                     Margin="5,0"
                     ToolTip="Ctrl + N" />
             <Button x:Name="openButton"
                     Background="{x:Null}"
                     Command="{Binding CommandService.OpenCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=FolderOpenOutline}"
+                    Content="{materialIcons:MaterialIconExt Kind=FolderOpenOutline, IconSize=20}"
                     Margin="5,0"
                     ToolTip="Ctrl + O" />
             <Button x:Name="saveButton"
                     Background="{x:Null}"
                     Command="{Binding CommandService.SaveCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=ContentSaveOutline}"
+                    Content="{materialIcons:MaterialIconExt Kind=ContentSaveOutline, IconSize=20}"
                     Margin="5,0"
                     ToolTip="Ctrl + S" />
             <Button x:Name="saveAllButton"
                     Background="{x:Null}"
                     Command="{Binding CommandService.SaveAllCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=ContentSaveAllOutline}"
+                    Content="{materialIcons:MaterialIconExt Kind=ContentSaveAllOutline, IconSize=20}"
                     Margin="5,0"
                     ToolTip="Ctrl + Shift + S" />
             <Separator />
@@ -44,9 +44,9 @@
                     Margin="5,0">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right"
-                               Text="Cambiar resolución"
+                               Text=" Cambiar resolución"
                                VerticalAlignment="Center" />
-                    <materialIcons:MaterialIcon Kind="Resize" />
+                    <materialIcons:MaterialIcon Kind="Resize" IconSize="20" />
                 </DockPanel>
             </Button>
             <Separator />
@@ -55,9 +55,9 @@
                     Margin="5,0">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right"
-                               Text="Previsualizar [F5]"
+                               Text=" Previsualizar [F5]"
                                VerticalAlignment="Center" />
-                    <materialIcons:MaterialIcon Kind="ImageOutline" />
+                    <materialIcons:MaterialIcon Kind="ImageOutline" IconSize="20" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding CommandService.PrintCommand}"
@@ -65,9 +65,9 @@
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right"
                                Margin="5,0"
-                               Text="Imprimir [F6]"
+                               Text=" Imprimir [F6]"
                                VerticalAlignment="Center" />
-                    <materialIcons:MaterialIcon Kind="PrinterOutline" />
+                    <materialIcons:MaterialIcon Kind="PrinterOutline" IconSize="20" />
                 </DockPanel>
             </Button>
             <ComboBox ItemsSource="{Binding Printers}"

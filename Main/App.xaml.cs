@@ -38,7 +38,7 @@ public partial class App : PrismApplication
             .GetManifestResourceNames()
             .Single(str => str.EndsWith("ZPL.xshd"));
 
-        var stream = assembly.GetManifestResourceStream(resourceName);
+        using var stream = assembly.GetManifestResourceStream(resourceName);
         using var reader = new System.Xml.XmlTextReader(stream!);
         HighlightingManager.Instance.RegisterHighlighting(
             "ZPL",

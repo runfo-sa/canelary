@@ -34,15 +34,18 @@ public static class GitInner
 
         while (!proc.StandardOutput.EndOfStream)
         {
-            stdo.Append($"{proc.StandardOutput.ReadLine()}");
+            stdo.Append(proc.StandardOutput.ReadLine());
         }
 
         while (!proc.StandardError.EndOfStream)
         {
-            stde.Append($"{proc.StandardError.ReadLine()}");
+            stde.Append(proc.StandardError.ReadLine());
         }
 
-        proc.WaitForExit();
+        if (!proc.WaitForExit(30_000))
+        {
+            proc.Kill();
+        }
         return new ProcessRecord(proc.ExitCode, stdo.ToString(), stde.ToString());
     }
 

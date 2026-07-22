@@ -33,7 +33,7 @@
                    VerticalContentAlignment="Center" />
             <Button DockPanel.Dock="Right"
                     Command="{Binding CommandService.ChangeRuleCommand}"
-                    Content="{materialIcons:MaterialIconExt Kind=Notebook}" />
+                    Content="{materialIcons:MaterialIconExt Kind=Notebook, IconSize=20}" />
         </DockPanel>
 
         <DataGrid x:Name="dataGrid"
